@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+enum UserRole {
+  member
+  admin_space
+}
+
+enum SpaceType {
+  desk
+  meeting_room
+  private_office
+}
+
+enum ReservasiStatus {
+  belum_dikonfirm
+  disetujui
+  aktif
+  selesai
+  dibatalkan
+}
+
+model users {
+  id          Int          @id @default(autoincrement())
+  username    String       @unique @db.VarChar(50)
+  password    String       @db.VarChar(255)
+  role        UserRole     @default(member)
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  member      member?
+  space_owner space_owner?
+
+  @@index([role])
+}
+
+model member {
+  id          Int         @id @default(autoincrement())
+  id_user     Int         @unique
+  nama_member String      @db.VarChar(100)
+  instansi    String      @db.VarChar(100)
+  alamat      String      @db.Text
+  telp        String      @db.VarChar(20)
+  foto        String?     @db.VarChar(255)
+  created_at  DateTime    @default(now())
+  updated_at  DateTime    @updatedAt
+  users       users       @relation(fields: [id_user], references: [id], onDelete: Cascade)
+  reservasi   reservasi[]
+
+  @@index([instansi])
+}
+
+model space_owner {
+  id                   Int      @id @default(autoincrement())
+  id_user              Int      @unique
+  nama_coworking       String   @db.VarChar(100)
+  nama_pemilik         String   @db.VarChar(100)
+  telp                 String   @db.VarChar(20)
+  alamat               String?  @db.Text
+  deskripsi_fasilitas  String?  @db.Text
+  created_at           DateTime @default(now())
+  updated_at           DateTime @updatedAt
+  users                users    @relation(fields: [id_user], references: [id], onDelete: Cascade)
+  space                space[]
+}
+
+model space {
+  id             Int          @id @default(autoincrement())
+  id_owner       Int
+  nama_space     String       @db.VarChar(100)
+  harga_per_jam  Float
+  tipe           SpaceType
+  kapasitas      Int          @default(1)
+  deskripsi      String       @db.Text
+  foto           String?      @db.VarChar(255)
+  created_at     DateTime     @default(now())
+  updated_at     DateTime     @updatedAt
+  owner          space_owner  @relation(fields: [id_owner], references: [id], onDelete: Cascade)
+  reservasi      reservasi[]
+
+  @@index([tipe])
+}
+
+model diskon {
+  id                  Int         @id @default(autoincrement())
+  nama_diskon         String      @unique @db.VarChar(50)
+  persentase_diskon   Float
+  tanggal_awal        DateTime
+  tanggal_akhir       DateTime
+  created_at          DateTime    @default(now())
+  updated_at          DateTime    @updatedAt
+  reservasi           reservasi[]
+
+  @@index([tanggal_awal, tanggal_akhir])
+}
+
+model reservasi {
+  id                  Int              @id @default(autoincrement())
+  kode_booking        String           @unique @db.VarChar(50)
+  id_member           Int
+  id_space            Int
+  id_diskon           Int?
+  tanggal_reservasi   DateTime         @db.Date
+  jam_mulai           DateTime         @db.Time(0)
+  jam_selesai         DateTime         @db.Time(0)
+  durasi_jam          Int
+  harga_per_jam       Float
+  total_harga_awal    Float
+  potongan_diskon     Float            @default(0)
+  total_bayar         Float
+  status              ReservasiStatus  @default(belum_dikonfirm)
+  check_in_time       DateTime?
+  check_out_time      DateTime?
+  created_at          DateTime         @default(now())
+  updated_at          DateTime         @updatedAt
+  member              member           @relation(fields: [id_member], references: [id], onDelete: Cascade)
+  space               space            @relation(fields: [id_space], references: [id], onDelete: Cascade)
+  diskon              diskon?          @relation(fields: [id_diskon], references: [id], onDelete: SetNull)
+
+  @@index([id_space, tanggal_reservasi, status])
+  @@index([status])
+  @@index([tanggal_reservasi])
+}

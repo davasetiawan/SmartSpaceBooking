@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString, MinLength, Matches } from 'class-validator';
 
 export class UpdateMemberAdminDto {
   @ApiPropertyOptional()
@@ -30,6 +30,6 @@ export class UpdateMemberAdminDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  @MinLength(6)
+  @MinLength(8, { message: 'Password minimal 8 karakter' })
   password?: string;
 }

@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class RegisterAdminSpaceDto {
   @ApiProperty()
@@ -8,8 +8,13 @@ export class RegisterAdminSpaceDto {
   username: string;
 
   @ApiProperty()
+  @IsEmail({}, { message: 'Format email tidak valid' })
+  @IsNotEmpty()
+  email: string;
+
+  @ApiProperty()
   @IsString()
-  @MinLength(6)
+  @MinLength(8, { message: 'Password minimal 8 karakter' })
   password: string;
 
   @ApiProperty()
@@ -26,14 +31,4 @@ export class RegisterAdminSpaceDto {
   @IsString()
   @IsNotEmpty()
   telp: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  alamat?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  deskripsi_fasilitas?: string;
 }

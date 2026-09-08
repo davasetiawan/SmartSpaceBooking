@@ -14,6 +14,7 @@ import { CreateDiskonDto } from './dto/create-diskon.dto';
 import { UpdateDiskonDto } from './dto/update-diskon.dto';
 import { UpdateReservasiStatusDto } from './dto/update-reservasi-status.dto';
 import { ReservasiStatus } from '@prisma/client';
+import { cleanUpdateData } from '../common/clean-data.util';
 
 @Injectable()
 export class AdminService {
@@ -35,9 +36,10 @@ export class AdminService {
 
   async updateProfile(userId: number, dto: UpdateCoworkingProfileDto) {
     const owner = await this.ownerOf(userId);
+    const cleaned = cleanUpdateData(dto);
     const updated = await this.prisma.space_owner.update({
       where: { id: owner.id },
-      data: dto,
+      data: cleaned,
     });
     return { message: 'Profile updated', data: updated };
   }
@@ -60,9 +62,15 @@ export class AdminService {
   }
 
   async createMember(dto: CreateMemberAdminDto) {
+    const existsByUsername = await this.prisma.users.findUnique({ where: { username: dto.username } });
+    const existsByEmail = await this.prisma.users.findUnique({ where: { email: dto.email } });
+    if (existsByUsername) throw new BadRequestException('Username already exists');
+    if (existsByEmail) throw new BadRequestException('Email already exists');
+
     const user = await this.prisma.users.create({
       data: {
         username: dto.username,
+        email: dto.email,
         password: await bcrypt.hash(dto.password, 10),
         role: 'member',
         member: {
@@ -92,9 +100,10 @@ export class AdminService {
   }
 
   async updateMember(id: number, dto: UpdateMemberAdminDto) {
-    const { password, ...data } = dto;
+    const cleaned = cleanUpdateData(dto);
+    const { password, ...data } = cleaned;
     const member = await this.prisma.member.update({ where: { id }, data });
-    if (password) {
+    if (password && typeof password === 'string' && password.trim() !== '') {
       await this.prisma.users.update({
         where: { id: member.id_user },
         data: { password: await bcrypt.hash(password, 10) },
@@ -124,7 +133,12 @@ export class AdminService {
   async createSpace(userId: number, dto: CreateSpaceDto) {
     const owner = await this.ownerOf(userId);
     const space = await this.prisma.space.create({
-      data: { ...dto, id_owner: owner.id },
+      data: {
+        ...dto,
+        harga_per_jam: Number(dto.harga_per_jam),
+        kapasitas: Number(dto.kapasitas),
+        id_owner: owner.id,
+      },
     });
     return { message: 'Space created', data: space };
   }
@@ -140,7 +154,19 @@ export class AdminService {
 
   async updateSpace(userId: number, id: number, dto: UpdateSpaceDto) {
     await this.space(userId, id);
-    const item = await this.prisma.space.update({ where: { id }, data: dto });
+    const cleaned = cleanUpdateData(dto);
+    const updateData: any = { ...cleaned };
+    if (cleaned.harga_per_jam !== undefined && !isNaN(Number(cleaned.harga_per_jam))) {
+      updateData.harga_per_jam = Number(cleaned.harga_per_jam);
+    }
+    if (cleaned.kapasitas !== undefined && !isNaN(Number(cleaned.kapasitas))) {
+      updateData.kapasitas = Number(cleaned.kapasitas);
+    }
+
+    const item = await this.prisma.space.update({
+      where: { id },
+      data: updateData,
+    });
     return { message: 'Space updated', data: item };
   }
 
@@ -187,16 +213,24 @@ export class AdminService {
   }
 
   async updateDiscount(id: number, dto: UpdateDiskonDto) {
+    const cleaned = cleanUpdateData(dto);
+    const updateData: any = { ...cleaned };
+    if (cleaned.nama_diskon) {
+      updateData.nama_diskon = cleaned.nama_diskon.toUpperCase();
+    }
+    if (cleaned.persentase_diskon !== undefined && !isNaN(Number(cleaned.persentase_diskon))) {
+      updateData.persentase_diskon = Number(cleaned.persentase_diskon);
+    }
+    if (cleaned.tanggal_awal) {
+      updateData.tanggal_awal = new Date(cleaned.tanggal_awal);
+    }
+    if (cleaned.tanggal_akhir) {
+      updateData.tanggal_akhir = new Date(cleaned.tanggal_akhir);
+    }
+
     const item = await this.prisma.diskon.update({
       where: { id },
-      data: {
-        ...dto,
-        nama_diskon: dto.nama_diskon?.toUpperCase(),
-        tanggal_awal: dto.tanggal_awal ? new Date(dto.tanggal_awal) : undefined,
-        tanggal_akhir: dto.tanggal_akhir
-          ? new Date(dto.tanggal_akhir)
-          : undefined,
-      },
+      data: updateData,
     });
     return { message: 'Diskon updated', data: item };
   }
@@ -252,11 +286,14 @@ export class AdminService {
 
   async updateStatus(userId: number, id: number, dto: UpdateReservasiStatusDto) {
     const item = await this.reservationOf(userId, id);
-    if (item.status !== 'belum_dikonfirm' || !['disetujui', 'dibatalkan'].includes(dto.status)) {
-      throw new BadRequestException('Invalid status transition');
+    if (item.status !== 'belum_dikonfirm') {
+      throw new BadRequestException('Hanya reservasi dengan status belum_dikonfirm yang dapat dikonfirmasi');
     }
-    const updated = await this.prisma.reservasi.update({ where: { id }, data: { status: dto.status } });
-    return { message: 'Status updated', data: updated };
+    // "ditolak" dari sisi admin dipetakan ke "dibatalkan" di database
+    const dbStatus = dto.status === 'ditolak' ? 'dibatalkan' : 'disetujui';
+    const updated = await this.prisma.reservasi.update({ where: { id }, data: { status: dbStatus } });
+    const message = dto.status === 'ditolak' ? 'Reservasi ditolak' : 'Reservasi dikonfirmasi / disetujui';
+    return { message, data: updated };
   }
 
   async checkIn(userId: number, id: number) {

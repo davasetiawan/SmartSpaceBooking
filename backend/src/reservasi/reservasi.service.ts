@@ -37,7 +37,7 @@ export class ReservasiService {
     return `BOOK-${today}-${String(count + 1).padStart(4, '0')}`;
   }
 
-  async create(userId: number, dto: CreateReservasiDto) {
+  async create(userId: number, dto: CreateReservasiDto, buktiFilename?: string) {
     const member = await this.memberOf(userId);
     const start = this.spaces.parseTime(dto.jam_mulai);
     const end = new Date(start.getTime() + dto.durasi_jam * 3600000);
@@ -100,6 +100,7 @@ export class ReservasiService {
             total_harga_awal: gross,
             potongan_diskon: cut,
             total_bayar: gross - cut,
+            bukti_pembayaran: buktiFilename ?? null,
           },
         });
       },
@@ -196,3 +197,4 @@ export class ReservasiService {
     return { message: 'Reservation cancelled', data: updated };
   }
 }
+

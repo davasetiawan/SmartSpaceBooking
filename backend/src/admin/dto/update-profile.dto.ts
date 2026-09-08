@@ -16,14 +16,4 @@ export class UpdateCoworkingProfileDto {
   @IsOptional()
   @IsString()
   telp?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  alamat?: string;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsString()
-  deskripsi_fasilitas?: string;
 }

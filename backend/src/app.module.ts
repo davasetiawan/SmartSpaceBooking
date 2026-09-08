@@ -8,9 +8,10 @@ import { DiskonModule } from './diskon/diskon.module';
 import { ReservasiModule } from './reservasi/reservasi.module';
 import { AdminModule } from './admin/admin.module';
 import { UploadModule } from './upload/upload.module';
+import { MakerModule } from './maker/maker.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, SpacesModule, DiskonModule, ReservasiModule, AdminModule, UploadModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, SpacesModule, DiskonModule, ReservasiModule, AdminModule, UploadModule, MakerModule],
   controllers: [AppController],
 })
 export class AppModule {}

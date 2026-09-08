@@ -11,6 +11,7 @@ datasource db {
 enum UserRole {
   member
   admin_space
+  maker
 }
 
 enum SpaceType {
@@ -30,12 +31,14 @@ enum ReservasiStatus {
 model users {
   id          Int          @id @default(autoincrement())
   username    String       @unique @db.VarChar(50)
+  email       String       @unique @db.VarChar(100)
   password    String       @db.VarChar(255)
   role        UserRole     @default(member)
   created_at  DateTime     @default(now())
   updated_at  DateTime     @updatedAt
   member      member?
   space_owner space_owner?
+  maker       maker?
 
   @@index([role])
 }
@@ -64,6 +67,7 @@ model space_owner {
   telp                 String   @db.VarChar(20)
   alamat               String?  @db.Text
   deskripsi_fasilitas  String?  @db.Text
+  foto                 String?  @db.VarChar(255)
   created_at           DateTime @default(now())
   updated_at           DateTime @updatedAt
   users                users    @relation(fields: [id_user], references: [id], onDelete: Cascade)
@@ -115,6 +119,7 @@ model reservasi {
   potongan_diskon     Float            @default(0)
   total_bayar         Float
   status              ReservasiStatus  @default(belum_dikonfirm)
+  bukti_pembayaran    String?          @db.VarChar(255)
   check_in_time       DateTime?
   check_out_time      DateTime?
   created_at          DateTime         @default(now())
@@ -126,4 +131,19 @@ model reservasi {
   @@index([id_space, tanggal_reservasi, status])
   @@index([status])
   @@index([tanggal_reservasi])
+}
+
+model maker {
+  id            Int      @id @default(autoincrement())
+  id_user       Int      @unique
+  nama_lengkap  String   @db.VarChar(100)
+  nis_nip       String   @unique @db.VarChar(50)
+  kelas_jabatan String   @db.VarChar(50)
+  instansi      String   @db.VarChar(100)
+  foto          String?  @db.VarChar(255)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  users         users    @relation(fields: [id_user], references: [id], onDelete: Cascade)
+
+  @@index([instansi])
 }

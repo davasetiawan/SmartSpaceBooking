@@ -10,23 +10,23 @@ import {
 } from 'class-validator';
 
 export class CreateDiskonDto {
-  @ApiProperty()
+  @ApiProperty({ example: 'DISKONCETAR', description: 'Kode promo unik (huruf kapital dan angka)' })
   @IsString()
   @IsNotEmpty()
   @Matches(/^[A-Z0-9]+$/)
   nama_diskon: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 10, description: 'Persentase diskon 1 - 100 (cukup angka saja, tanpa tanda %)' })
   @IsNumber()
   @Min(1)
   @Max(100)
   persentase_diskon: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: '2026-09-07', description: 'Tanggal mulai berlaku (format YYYY-MM-DD)' })
   @IsDateString()
   tanggal_awal: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '2026-09-20', description: 'Tanggal berakhir (format YYYY-MM-DD)' })
   @IsDateString()
   tanggal_akhir: string;
 }

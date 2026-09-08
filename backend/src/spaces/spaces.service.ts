@@ -29,6 +29,50 @@ export class SpacesService {
     return { data: spaces };
   }
 
+  async available() {
+    const now = new Date();
+    const todayStr = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Jakarta',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).format(now);
+    const todayDate = new Date(todayStr);
+
+    const timeStr = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Jakarta',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(now);
+    const currentTime = this.parseTime(timeStr);
+
+    // Cari space yang saat ini memiliki reservasi aktif (sedang berlangsung)
+    const occupied = await this.prisma.reservasi.findMany({
+      where: {
+        tanggal_reservasi: todayDate,
+        status: { in: ['belum_dikonfirm', 'disetujui', 'aktif'] },
+        jam_mulai: { lte: currentTime },
+        jam_selesai: { gt: currentTime },
+      },
+      select: { id_space: true },
+    });
+
+    const occupiedSpaceIds = occupied.map((r) => r.id_space);
+
+    const spaces = await this.prisma.space.findMany({
+      where: {
+        ...(occupiedSpaceIds.length > 0
+          ? { id: { notIn: occupiedSpaceIds } }
+          : {}),
+      },
+      include: { owner: true },
+      orderBy: { created_at: 'desc' },
+    });
+
+    return { data: spaces };
+  }
+
   async findOne(id: number) {
     const space = await this.prisma.space.findUnique({
       where: { id },

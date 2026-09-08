@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsInt,
@@ -17,6 +18,7 @@ export class CreateSpaceDto {
   nama_space: string;
 
   @ApiProperty()
+  @Type(() => Number)
   @IsNumber()
   @Min(0)
   harga_per_jam: number;
@@ -26,6 +28,7 @@ export class CreateSpaceDto {
   tipe: SpaceType;
 
   @ApiProperty()
+  @Type(() => Number)
   @IsInt()
   @Min(1)
   kapasitas: number;

@@ -14,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { ReservasiStatus } from '@prisma/client';
@@ -157,12 +157,14 @@ export class AdminController {
 
   @Post('spaces')
   @ApiConsumes('multipart/form-data')
-  @ApiOperation({ summary: 'Tambah Ruangan / Meja Space Baru Beserta Fasilitas & Foto' })
+  @ApiOperation({ summary: 'Tambah Ruangan / Meja Space Baru Beserta Lokasi (Kota & Jalan), Fasilitas & Foto' })
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
         nama_space: { type: 'string', example: 'Desk Flexi 01' },
+        kota: { type: 'string', example: 'Malang' },
+        jalan: { type: 'string', example: 'Jl. Danau Toba No. 12' },
         harga_per_jam: { type: 'number', example: 25000 },
         tipe: { type: 'string', enum: ['desk', 'meeting_room', 'private_office'], example: 'desk' },
         kapasitas: { type: 'integer', example: 1 },
@@ -210,12 +212,14 @@ export class AdminController {
 
   @Patch('spaces/:id')
   @ApiConsumes('multipart/form-data')
-  @ApiOperation({ summary: 'Update Data Ruangan & Fasilitas Space (Termasuk Foto) - Partial' })
+  @ApiOperation({ summary: 'Update Data Ruangan & Fasilitas Space (Termasuk Kota, Jalan & Foto) - Partial' })
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
         nama_space: { type: 'string', example: 'Desk Flexi 01' },
+        kota: { type: 'string', example: 'Malang' },
+        jalan: { type: 'string', example: 'Jl. Danau Toba No. 12' },
         harga_per_jam: { type: 'number', example: 25000 },
         tipe: { type: 'string', enum: ['desk', 'meeting_room', 'private_office'], example: 'desk' },
         kapasitas: { type: 'integer', example: 1 },

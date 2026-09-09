@@ -78,6 +78,8 @@ model space {
   id             Int          @id @default(autoincrement())
   id_owner       Int
   nama_space     String       @db.VarChar(100)
+  kota           String?      @db.VarChar(100)
+  jalan          String?      @db.Text
   harga_per_jam  Float
   tipe           SpaceType
   kapasitas      Int          @default(1)
@@ -89,6 +91,7 @@ model space {
   reservasi      reservasi[]
 
   @@index([tipe])
+  @@index([kota])
 }
 
 model diskon {

@@ -38,6 +38,16 @@ export class CreateSpaceDto {
   @IsNotEmpty()
   deskripsi: string;
 
+  @ApiPropertyOptional({ example: 'Malang' })
+  @IsOptional()
+  @IsString()
+  kota?: string;
+
+  @ApiPropertyOptional({ example: 'Jl. Danau Toba No. 12' })
+  @IsOptional()
+  @IsString()
+  jalan?: string;
+
   @ApiPropertyOptional()
   @IsOptional()
   @IsString()

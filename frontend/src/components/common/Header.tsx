@@ -39,10 +39,10 @@ export const Header: React.FC = () => {
       <div className="announcement-bar">
         <div className="container announcement-content">
           <span className="announcement-badge">
-            <Sparkles size={12} /> SONDER EXPERIENCE
+            <Sparkles size={12} /> WORKMATES
           </span>
           <span className="announcement-text">
-            Ruang kerja & ruang rapat fleksibel dengan desain editorial premium. Bebas biaya pendaftaran.
+            Ruang kerja & ruang rapat fleksibel untuk produktivitas maksimal. Bebas biaya pendaftaran.
           </span>
           <Link to="/ruangan" className="announcement-link">Jelajahi Ruangan &rarr;</Link>
         </div>
@@ -57,7 +57,7 @@ export const Header: React.FC = () => {
               <Building2 size={20} className="logo-svg" />
             </div>
             <div className="logo-text-group">
-              <span className="logo-title font-serif">SONDER</span>
+              <span className="logo-title font-serif">WorkMates</span>
               <span className="logo-subtitle">SMART SPACE</span>
             </div>
           </Link>
@@ -159,7 +159,7 @@ export const Header: React.FC = () => {
         <div className="mobile-menu-overlay" onClick={() => setIsMobileMenuOpen(false)}>
           <div className="mobile-menu-content" onClick={(e) => e.stopPropagation()}>
             <div className="mobile-menu-header">
-              <span className="font-serif mobile-logo">SONDER</span>
+              <span className="font-serif mobile-logo">WorkMates</span>
               <button onClick={() => setIsMobileMenuOpen(false)}><X size={20} /></button>
             </div>
             <div className="mobile-menu-links">

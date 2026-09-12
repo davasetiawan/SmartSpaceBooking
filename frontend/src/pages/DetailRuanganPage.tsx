@@ -38,7 +38,7 @@ export const DetailRuanganPage: React.FC = () => {
   if (loading || !ruangan) {
     return (
       <div className="container detail-loading">
-        <p className="font-serif">Memuat Detail Ruangan Sonder...</p>
+        <p className="font-serif">Memuat Detail Ruangan WorkMates...</p>
       </div>
     );
   }

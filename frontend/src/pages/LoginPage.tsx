@@ -19,12 +19,12 @@ export const LoginPage: React.FC = () => {
       const isAdmin = email.includes('admin');
       const userObj = {
         id: isAdmin ? 'usr-admin' : 'usr-1',
-        nama: isAdmin ? 'Admin Sonder Hub' : 'Alexander Wright',
+        nama: isAdmin ? 'Admin WorkMates Hub' : 'Alexander Wright',
         email: email || 'alex@example.com',
         role: isAdmin ? ('ADMIN' as const) : ('MEMBER' as const),
       };
 
-      setAuthToken('demo-jwt-token-sonder-2026');
+      setAuthToken('demo-jwt-token-workmates-2026');
       setCurrentUser(userObj);
       setLoading(false);
 
@@ -43,7 +43,7 @@ export const LoginPage: React.FC = () => {
       <div className="auth-banner-col">
         <div className="auth-banner-overlay">
           <div className="banner-content">
-            <span className="banner-badge font-mono">SONDER MEMBERSHIP</span>
+            <span className="banner-badge font-mono">WORKMATES MEMBERSHIP</span>
             <h1 className="font-serif banner-title">Kembali ke Ruang Kerja Impian Anda.</h1>
             <p className="banner-desc">Pesan meeting room 4K, hot desk ergonomis, dan kelola E-Ticket dalam satu akses terpadu.</p>
           </div>
@@ -60,7 +60,7 @@ export const LoginPage: React.FC = () => {
         <div className="auth-form-wrapper">
           <div className="auth-brand-logo">
             <Building2 size={24} className="brand-icon" />
-            <span className="font-serif brand-text">SONDER</span>
+            <span className="font-serif brand-text">WorkMates</span>
           </div>
 
           <h2 className="font-serif auth-heading">Masuk ke Akun Anda</h2>
@@ -116,12 +116,12 @@ export const LoginPage: React.FC = () => {
             </button>
 
             <div className="demo-hint-box font-mono">
-              💡 Demo Login: Gunakan email sembarang untuk <strong>Member</strong>, atau ketik <code>admin@sonder.com</code> untuk akun <strong>Admin</strong>.
+              💡 Demo Login: Gunakan email sembarang untuk <strong>Member</strong>, atau ketik <code>admin@workmates.com</code> untuk akun <strong>Admin</strong>.
             </div>
           </form>
 
           <div className="auth-footer-text">
-            Belum memiliki akun Sonder? <Link to="/register" className="auth-link">Daftar Akun Baru &rarr;</Link>
+            Belum memiliki akun WorkMates? <Link to="/register" className="auth-link">Daftar Akun Baru &rarr;</Link>
           </div>
         </div>
       </div>

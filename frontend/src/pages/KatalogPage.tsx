@@ -33,7 +33,7 @@ export const KatalogPage: React.FC = () => {
       {/* Editorial Header */}
       <div className="catalog-header">
         <span className="section-subtitle">PORTOFOLIO RUANGAN</span>
-        <h1 className="font-serif catalog-title">Jelajahi Koleksi Ruang Kerja Sonder</h1>
+        <h1 className="font-serif catalog-title">Jelajahi Koleksi Ruang Kerja WorkMates</h1>
         <p className="catalog-desc">
           Pilih ruangan kerja, ruang rapat, atau hall privat yang dirancang untuk mendukung fokus, kolaborasi, dan impresi profesional.
         </p>

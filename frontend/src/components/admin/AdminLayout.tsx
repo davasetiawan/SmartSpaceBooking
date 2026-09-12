@@ -42,7 +42,7 @@ export const AdminLayout: React.FC = () => {
         <div className="sidebar-header">
           <Link to="/admin" className="sidebar-brand">
             <Building2 size={24} className="brand-gold-icon" />
-            {!sidebarCollapsed && <span className="font-serif brand-text">SONDER ADMIN</span>}
+            {!sidebarCollapsed && <span className="font-serif brand-text">WorkMates</span>}
           </Link>
         </div>
 

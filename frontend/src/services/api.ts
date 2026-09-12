@@ -1,4 +1,4 @@
-// API Client & Mock Fallback Layer for Smart Space Booking
+// API Client & Mock Fallback Layer for WorkMates
 
 const API_BASE_URL = '/api';
 
@@ -57,6 +57,25 @@ export interface AdminMetrics {
   totalMember: number;
   totalPendapatan: number;
   tingkatOkupansi: number;
+}
+
+export interface PaymentMethod {
+  id: number;
+  nama: string;
+  tipe: string;
+  nomor_rekening?: string;
+  atas_nama?: string;
+  is_aktif: boolean;
+}
+
+export interface PaymentTransaction {
+  id: number;
+  id_reservasi: number;
+  midtrans_order_id: string;
+  gross_amount: number;
+  status: string;
+  payment_type?: string;
+  transaction_time?: string;
 }
 
 // Token Storage Helpers
@@ -256,6 +275,16 @@ function getMockData<T>(endpoint: string, options: RequestInit): T {
     return MOCK_RESERVASI as unknown as T;
   }
 
+  if (endpoint.startsWith('/payment-method')) {
+    const mockMethods: PaymentMethod[] = [
+      { id: 1, nama: 'Bank Transfer BCA', tipe: 'bank_transfer', nomor_rekening: '8820491029', atas_nama: 'PT WorkMates Indonesia', is_aktif: true },
+      { id: 2, nama: 'Bank Transfer Mandiri', tipe: 'bank_transfer', nomor_rekening: '1370019283019', atas_nama: 'PT WorkMates Indonesia', is_aktif: true },
+      { id: 3, nama: 'QRIS / GoPay / ShopeePay', tipe: 'qris', is_aktif: true },
+      { id: 4, nama: 'Credit Card / Debit Card', tipe: 'credit_card', is_aktif: true },
+    ];
+    return mockMethods as unknown as T;
+  }
+
   if (endpoint.startsWith('/admin/metrics')) {
     const metrics: AdminMetrics = {
       totalReservasi: 128,
@@ -278,4 +307,8 @@ export const api = {
   getReservasiById: (id: string) => fetchAPI<Reservasi>(`/reservasi/${id}`),
   createReservasi: (data: Partial<Reservasi>) => fetchAPI<Reservasi>('/reservasi', { method: 'POST', body: JSON.stringify(data) }),
   getAdminMetrics: () => fetchAPI<AdminMetrics>('/admin/metrics'),
+  getPaymentMethods: () => fetchAPI<PaymentMethod[]>('/payment-method'),
+  createPayment: (reservasiId: string, paymentMethodId: number) => fetchAPI<{ paymentUrl: string; orderId: string; token: string }>(`/payment/reservasi/${reservasiId}/pay`, { method: 'POST', body: JSON.stringify({ paymentMethodId }) }),
+  getPaymentStatus: (orderId: string) => fetchAPI<any>(`/payment/status/${orderId}`),
+  getPaymentHistory: () => fetchAPI<PaymentTransaction[]>('/payment/history'),
 };

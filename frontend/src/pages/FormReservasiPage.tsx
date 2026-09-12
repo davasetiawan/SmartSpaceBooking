@@ -25,7 +25,8 @@ export const FormReservasiPage: React.FC = () => {
   const [jamMulai, setJamMulai] = useState(stateData.jamMulai || '09:00');
   const [durasiJam, setDurasiJam] = useState(stateData.durasiJam || 2);
   const [catatan, setCatatan] = useState('');
-  const [metodeBayar, setMetodeBayar] = useState('TRANSFER_BANK');
+  const [metodeBayarId, setMetodeBayarId] = useState<number>(1);
+  const [paymentMethods, setPaymentMethods] = useState<any[]>([]);
   const [buktiUploaded, setBuktiUploaded] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -33,6 +34,10 @@ export const FormReservasiPage: React.FC = () => {
     if (ruanganId) {
       api.getRuanganById(ruanganId).then(setRuangan);
     }
+    api.getPaymentMethods().then((methods) => {
+      setPaymentMethods(methods.filter((m) => m.is_aktif));
+      if (methods.length > 0) setMetodeBayarId(methods[0].id);
+    });
   }, [ruanganId]);
 
   const hargaPerJam = ruangan ? ruangan.hargaPerJam : 150000;
@@ -59,6 +64,16 @@ export const FormReservasiPage: React.FC = () => {
         totalHarga,
         catatan
       });
+
+      // Trigger Midtrans Payment Gateway
+      try {
+        const payRes = await api.createPayment(result.id, metodeBayarId);
+        if (payRes && payRes.paymentUrl) {
+          window.open(payRes.paymentUrl, '_blank');
+        }
+      } catch (payErr) {
+        console.warn('Payment API call info:', payErr);
+      }
 
       setIsSubmitting(false);
       navigate('/reservasi', { state: { newBookingCreated: true, createdId: result.id } });
@@ -142,21 +157,23 @@ export const FormReservasiPage: React.FC = () => {
               <h3 className="font-serif section-heading"><CreditCard size={18} className="icon-gold" /> 2. Metode Pembayaran</h3>
               
               <div className="payment-options">
-                <label className={`payment-option ${metodeBayar === 'TRANSFER_BANK' ? 'selected' : ''}`}>
-                  <input type="radio" name="bayar" value="TRANSFER_BANK" checked={metodeBayar === 'TRANSFER_BANK'} onChange={() => setMetodeBayar('TRANSFER_BANK')} />
-                  <div>
-                    <div className="opt-title">Transfer Bank Virtual Account</div>
-                    <div className="opt-desc">BCA / Mandiri / BNI Instant Verification</div>
-                  </div>
-                </label>
-
-                <label className={`payment-option ${metodeBayar === 'QRIS' ? 'selected' : ''}`}>
-                  <input type="radio" name="bayar" value="QRIS" checked={metodeBayar === 'QRIS'} onChange={() => setMetodeBayar('QRIS')} />
-                  <div>
-                    <div className="opt-title">QRIS Instant Payment</div>
-                    <div className="opt-desc">Scan QRIS dari Gopay, OVO, ShopeePay, DANA</div>
-                  </div>
-                </label>
+                {paymentMethods.map((pm) => (
+                  <label key={pm.id} className={`payment-option ${metodeBayarId === pm.id ? 'selected' : ''}`}>
+                    <input
+                      type="radio"
+                      name="bayar"
+                      value={pm.id}
+                      checked={metodeBayarId === pm.id}
+                      onChange={() => setMetodeBayarId(pm.id)}
+                    />
+                    <div>
+                      <div className="opt-title">{pm.nama}</div>
+                      <div className="opt-desc">
+                        {pm.nomor_rekening ? `No: ${pm.nomor_rekening} (A.N ${pm.atas_nama || 'Space'})` : 'Pembayaran Instan via Midtrans'}
+                      </div>
+                    </div>
+                  </label>
+                ))}
               </div>
 
               {/* Upload Proof Box */}
@@ -217,7 +234,7 @@ export const FormReservasiPage: React.FC = () => {
 
             <div className="guarantee-box">
               <ShieldCheck size={18} className="shield-icon" />
-              <span>Jaminan Ruangan Sonder: Kebersihan terstandarisasi & jaminan Wi-Fi aktif.</span>
+              <span>Jaminan Ruangan WorkMates: Kebersihan terstandarisasi & jaminan Wi-Fi aktif.</span>
             </div>
           </div>
         </div>

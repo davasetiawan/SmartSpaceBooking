@@ -21,6 +21,8 @@ import { AdminReservasiPage } from './pages/admin/AdminReservasiPage';
 import { AdminRuanganPage } from './pages/admin/AdminRuanganPage';
 import { AdminUsersPage } from './pages/admin/AdminUsersPage';
 import { AdminLaporanPage } from './pages/admin/AdminLaporanPage';
+import { AdminLogPage } from './pages/admin/AdminLogPage';
+import { AdminPengaturanPage } from './pages/admin/AdminPengaturanPage';
 
 const MemberLayout: React.FC = () => (
   <div className="page-wrapper">
@@ -57,8 +59,8 @@ export const App: React.FC = () => {
           <Route path="users" element={<AdminUsersPage />} />
           <Route path="scanner" element={<QRScannerPage />} />
           <Route path="laporan" element={<AdminLaporanPage />} />
-          <Route path="log" element={<AdminDashboardPage />} />
-          <Route path="pengaturan" element={<AdminDashboardPage />} />
+          <Route path="log" element={<AdminLogPage />} />
+          <Route path="pengaturan" element={<AdminPengaturanPage />} />
         </Route>
       </Routes>
     </Router>

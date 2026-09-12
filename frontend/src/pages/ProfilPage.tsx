@@ -28,7 +28,7 @@ export const ProfilPage: React.FC = () => {
     <div className="container profile-page-root">
       <div className="profile-header">
         <span className="section-subtitle">PENGATURAN AKUN</span>
-        <h1 className="font-serif profile-title">Profil Member Sonder</h1>
+        <h1 className="font-serif profile-title">Profil Member WorkMates</h1>
         <p className="profile-desc">Kelola informasi pribadi, kontak, dan kuota jam penggunaan ruangan Anda.</p>
       </div>
 
@@ -43,7 +43,7 @@ export const ProfilPage: React.FC = () => {
             <p className="user-email">{email}</p>
 
             <span className="badge-pill badge-approved mt-1">
-              <Award size={12} /> Member Sonder Gold
+              <Award size={12} /> Member WorkMates Gold
             </span>
 
             <div className="quota-box mt-2">

@@ -39,9 +39,9 @@ export const RegisterPage: React.FC = () => {
       <div className="auth-banner-col">
         <div className="auth-banner-overlay">
           <div className="banner-content">
-            <span className="banner-badge font-mono">JOIN SONDER CLUB</span>
+            <span className="banner-badge font-mono">JOIN WORKMATES</span>
             <h1 className="font-serif banner-title">Nikmati Pengalaman Kerja Tanpa Batas.</h1>
-            <p className="banner-desc">Daftar hari ini untuk mendapatkan bonus kuota 2 jam gratis pertama Anda di Sonder Suite.</p>
+            <p className="banner-desc">Daftar hari ini untuk mendapatkan bonus kuota 2 jam gratis pertama Anda di WorkMates.</p>
           </div>
         </div>
         <img 
@@ -56,7 +56,7 @@ export const RegisterPage: React.FC = () => {
         <div className="auth-form-wrapper">
           <div className="auth-brand-logo">
             <Building2 size={24} className="brand-icon" />
-            <span className="font-serif brand-text">SONDER</span>
+            <span className="font-serif brand-text">WorkMates</span>
           </div>
 
           <h2 className="font-serif auth-heading">Buat Akun Member</h2>
@@ -137,7 +137,7 @@ export const RegisterPage: React.FC = () => {
           </form>
 
           <div className="auth-footer-text">
-            Sudah memiliki akun Sonder? <Link to="/login" className="auth-link">Masuk Di Sini &rarr;</Link>
+            Sudah memiliki akun WorkMates? <Link to="/login" className="auth-link">Masuk Di Sini &rarr;</Link>
           </div>
         </div>
       </div>

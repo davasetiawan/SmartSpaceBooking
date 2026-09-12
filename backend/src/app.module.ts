@@ -9,9 +9,11 @@ import { ReservasiModule } from './reservasi/reservasi.module';
 import { AdminModule } from './admin/admin.module';
 import { UploadModule } from './upload/upload.module';
 import { MakerModule } from './maker/maker.module';
+import { PaymentMethodModule } from './payment-method/payment-method.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, SpacesModule, DiskonModule, ReservasiModule, AdminModule, UploadModule, MakerModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, SpacesModule, DiskonModule, ReservasiModule, AdminModule, UploadModule, MakerModule, PaymentMethodModule, PaymentModule],
   controllers: [AppController],
 })
 export class AppModule {}

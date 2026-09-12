@@ -72,6 +72,7 @@ model space_owner {
   updated_at           DateTime @updatedAt
   users                users    @relation(fields: [id_user], references: [id], onDelete: Cascade)
   space                space[]
+  payment_method       payment_method[]
 }
 
 model space {
@@ -130,6 +131,7 @@ model reservasi {
   member              member           @relation(fields: [id_member], references: [id], onDelete: Cascade)
   space               space            @relation(fields: [id_space], references: [id], onDelete: Cascade)
   diskon              diskon?          @relation(fields: [id_diskon], references: [id], onDelete: SetNull)
+  payment_transaction payment_transaction[]
 
   @@index([id_space, tanggal_reservasi, status])
   @@index([status])
@@ -149,4 +151,42 @@ model maker {
   users         users    @relation(fields: [id_user], references: [id], onDelete: Cascade)
 
   @@index([instansi])
+}
+
+model payment_transaction {
+  id                Int      @id @default(autoincrement())
+  id_reservasi      Int      @unique
+  id_payment_method Int
+  midtrans_order_id String   @unique @db.VarChar(100)
+  gross_amount      Int
+  status            String   @default("pending")
+  payment_type      String?  @db.VarChar(50)
+  transaction_time  DateTime?
+  va_numbers        String?  @db.Text
+  fraud_status      String?  @db.VarChar(50)
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+
+  payment_method    payment_method @relation(fields: [id_payment_method], references: [id], onDelete: Restrict)
+  reservasi         reservasi      @relation(fields: [id_reservasi], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([id_reservasi])
+}
+
+model payment_method {
+  id            Int      @id @default(autoincrement())
+  id_owner      Int
+  nama          String   @db.VarChar(100)
+  tipe          String   @db.VarChar(50)
+  nomor_rekening String?  @db.VarChar(100)
+  atas_nama     String?  @db.VarChar(100)
+  is_aktif      Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  owner         space_owner @relation(fields: [id_owner], references: [id], onDelete: Cascade)
+  transactions  payment_transaction[]
+
+  @@unique([nama, nomor_rekening])
 }

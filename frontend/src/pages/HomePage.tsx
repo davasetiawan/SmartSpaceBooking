@@ -45,7 +45,7 @@ export const HomePage: React.FC = () => {
         <div className="container hero-container">
           <div className="hero-text-col">
             <div className="hero-badge font-mono">
-              <Sparkles size={14} /> SONDER URBAN SPACE BOOKING
+              <Sparkles size={14} /> WORKMATES SMART SPACE BOOKING
             </div>
             <h1 className="font-serif hero-heading">
               Ruang Kerja Editorial Untuk Karya Terbaik Anda.
@@ -187,7 +187,7 @@ export const HomePage: React.FC = () => {
       <section className="features-section">
         <div className="container">
           <div className="text-center">
-            <span className="section-subtitle">MENGAPA SONDER</span>
+            <span className="section-subtitle">MENGAPA WORKMATES</span>
             <h2 className="font-serif section-title">Standar Baru Ruang Kerja Modern</h2>
           </div>
 

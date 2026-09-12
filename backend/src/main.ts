@@ -17,6 +17,9 @@ async function bootstrap() {
   app.setGlobalPrefix('api', { exclude: ['', 'health'] });
   const document = SwaggerModule.createDocument(app, new DocumentBuilder().setTitle('Smart Space Booking API').setVersion('1.0').addBearerAuth().build());
   SwaggerModule.setup('api/docs', app, document);
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT ?? 3000;
+  console.log(`Starting server on port ${port}...`);
+  await app.listen(port, '0.0.0.0');
+  console.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();

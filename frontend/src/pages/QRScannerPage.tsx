@@ -47,7 +47,7 @@ export const QRScannerPage: React.FC = () => {
         <span className="section-subtitle">AKSES QR CHECK-IN</span>
         <h1 className="font-serif scanner-title">Scan E-Ticket QR Code Pass</h1>
         <p className="scanner-desc">
-          Arahkan kamera ke QR Code E-Ticket pada smartphone Anda untuk verifikasi dan check-in otomatis ke ruangan Sonder.
+          Arahkan kamera ke QR Code E-Ticket pada smartphone Anda untuk verifikasi dan check-in otomatis ke ruangan WorkMates.
         </p>
       </div>
 
@@ -68,7 +68,7 @@ export const QRScannerPage: React.FC = () => {
             <CheckCircle2 size={56} className="success-icon" />
             <h2 className="font-serif">Verifikasi QR Code Berhasil!</h2>
             <div className="code-display font-mono">{scanResult}</div>
-            <p className="result-text">Akses Pintu Sonder Room 101 Diberikan. Sesi Anda Resmi Dimulai.</p>
+            <p className="result-text">Akses Pintu WorkMates Room 101 Diberikan. Sesi Anda Resmi Dimulai.</p>
 
             <button className="btn btn-primary btn-md mt-2" onClick={handleReset}>
               <RefreshCw size={16} /> Scan QR Code Lainnya

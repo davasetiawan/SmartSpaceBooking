@@ -22,10 +22,10 @@ export const Footer: React.FC = () => {
           <div className="footer-brand-col">
             <div className="footer-logo">
               <Building2 size={24} className="logo-icon-gold" />
-              <span className="font-serif footer-title">SONDER</span>
+              <span className="font-serif footer-title">WorkMates</span>
             </div>
             <p className="footer-tagline">
-              Ruang kerja & ruang rapat pilihan untuk profesional, tim kreatif, dan eksekutif. Nikmati kenyamanan kerja setara hotel bintang 5.
+              Ruang kerja & ruang rapat pilihan untuk profesional, tim kreatif, dan eksekutif. Nikmati pengalaman kerja terbaik bersama WorkMates.
             </p>
             <div className="system-status">
               <span className="status-dot"></span>
@@ -34,12 +34,12 @@ export const Footer: React.FC = () => {
           </div>
 
           <div className="newsletter-col">
-            <h4 className="newsletter-title font-serif">Dapatkan Penawaran Eksklusif Sonder</h4>
+            <h4 className="newsletter-title font-serif">Dapatkan Penawaran Eksklusif WorkMates</h4>
             <p className="newsletter-desc">Langganan newsletter mingguan untuk informasi diskon ruang rapat & akses event spesial.</p>
             
             {subscribed ? (
               <div className="subscribed-success">
-                <CheckCircle2 size={18} /> Terima kasih! Anda telah terdaftar dalam buletin Sonder.
+                <CheckCircle2 size={18} /> Terima kasih! Anda telah terdaftar dalam buletin WorkMates.
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="newsletter-form">
@@ -106,7 +106,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Credits */}
         <div className="footer-bottom">
           <p className="copyright">
-            &copy; {new Date().getFullYear()} Sonder Smart Space Booking. Seluruh Hak Cipta Dilindungi Undang-Undang.
+            &copy; {new Date().getFullYear()} WorkMates — Smart Space Booking. Seluruh Hak Cipta Dilindungi Undang-Undang.
           </p>
           <div className="footer-extra-links">
             <a href="#privacy">Kebijakan Privasi</a>

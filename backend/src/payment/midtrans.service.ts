@@ -111,4 +111,34 @@ export class MidtransService {
       throw new InternalServerErrorException('Gagal memproses refund');
     }
   }
+
+  async createQrisCharge(params: {
+    orderId: string;
+    grossAmount: number;
+    customerDetails: {
+      firstName: string;
+      email: string;
+      phone?: string;
+    };
+  }) {
+    const chargeParams = {
+      payment_type: 'qris',
+      transaction_details: {
+        order_id: params.orderId,
+        gross_amount: params.grossAmount,
+      },
+      customer_details: params.customerDetails,
+      qris: {
+        acquirer: 'gopay',
+      },
+    };
+
+    try {
+      const response = await this.core.charge(chargeParams);
+      return response;
+    } catch (error) {
+      console.error('Midtrans QRIS Charge Error:', error);
+      throw new InternalServerErrorException('Gagal membuat QRIS');
+    }
+  }
 }

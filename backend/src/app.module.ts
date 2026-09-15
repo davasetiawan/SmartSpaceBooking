@@ -12,8 +12,10 @@ import { MakerModule } from './maker/maker.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
 import { PaymentModule } from './payment/payment.module';
 
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, AuthModule, SpacesModule, DiskonModule, ReservasiModule, AdminModule, UploadModule, MakerModule, PaymentMethodModule, PaymentModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), CloudinaryModule, PrismaModule, AuthModule, SpacesModule, DiskonModule, ReservasiModule, AdminModule, UploadModule, MakerModule, PaymentMethodModule, PaymentModule],
   controllers: [AppController],
 })
 export class AppModule {}

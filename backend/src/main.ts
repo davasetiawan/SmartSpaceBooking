@@ -7,10 +7,13 @@ import { AppModule } from './app.module';
 import { ApiExceptionFilter } from './common/api-exception.filter';
 import { ResponseInterceptor } from './common/response.interceptor';
 
+import * as express from 'express';
+
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.enableCors();
-  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' });
+  app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
+  app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new ApiExceptionFilter());

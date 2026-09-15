@@ -1,0 +1,766 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>WorkMates • Sanctuary Ops Front-Desk Reception &amp; QR Check-In</title>
+<!-- Google Fonts: Playfair Display, Plus Jakarta Sans, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration Script -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-primary": "#c8c6c5",
+            "primary": "#000000",
+            "secondary": "#5e5e5e",
+            "on-error-container": "#93000a",
+            "on-tertiary": "#ffffff",
+            "status-active": "#4A6B5D",
+            "on-surface-variant": "#444748",
+            "primary-fixed": "#e5e2e1",
+            "inverse-surface": "#30312e",
+            "on-tertiary-fixed": "#1c1b1a",
+            "surface-bright": "#fbf9f5",
+            "error": "#ba1a1a",
+            "primary-container": "#1c1b1b",
+            "on-primary-container": "#858383",
+            "on-primary": "#ffffff",
+            "surface-dim": "#dbdad6",
+            "on-primary-fixed": "#1c1b1b",
+            "tertiary-fixed-dim": "#cac6c3",
+            "status-finished": "#333333",
+            "error-container": "#ffdad6",
+            "background": "#fbf9f5",
+            "on-primary-fixed-variant": "#474646",
+            "on-tertiary-container": "#868381",
+            "surface-variant": "#e4e2de",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#c7c6c6",
+            "on-secondary-fixed-variant": "#464747",
+            "on-secondary-fixed": "#1b1c1c",
+            "surface-tint": "#5f5e5e",
+            "surface": "#fbf9f5",
+            "border-warm": "#EBE7DF",
+            "surface-pure": "#FFFFFF",
+            "tertiary-container": "#1c1b1a",
+            "outline-variant": "#c4c7c7",
+            "surface-container-highest": "#e4e2de",
+            "on-background": "#1b1c1a",
+            "tertiary": "#000000",
+            "status-pending": "#C88A2B",
+            "status-cancelled": "#9E3B3B",
+            "on-tertiary-fixed-variant": "#484645",
+            "primary-fixed-dim": "#c8c6c5",
+            "inverse-on-surface": "#f2f0ed",
+            "on-error": "#ffffff",
+            "secondary-container": "#e1dfdf",
+            "surface-container-low": "#f5f3ef",
+            "on-surface": "#1b1c1a",
+            "surface-container": "#efeeea",
+            "on-secondary-container": "#626262",
+            "surface-container-high": "#eae8e4",
+            "tertiary-fixed": "#e6e1df",
+            "on-secondary": "#ffffff",
+            "outline": "#747878",
+            "secondary-fixed": "#e4e2e2"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-2xl": "4rem",
+            "margin-mobile": "1.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-xl": "2.5rem",
+            "gutter-mobile": "1rem",
+            "space-lg": "1.5rem",
+            "margin": "3rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Playfair Display", "serif"],
+            "headline-sm": ["Playfair Display", "serif"],
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "label-md": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-lg-mobile": ["Playfair Display", "serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "display-lg-mobile": ["Playfair Display", "serif"],
+            "code-monetary": ["JetBrains Mono", "monospace"],
+            "title-md": ["Plus Jakarta Sans", "sans-serif"],
+            "label-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-md": ["Playfair Display", "serif"],
+            "display-lg": ["Playfair Display", "serif"]
+          },
+          "fontSize": {
+            "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "code-monetary": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "500" }],
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+
+    @keyframes laserSweep {
+      0% { top: 8%; opacity: 0.2; }
+      50% { top: 88%; opacity: 0.9; }
+      100% { top: 8%; opacity: 0.2; }
+    }
+
+    .scanning-line {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(74, 107, 93, 0) 0%, #4A6B5D 50%, rgba(74, 107, 93, 0) 100%);
+      box-shadow: 0 0 14px #4A6B5D;
+      animation: laserSweep 3s ease-in-out infinite;
+    }
+
+    @media print {
+      nav, footer, .no-print {
+        display: none !important;
+      }
+      body {
+        background-color: #FFFFFF !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col selection:bg-primary selection:text-surface-bright">
+<!-- Executive Top Navigation Bar -->
+<header class="bg-surface/80 dark:bg-surface/80 backdrop-blur-md border-b border-border-warm sticky top-0 z-50">
+  <!-- TIER 1: Top Bar -->
+  <div class="flex justify-between items-center w-full px-6 md:px-12 py-3.5 border-b border-border-warm max-w-full">
+    <!-- Left: Brand title & Executive badge pill -->
+    <div class="flex items-center gap-3.5">
+      <span class="text-primary text-xl font-bold font-headline-md tracking-tight font-serif">WorkMates</span>
+      <span class="bg-surface-container-high text-primary text-xs px-3 py-1 rounded-full font-medium tracking-normal">WorkMates</span>
+    </div>
+    <!-- Right: Live Status Badge, Notification Bell, Admin Profile Pill -->
+    <div class="flex items-center gap-4">
+      <div class="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-status-active/10 text-status-active text-xs font-medium">
+        <span class="w-2 h-2 rounded-full bg-status-active animate-pulse"></span>
+        <span class="">System Online / Front Desk Ready</span>
+      </div>
+      <!-- Notification Bell icon button with amber badge '4' -->
+      <button class="relative p-2 text-secondary hover:text-primary transition-colors rounded-full hover:bg-surface-container" title="Notifications">
+        <span class="material-symbols-outlined !text-[20px]" data-icon="notifications">notifications</span>
+        <span class="absolute top-1 right-1 w-4 h-4 rounded-full bg-status-pending text-white font-code-monetary text-[10px] flex items-center justify-center font-bold">4</span>
+      </button>
+      <!-- Admin Profile Pill -->
+      <div class="flex items-center gap-2 rounded-full border border-border-warm bg-surface-pure px-3 py-1.5 shadow-sm">
+        <div class="w-7 h-7 rounded-full bg-surface-container flex items-center justify-center text-primary font-label-sm font-bold border border-border-warm">
+          JV
+        </div>
+        <span class="text-body-md font-body-md text-primary font-medium hidden md:inline">Julian Vance <span class="text-secondary text-label-sm font-normal">(Space Owner)</span></span>
+        <span class="material-symbols-outlined text-secondary !text-[16px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+      </div>
+    </div>
+  </div>
+  <!-- TIER 2: Horizontal Tab Strip -->
+  <div class="w-full px-6 md:px-12 max-w-full overflow-x-auto">
+    <nav class="flex items-center gap-8 pt-3 text-body-md font-body-md min-w-max">
+      <a class="text-secondary hover:text-primary transition-colors pb-3 font-medium text-sm" href="#">Overview</a>
+      <a class="text-secondary hover:text-primary transition-colors pb-3 font-medium text-sm" href="#">Property Profile</a>
+      <a class="text-secondary hover:text-primary transition-colors pb-3 font-medium text-sm" href="#">Member Directory</a>
+      <a class="text-secondary hover:text-primary transition-colors pb-3 font-medium text-sm" href="#">Space Inventory</a>
+      <a class="text-secondary hover:text-primary transition-colors pb-3 font-medium text-sm" href="#">Promos &amp; Discounts</a>
+      <a class="font-semibold text-primary border-b-2 border-primary pb-3 -mb-[1px]" href="#">Front Desk &amp; QR</a>
+      <a class="text-secondary hover:text-primary transition-colors pb-3 font-medium text-sm" href="#">Master Bookings</a>
+      <a class="text-secondary hover:text-primary transition-colors pb-3 font-medium text-sm" href="#">Financial Reports</a>
+    </nav>
+  </div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 max-w-[1600px] w-full mx-auto px-6 md:px-12 py-8 flex flex-col gap-8">
+<!-- Operational Breadcrumb & Context Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-border-warm/60">
+<div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-secondary mb-2">
+<span class="">Home</span>
+<span class="material-symbols-outlined !text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="">Executive Console</span>
+<span class="material-symbols-outlined !text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="">Sanctuary Operations</span>
+<span class="material-symbols-outlined !text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="text-primary font-medium">Front-Desk Reception &amp; QR Check-In</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-primary tracking-tight">Front-Desk Reception &amp; Express Keycard Scanner</h1>
+<p class="text-body-md font-body-md text-secondary mt-1 max-w-3xl">
+          Scan guest digital passes, verify access eligibility, and execute instant 1-click check-in or checkout protocols across Senopati Sanctuary.
+        </p>
+</div>
+<!-- Quick Operational Metrics Pills -->
+<div class="flex flex-wrap items-center gap-3">
+<div class="bg-surface-pure border border-border-warm px-4 py-2.5 rounded-full flex items-center gap-3">
+<span class="material-symbols-outlined text-status-active" data-icon="group">group</span>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-secondary">Today's Arrivals</span>
+<span class="text-label-md font-label-md text-primary font-semibold">34 Guests <span class="font-normal text-secondary">(26 In, 8 Pending)</span></span>
+</div>
+</div>
+<div class="bg-surface-pure border border-border-warm px-4 py-2.5 rounded-full flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="sensor_door">sensor_door</span>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-secondary">Active In-House</span>
+<span class="text-label-md font-label-md text-primary font-semibold">42 Occupants</span>
+</div>
+</div>
+<div class="bg-surface-pure border border-border-warm px-4 py-2.5 rounded-full flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-status-active"></span>
+<span class="text-label-sm font-label-sm text-primary font-medium">Scanner: Standby / Ready</span>
+</div>
+</div>
+</div>
+<!-- Split-Panel Operational Core (Left: Scanner / Right: Verified Guest Folio) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- LEFT PANEL: QR Optical Camera Viewfinder & Manual Access (5 Columns) -->
+<div class="lg:col-span-5 flex flex-col gap-6">
+<div class="bg-surface-pure border border-border-warm rounded-[16px] p-6 flex flex-col gap-5">
+<!-- Viewfinder Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary" data-icon="qr_code_scanner">qr_code_scanner</span>
+<h2 class="text-title-md font-title-md text-primary">Optical Pass Scanner</h2>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-status-active/10 text-status-active text-label-sm font-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active animate-pulse"></span>
+<span class="">Camera Stream 1080p Online</span>
+</div>
+</div>
+<!-- Camera Screen / Viewfinder Frame -->
+<div class="relative w-full aspect-[4/3] rounded-[14px] bg-[#121212] overflow-hidden flex items-center justify-center border border-border-warm shadow-inner group">
+<!-- Atmospheric Studio Architecture Viewport (Simulated Live Sensor Feed) -->
+<img class="absolute inset-0 w-full h-full object-cover opacity-35 filter brightness-75 contrast-125" data-alt="Modern Japanese-Scandinavian minimalist architectural workspace desk with oak wood joinery, soft beige plastered walls, high ceiling light, and subtle greenery through sheer linen curtains in warm ambient light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqi0uJRvL2SXTZudE4Fl5oh_ohexneCW5Ca4fbPGKMHOsARgxNDLG77W_CDO3ai-fKoIDmSsh6VmYO6xF8tnT6m1L5wJxGtjE1vQT_Mz0GWIv8meccSnICCFJqIGAuq9Sl8O5cnOtkjzNTULSVsszcT_j8j9ZUHTg6lYf0xnZ3V1sYcmw6RG92zaG07uKvnOvGFvLJkpM__DEiEdFQvhrs9KOD-wLa2aA8RY7RsxSLjALr8QkUmh0gvQ">
+<!-- Scan Overlay Dimmer & Blur vignette -->
+<div class="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70 pointer-events-none"></div>
+<!-- Animated Reticle Area -->
+<div class="relative w-64 h-64 border border-white/20 rounded-2xl flex items-center justify-center backdrop-blur-[1px]">
+<!-- Corner Crosshairs -->
+<div class="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-white rounded-tl-lg"></div>
+<div class="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-white rounded-tr-lg"></div>
+<div class="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-white rounded-bl-lg"></div>
+<div class="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-white rounded-br-lg"></div>
+<!-- Center Target Reticle -->
+<span class="material-symbols-outlined text-white/40 !text-[32px]" data-icon="filter_center_focus">filter_center_focus</span>
+<!-- Laser Scanning Sweep Line -->
+<div class="scanning-line"></div>
+<!-- Real-time Instruction Prompt -->
+<div class="absolute bottom-3 left-0 right-0 text-center px-4">
+<span class="text-label-sm font-label-sm text-white/90 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                  Align Guest QR Pass within reticle
+                </span>
+</div>
+</div>
+<!-- Floating Top Camera Meta HUD -->
+<div class="absolute top-3.5 left-4 right-4 flex justify-between items-center text-white/70 font-code-monetary text-[11px] pointer-events-none">
+<span class="flex items-center gap-1.5 bg-black/40 px-2 py-0.5 rounded-full">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ISO 400 • F/2.0
+              </span>
+<span class="bg-black/40 px-2 py-0.5 rounded-full">CAM-01 • FRONT-DESK OPTICAL</span>
+</div>
+<!-- Viewport Interactive Hardware Controls -->
+<div class="absolute bottom-3 right-3 flex items-center gap-1.5 z-10">
+<button class="bg-white/15 hover:bg-white/30 text-white rounded-full p-2 backdrop-blur-md transition-all" id="toggleFlashBtn" title="Toggle Flash">
+<span class="material-symbols-outlined !text-[18px]" data-icon="flash_on">flash_on</span>
+</button>
+<button class="bg-white/15 hover:bg-white/30 text-white rounded-full p-2 backdrop-blur-md transition-all" id="switchCamBtn" title="Switch Camera">
+<span class="material-symbols-outlined !text-[18px]" data-icon="flip_camera_ios">flip_camera_ios</span>
+</button>
+</div>
+</div>
+<!-- Fast Scan Simulation Action -->
+<div class="flex items-center justify-between pt-1">
+<span class="text-label-sm font-label-sm text-secondary">Demo Device Hook:</span>
+<button class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-container hover:bg-surface-container-high text-primary border border-border-warm text-label-md font-label-md transition-all active:scale-[0.98]" id="simulateScanBtn">
+<span class="material-symbols-outlined !text-[16px] text-status-active" data-icon="play_circle">play_circle</span>
+              Simulate Instant Pass Scan
+            </button>
+</div>
+<!-- Manual Lookup Divider -->
+<div class="relative flex py-2 items-center">
+<div class="flex-grow border-t border-border-warm"></div>
+<span class="flex-shrink mx-4 text-label-sm font-label-sm text-secondary uppercase tracking-widest text-[10px]">
+              Or Lookup Manually By Booking Code
+            </span>
+<div class="flex-grow border-t border-border-warm"></div>
+</div>
+<!-- Manual Search Form Field -->
+<div class="flex flex-col gap-2">
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-4 text-secondary" data-icon="search">search</span>
+<input class="w-full bg-surface-pure pl-11 pr-32 py-3 rounded-full border border-border-warm text-primary font-code-monetary text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-secondary/60 uppercase" id="bookingCodeInput" placeholder="ENTER BOOKING CODE E.G. WM-2025-0814-SNPT" type="text" value="WM-2025-1015-8841">
+<button class="absolute right-1.5 px-5 py-2 rounded-full bg-primary text-on-primary text-label-md font-label-md hover:bg-primary/90 transition-all" id="fetchFolioBtn">
+                Fetch Folio
+              </button>
+</div>
+<span class="text-label-sm font-label-sm text-secondary px-3">
+              Press enter or paste verified voucher reference token to retrieve record.
+            </span>
+</div>
+<!-- Queue Quick-switch Pills -->
+<div class="pt-2 border-t border-border-warm/60 flex flex-col gap-2">
+<span class="text-label-sm font-label-sm text-secondary">Incoming Expected Arrivals Queue:</span>
+<div class="flex flex-col gap-1.5">
+<button class="w-full flex items-center justify-between p-2.5 rounded-[12px] bg-surface-container-low hover:bg-surface-container border border-border-warm/60 transition-colors text-left group">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-status-active/10 text-status-active flex items-center justify-center font-semibold text-label-sm">
+                    CW
+                  </div>
+<div class="flex flex-col">
+<span class="text-label-md font-label-md text-primary group-hover:underline">Clara Wijaya</span>
+<span class="text-label-sm font-label-sm text-secondary">Glasshouse Pod 02 • Due in 10 mins</span>
+</div>
+</div>
+<span class="text-label-sm font-label-sm text-secondary font-code-monetary">WM-2025-1015-7712</span>
+</button>
+<button class="w-full flex items-center justify-between p-2.5 rounded-[12px] bg-surface-container-low hover:bg-surface-container border border-border-warm/60 transition-colors text-left group">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-variant text-secondary flex items-center justify-center font-semibold text-label-sm">
+                    DS
+                  </div>
+<div class="flex flex-col">
+<span class="text-label-md font-label-md text-primary group-hover:underline">Dimas Setiawan</span>
+<span class="text-label-sm font-label-sm text-secondary">Executive Suite 04 • Scheduled 14:00 WIB</span>
+</div>
+</div>
+<span class="text-label-sm font-label-sm text-secondary font-code-monetary">WM-2025-1015-9920</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT PANEL: Scanned Verified Folio & Check-In Action Bar (7 Columns) -->
+<div class="lg:col-span-7 flex flex-col gap-6">
+<!-- Scanned Reservation Result Card (Architectural Guest Pass Format) -->
+<div class="bg-surface-pure border border-border-warm rounded-[16px] overflow-hidden shadow-[0_10px_30px_rgba(18,18,18,0.02)] transition-all" id="folioCard">
+<!-- Top Pass Verification Status Banner -->
+<div class="px-7 py-5 bg-surface-container-low border-b border-border-warm flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-status-active" data-icon="verified">verified</span>
+<div>
+<h3 class="text-title-md font-title-md text-primary">Guest Access Folio &amp; Digital Clearance</h3>
+<p class="text-label-sm font-label-sm text-secondary">Digital signature verified with WorkMates Core Node</p>
+</div>
+</div>
+<!-- Pass Verified Pill -->
+<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-status-active/10 text-status-active text-label-sm font-label-sm uppercase tracking-wider font-semibold border border-status-active/20" id="passStateBadge">
+<span class="w-2 h-2 rounded-full bg-status-active"></span>
+              Pass Verified • Ready for Check-In
+            </span>
+</div>
+<div class="p-7 flex flex-col gap-7">
+<!-- Guest Profile Identity Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-5 pb-6 border-b border-border-warm">
+<div class="flex items-center gap-4">
+<!-- Guest Photo Avatar -->
+<div class="relative">
+<img class="w-16 h-16 rounded-full object-cover border border-border-warm" data-alt="Editorial close-up portrait of an elegant Indonesian female creative director in modern architectural studio attire, soft natural window light, warm muted beige tones, refined aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuADn-k8RNJa9VpDm51Wp6a-V86C8db07Q2THqSxUPcck6ScZvmva0UNrElhZ9mT55-e37HJ64PZ4M54HvOWGwUa9zP1WLfP9uo9ZjEchihaBPA62LCEXpAZqkkj28L1j3Okpu23MGfi_EmTh1V_ehDchI0KGG-YYLSBSUL3HH4kC6NI0bX4rMyszRMsp5SrM3q3tW1UF0_OX0SHaKxvuMe2s2IGEVJorh-I8D1vxZ66F8qiUGO_26cuCA">
+<span class="absolute bottom-0 right-0 w-4 h-4 bg-status-active border-2 border-surface-pure rounded-full" title="Verified Member"></span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2.5">
+<h4 class="text-headline-sm font-headline-sm text-primary">Alya Rahmadhani</h4>
+<span class="bg-surface-container px-2 py-0.5 rounded-full text-[10px] font-label-sm text-secondary uppercase font-semibold">Tier: Resident</span>
+</div>
+<span class="text-label-md font-label-md text-secondary font-code-monetary">@alyarahma • Verified Member ID: MBR-2025-042</span>
+<span class="text-body-md font-body-md text-secondary mt-0.5">Monochrome Studio • Creative Director</span>
+</div>
+</div>
+<!-- Guest Direct Contact Info -->
+<div class="flex flex-col sm:items-end gap-1.5 text-secondary text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined !text-[16px] text-status-active" data-icon="chat">chat</span>
+<span class="font-code-monetary text-primary">+62 813-1122-3344</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container text-secondary text-[11px]">
+<span class="material-symbols-outlined !text-[13px]" data-icon="badge">badge</span>
+                  Identity &amp; Membership Confirmed
+                </div>
+</div>
+</div>
+<!-- Space Allocation & Access Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+<!-- Reserved Space Box -->
+<div class="p-4 rounded-[12px] bg-surface-container-low border border-border-warm flex flex-col gap-2">
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Allocated Space Asset</span>
+<span class="text-title-md font-title-md text-primary">The Founder's Sanctuary Studio</span>
+<div class="flex items-center gap-2 text-label-md font-label-md text-secondary">
+<span class="material-symbols-outlined !text-[16px]" data-icon="meeting_room">meeting_room</span>
+<span class="">Private Office • Level 4, South Wing</span>
+</div>
+<div class="pt-2 mt-1 border-t border-border-warm/60 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-secondary">Keycard NFC Node:</span>
+<span class="font-code-monetary font-medium text-primary">POD-SEN-A3</span>
+</div>
+</div>
+<!-- Slot & Timeframe Box -->
+<div class="p-4 rounded-[12px] bg-surface-container-low border border-border-warm flex flex-col gap-2">
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Booking Period &amp; Wi-Fi Node</span>
+<span class="text-title-md font-title-md text-primary">Wednesday, 15 Oct 2025</span>
+<div class="flex items-center gap-2 text-label-md font-label-md text-secondary">
+<span class="material-symbols-outlined !text-[16px]" data-icon="schedule">schedule</span>
+<span class="">09:00 - 17:00 WIB (8 Hours Full-Day Pass)</span>
+</div>
+<div class="pt-2 mt-1 border-t border-border-warm/60 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-secondary">Assigned Wi-Fi SSID:</span>
+<span class="font-code-monetary font-medium text-primary">Senopati-Exec-5G</span>
+</div>
+</div>
+</div>
+<!-- Payment & Transaction Accounting Details (PRD verified data) -->
+<div class="bg-surface-pure rounded-[12px] border border-border-warm p-5 flex flex-col gap-3">
+<div class="flex items-center justify-between pb-2 border-b border-border-warm">
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Payment Reference</span>
+<span class="font-code-monetary text-label-md font-label-md text-primary font-semibold">WM-2025-1015-8841</span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-label-sm font-label-sm">
+<div>
+<span class="text-secondary block">Rate per Hour:</span>
+<span class="font-code-monetary text-primary text-body-md">IDR 380.000</span>
+</div>
+<div>
+<span class="text-secondary block">Applied Voucher:</span>
+<span class="font-code-monetary text-status-active text-body-md font-medium">WORKMATES20 (-20%)</span>
+</div>
+<div>
+<span class="text-secondary block">Settlement Method:</span>
+<span class="text-primary text-body-md">Instant QRIS (BCA)</span>
+</div>
+<div>
+<span class="text-secondary block">Grand Total Paid:</span>
+<span class="font-code-monetary text-primary text-body-md font-semibold">IDR 2.432.000</span>
+</div>
+</div>
+</div>
+<!-- Real-time Status Tracker Board -->
+<div class="p-5 rounded-[12px] bg-surface-container border border-border-warm flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-full bg-status-pending/10 text-status-pending flex items-center justify-center" id="statusIndicatorIcon">
+<span class="material-symbols-outlined" data-icon="hourglass_top">hourglass_top</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Current Terminal Lifecycle Status</span>
+<span class="text-title-md font-title-md text-status-pending" id="currentStatusText">
+                    Belum Dikonfirmasi / Pending Arrival
+                  </span>
+</div>
+</div>
+<!-- Check-In Timestamps -->
+<div class="flex items-center gap-6 text-label-sm font-label-sm">
+<div class="flex flex-col text-right">
+<span class="text-secondary">Recorded Check-In:</span>
+<span class="font-code-monetary font-semibold text-primary" id="recordedCheckInTime">--:--:--</span>
+</div>
+<div class="flex flex-col text-right">
+<span class="text-secondary">Expected Check-Out:</span>
+<span class="font-code-monetary font-semibold text-primary">17:00 WIB</span>
+</div>
+</div>
+</div>
+<!-- Operational Action Execution Bar (1-Click Controls) -->
+<div class="pt-2 flex flex-col gap-3">
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Operational Hospitality Action Protocols</span>
+<div class="flex flex-wrap items-center gap-3">
+<!-- 1. Process Check-In Button -->
+<button class="flex-1 min-w-[200px] flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-status-active hover:bg-[#3D5A4E] text-on-tertiary text-label-md font-label-md shadow-sm transition-all active:scale-[0.98]" id="processCheckInBtn">
+<span class="material-symbols-outlined !text-[18px]" data-icon="check_circle">check_circle</span>
+<span class="">Process Check-In (Set Status: Aktif)</span>
+</button>
+<!-- 2. Process Check-Out Button -->
+<button class="flex-1 min-w-[200px] flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-full bg-primary hover:bg-[#252525] text-on-primary text-label-md font-label-md shadow-sm transition-all active:scale-[0.98]" id="processCheckOutBtn">
+<span class="material-symbols-outlined !text-[18px]" data-icon="logout">logout</span>
+<span class="">Process Check-Out (Set Status: Selesai)</span>
+</button>
+<!-- 3. Print Physical Pass Slip -->
+<button class="px-5 py-3.5 rounded-full bg-surface-pure hover:bg-surface-container-low border border-border-warm text-primary text-label-md font-label-md transition-all flex items-center gap-2" id="printSlipBtn" onclick="window.print()" title="Print Guest Physical Keycard Slip">
+<span class="material-symbols-outlined !text-[18px]" data-icon="print">print</span>
+<span class="hidden sm:inline">Print Slip</span>
+</button>
+<!-- 4. Send Confirmation WhatsApp -->
+<button class="px-5 py-3.5 rounded-full bg-surface-pure hover:bg-surface-container-low border border-border-warm text-primary text-label-md font-label-md transition-all flex items-center gap-2" id="sendWhatsAppBtn" title="Push Access Credentials to WhatsApp">
+<span class="material-symbols-outlined !text-[18px] text-status-active" data-icon="send">send</span>
+<span class="hidden sm:inline">Push WhatsApp</span>
+</button>
+</div>
+<!-- Real-time Feedback alert box -->
+<div class="hidden text-label-sm font-label-sm p-3 rounded-full bg-status-active/10 text-status-active border border-status-active/20 flex items-center justify-between px-5" id="actionFeedback">
+<span class="flex items-center gap-2" id="feedbackText">
+<span class="material-symbols-outlined !text-[16px]" data-icon="done_all">done_all</span>
+                  Check-in executed successfully. NFC Turnstile Node POD-SEN-A3 unlocked.
+                </span>
+<span class="font-code-monetary text-[11px]" id="feedbackTimestamp">Just now</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM ROW: Recent Front-Desk Activity Log Table -->
+<div class="bg-surface-pure border border-border-warm rounded-[16px] p-6 flex flex-col gap-4 mt-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-primary" data-icon="history">history</span>
+<h3 class="text-headline-sm font-headline-sm text-primary">Terminal Activity Audit Log</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-label-sm text-secondary">Terminal Node: FD-TER-JKT-04</span>
+<span class="text-border-warm">•</span>
+<a class="text-label-sm font-label-sm text-primary underline hover:text-secondary" href="#">Export Full CSV</a>
+</div>
+</div>
+<!-- Activity Log Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-border-warm text-label-sm font-label-sm text-secondary uppercase tracking-wider">
+<th class="py-3 px-4">Time Recorded</th>
+<th class="py-3 px-4">Guest Name</th>
+<th class="py-3 px-4">Booking Folio</th>
+<th class="py-3 px-4">Allocated Sanctuary Space</th>
+<th class="py-3 px-4">Action Taken</th>
+<th class="py-3 px-4">Authorized Officer</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-warm/60 text-body-md font-body-md" id="activityLogTable">
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-3.5 px-4 font-code-monetary text-secondary text-label-sm">08:52:14 WIB</td>
+<td class="py-3.5 px-4 font-medium text-primary">Reza Firmansyah</td>
+<td class="py-3.5 px-4 font-code-monetary text-label-sm text-secondary">WM-2025-1015-1102</td>
+<td class="py-3.5 px-4 text-secondary">Zen Garden Workstation 08</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-status-active/10 text-status-active text-label-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active"></span>
+                  Checked-In
+                </span>
+</td>
+<td class="py-3.5 px-4 text-secondary text-label-sm">Andi Pratama</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-3.5 px-4 font-code-monetary text-secondary text-label-sm">08:45:00 WIB</td>
+<td class="py-3.5 px-4 font-medium text-primary">Nadia Saphira</td>
+<td class="py-3.5 px-4 font-code-monetary text-label-sm text-secondary">WM-2025-1015-0988</td>
+<td class="py-3.5 px-4 text-secondary">Mezzanine Focus Booth 03</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-status-active/10 text-status-active text-label-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active"></span>
+                  Checked-In
+                </span>
+</td>
+<td class="py-3.5 px-4 text-secondary text-label-sm">Andi Pratama</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-3.5 px-4 font-code-monetary text-secondary text-label-sm">08:30:19 WIB</td>
+<td class="py-3.5 px-4 font-medium text-primary">Budi Santoso</td>
+<td class="py-3.5 px-4 font-code-monetary text-label-sm text-secondary">WM-2025-1014-9941</td>
+<td class="py-3.5 px-4 text-secondary">Boardroom Pavilion A</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-highest text-secondary text-label-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Checked-Out
+                </span>
+</td>
+<td class="py-3.5 px-4 text-secondary text-label-sm">Siti Rahma</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="py-3.5 px-4 font-code-monetary text-secondary text-label-sm">08:15:40 WIB</td>
+<td class="py-3.5 px-4 font-medium text-primary">Jessica Tan</td>
+<td class="py-3.5 px-4 font-code-monetary text-label-sm text-secondary">WM-2025-1015-0812</td>
+<td class="py-3.5 px-4 text-secondary">Atelier Studio Suite 01</td>
+<td class="py-3.5 px-4">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-status-active/10 text-status-active text-label-sm font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active"></span>
+                  Checked-In
+                </span>
+</td>
+<td class="py-3.5 px-4 text-secondary text-label-sm">Andi Pratama</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+<!-- Executive Hospitality Footer -->
+<footer class="bg-surface-container-low border-t border-border-warm mt-12">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-6 md:px-12 py-8 max-w-full gap-4">
+<div class="flex flex-col md:flex-row items-center gap-3">
+<span class="text-headline-sm font-headline-sm text-primary">WorkMates</span>
+<span class="hidden md:inline text-border-warm">•</span>
+<span class="text-label-sm font-label-sm text-secondary">© 2025 WorkMates Hospitality Inc. All rights reserved. Senopati Sanctuary Reception Terminal FD-TER-JKT-04.</span>
+</div>
+<div class="flex flex-wrap items-center gap-6 text-label-sm font-label-sm text-secondary">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Architectural Standards</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+<!-- Front Desk Micro-interactions JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const simulateBtn = document.getElementById('simulateScanBtn');
+      const checkInBtn = document.getElementById('processCheckInBtn');
+      const checkOutBtn = document.getElementById('processCheckOutBtn');
+      const fetchBtn = document.getElementById('fetchFolioBtn');
+      const sendWhatsAppBtn = document.getElementById('sendWhatsAppBtn');
+      
+      const statusText = document.getElementById('currentStatusText');
+      const statusIcon = document.getElementById('statusIndicatorIcon');
+      const recordedTime = document.getElementById('recordedCheckInTime');
+      const feedback = document.getElementById('actionFeedback');
+      const feedbackText = document.getElementById('feedbackText');
+      const feedbackTime = document.getElementById('feedbackTimestamp');
+      const activityTable = document.getElementById('activityLogTable');
+      const passStateBadge = document.getElementById('passStateBadge');
+
+      function getCurrentWIBTime() {
+        const now = new Date();
+        const hrs = String(now.getHours()).padStart(2, '0');
+        const mins = String(now.getMinutes()).padStart(2, '0');
+        const secs = String(now.getSeconds()).padStart(2, '0');
+        return `${hrs}:${mins}:${secs} WIB`;
+      }
+
+      function showFeedback(message, isCheckout = false) {
+        feedback.classList.remove('hidden');
+        if (isCheckout) {
+          feedback.className = "text-label-sm font-label-sm p-3 rounded-full bg-secondary/10 text-secondary border border-secondary/20 flex items-center justify-between px-5";
+        } else {
+          feedback.className = "text-label-sm font-label-sm p-3 rounded-full bg-status-active/10 text-status-active border border-status-active/20 flex items-center justify-between px-5";
+        }
+        feedbackText.innerHTML = `<span class="material-symbols-outlined !text-[16px]">${isCheckout ? 'check' : 'done_all'}</span> ${message}`;
+        feedbackTime.textContent = getCurrentWIBTime();
+      }
+
+      function addLogEntry(guestName, folio, space, action, isCheckIn) {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-surface-container-low/50 transition-colors";
+        tr.innerHTML = `
+          <td class="py-3.5 px-4 font-code-monetary text-secondary text-label-sm">${getCurrentWIBTime()}</td>
+          <td class="py-3.5 px-4 font-medium text-primary">${guestName}</td>
+          <td class="py-3.5 px-4 font-code-monetary text-label-sm text-secondary">${folio}</td>
+          <td class="py-3.5 px-4 text-secondary">${space}</td>
+          <td class="py-3.5 px-4">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full ${isCheckIn ? 'bg-status-active/10 text-status-active' : 'bg-surface-container-highest text-secondary'} text-label-sm font-medium">
+              <span class="w-1.5 h-1.5 rounded-full ${isCheckIn ? 'bg-status-active' : 'bg-secondary'}"></span>
+              ${action}
+            </span>
+          </td>
+          <td class="py-3.5 px-4 text-secondary text-label-sm">Andi Pratama</td>
+        `;
+        activityTable.insertBefore(tr, activityTable.firstChild);
+      }
+
+      // Simulate QR scan
+      simulateBtn.addEventListener('click', () => {
+        simulateBtn.innerHTML = `<span class="material-symbols-outlined !text-[16px] animate-spin">sync</span> Scanning...`;
+        setTimeout(() => {
+          simulateBtn.innerHTML = `<span class="material-symbols-outlined !text-[16px] text-status-active">check_circle</span> Pass Recognized`;
+          showFeedback("Optical scan matched: Alya Rahmadhani (WM-2025-1015-8841)");
+          setTimeout(() => {
+            simulateBtn.innerHTML = `<span class="material-symbols-outlined !text-[16px] text-status-active">play_circle</span> Simulate Instant Pass Scan`;
+          }, 2000);
+        }, 600);
+      });
+
+      // Manual Fetch Action
+      fetchBtn.addEventListener('click', () => {
+        showFeedback("Fetched folio record WM-2025-1015-8841 directly from Senopati Sanctuary server.");
+      });
+
+      // Process Check-In Click
+      checkInBtn.addEventListener('click', () => {
+        const timeNow = getCurrentWIBTime();
+        recordedTime.textContent = timeNow;
+        statusText.textContent = "Aktif • In-House Workspace Occupant";
+        statusText.className = "text-title-md font-title-md text-status-active";
+        
+        statusIcon.className = "w-10 h-10 rounded-full bg-status-active/10 text-status-active flex items-center justify-center";
+        statusIcon.innerHTML = `<span class="material-symbols-outlined">meeting_room</span>`;
+
+        passStateBadge.className = "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-status-active text-on-tertiary text-label-sm font-label-sm uppercase tracking-wider font-semibold";
+        passStateBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-white"></span> Access Active & Keycard Assigned`;
+
+        showFeedback(`Check-In processed for Alya Rahmadhani at ${timeNow}. NFC turnstile node POD-SEN-A3 unlocked.`);
+        addLogEntry("Alya Rahmadhani", "WM-2025-1015-8841", "The Founder's Sanctuary Studio (Level 4)", "Checked-In", true);
+      });
+
+      // Process Check-Out Click
+      checkOutBtn.addEventListener('click', () => {
+        const timeNow = getCurrentWIBTime();
+        statusText.textContent = "Selesai • Booking Session Concluded";
+        statusText.className = "text-title-md font-title-md text-secondary";
+        
+        statusIcon.className = "w-10 h-10 rounded-full bg-secondary/10 text-secondary flex items-center justify-center";
+        statusIcon.innerHTML = `<span class="material-symbols-outlined">door_front</span>`;
+
+        passStateBadge.className = "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container text-secondary text-label-sm font-label-sm uppercase tracking-wider font-semibold border border-border-warm";
+        passStateBadge.innerHTML = `<span class="w-2 h-2 rounded-full bg-secondary"></span> Folio Archived / Checked-Out`;
+
+        showFeedback(`Check-Out completed at ${timeNow}. Space released to Sanctuary Housekeeping team.`, true);
+        addLogEntry("Alya Rahmadhani", "WM-2025-1015-8841", "The Founder's Sanctuary Studio (Level 4)", "Checked-Out", false);
+      });
+
+      // Send WhatsApp Mock
+      sendWhatsAppBtn.addEventListener('click', () => {
+        showFeedback("Dispatched digital keycard credential & Senopati-Exec-5G Wi-Fi password to +62 813-1122-3344.");
+      });
+
+      // Viewfinder controls
+      const toggleFlashBtn = document.getElementById('toggleFlashBtn');
+      let flashOn = false;
+      toggleFlashBtn.addEventListener('click', () => {
+        flashOn = !flashOn;
+        toggleFlashBtn.classList.toggle('bg-white/40', flashOn);
+        toggleFlashBtn.classList.toggle('text-amber-300', flashOn);
+      });
+
+      const switchCamBtn = document.getElementById('switchCamBtn');
+      switchCamBtn.addEventListener('click', () => {
+        showFeedback("Switching camera feed to Rear Sanctuary Desk Sensor...");
+      });
+    });
+  </script>
+
+
+
+
+</body></html>

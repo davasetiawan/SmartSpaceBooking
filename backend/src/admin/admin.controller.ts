@@ -15,13 +15,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import { ReservasiStatus } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { AdminService } from './admin.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { UpdateCoworkingProfileDto } from './dto/update-profile.dto';
 import { CreateMemberAdminDto } from './dto/create-member.dto';
 import { UpdateMemberAdminDto } from './dto/update-member.dto';
@@ -38,7 +37,10 @@ import { cleanUpdateData } from '../common/clean-data.util';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin_space')
 export class AdminController {
-  constructor(private admin: AdminService) {}
+  constructor(
+    private admin: AdminService,
+    private cloudinary: CloudinaryService,
+  ) {}
 
   @Get('profile')
   @ApiOperation({ summary: 'Lihat Data Profil Lokasi Coworking Space' })
@@ -80,23 +82,21 @@ export class AdminController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor('foto', {
-      storage: diskStorage({
-        destination: './uploads/members',
-        filename: (_req, file, cb) =>
-          cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`),
-      }),
-      limits: { fileSize: 2 * 1024 * 1024 },
-      fileFilter: (_req, file, cb) => cb(null, /^image\/(jpeg|png|webp)$/.test(file.mimetype)),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('foto'))
   createMember(
     @UploadedFile() foto: Express.Multer.File,
     @Body() dto: any,
   ) {
     const createDto = Object.assign(new CreateMemberAdminDto(), dto);
-    if (foto) createDto.foto = foto.filename;
+    if (foto) {
+      return this.uploadAndCreateMember(foto, createDto);
+    }
+    return this.admin.createMember(createDto);
+  }
+
+  private async uploadAndCreateMember(foto: Express.Multer.File, createDto: CreateMemberAdminDto) {
+    const result = await this.cloudinary.uploadImage(foto);
+    createDto.foto = result.secure_url;
     return this.admin.createMember(createDto);
   }
 
@@ -121,17 +121,7 @@ export class AdminController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor('foto', {
-      storage: diskStorage({
-        destination: './uploads/members',
-        filename: (_req, file, cb) =>
-          cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`),
-      }),
-      limits: { fileSize: 2 * 1024 * 1024 },
-      fileFilter: (_req, file, cb) => cb(null, /^image\/(jpeg|png|webp)$/.test(file.mimetype)),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('foto'))
   updateMember(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() foto: Express.Multer.File,
@@ -139,7 +129,15 @@ export class AdminController {
   ) {
     const cleaned = cleanUpdateData(dto);
     const updateDto = Object.assign(new UpdateMemberAdminDto(), cleaned);
-    if (foto) updateDto.foto = foto.filename;
+    if (foto) {
+      return this.uploadAndUpdateMember(id, foto, updateDto);
+    }
+    return this.admin.updateMember(id, updateDto);
+  }
+
+  private async uploadAndUpdateMember(id: number, foto: Express.Multer.File, updateDto: UpdateMemberAdminDto) {
+    const result = await this.cloudinary.uploadImage(foto);
+    updateDto.foto = result.secure_url;
     return this.admin.updateMember(id, updateDto);
   }
 
@@ -173,17 +171,7 @@ export class AdminController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor('foto', {
-      storage: diskStorage({
-        destination: './uploads/spaces',
-        filename: (_req, file, cb) =>
-          cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`),
-      }),
-      limits: { fileSize: 2 * 1024 * 1024 },
-      fileFilter: (_req, file, cb) => cb(null, /^image\/(jpeg|png|webp)$/.test(file.mimetype)),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('foto'))
   createSpace(
     @Request() req: { user: { id: number } },
     @UploadedFile() foto: Express.Multer.File,
@@ -197,7 +185,15 @@ export class AdminController {
     if (cleaned.kapasitas !== undefined && !isNaN(Number(cleaned.kapasitas))) {
       createDto.kapasitas = Number(cleaned.kapasitas);
     }
-    if (foto) createDto.foto = foto.filename;
+    if (foto) {
+      return this.uploadAndCreateSpace(req, foto, createDto);
+    }
+    return this.admin.createSpace(req.user.id, createDto);
+  }
+
+  private async uploadAndCreateSpace(req: any, foto: Express.Multer.File, createDto: CreateSpaceDto) {
+    const result = await this.cloudinary.uploadImage(foto);
+    createDto.foto = result.secure_url;
     return this.admin.createSpace(req.user.id, createDto);
   }
 
@@ -228,17 +224,7 @@ export class AdminController {
       },
     },
   })
-  @UseInterceptors(
-    FileInterceptor('foto', {
-      storage: diskStorage({
-        destination: './uploads/spaces',
-        filename: (_req, file, cb) =>
-          cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${extname(file.originalname)}`),
-      }),
-      limits: { fileSize: 2 * 1024 * 1024 },
-      fileFilter: (_req, file, cb) => cb(null, /^image\/(jpeg|png|webp)$/.test(file.mimetype)),
-    }),
-  )
+  @UseInterceptors(FileInterceptor('foto'))
   updateSpace(
     @Request() req: { user: { id: number } },
     @Param('id', ParseIntPipe) id: number,
@@ -253,7 +239,15 @@ export class AdminController {
     if (cleaned.kapasitas !== undefined && !isNaN(Number(cleaned.kapasitas))) {
       updateDto.kapasitas = Number(cleaned.kapasitas);
     }
-    if (foto) updateDto.foto = foto.filename;
+    if (foto) {
+      return this.uploadAndUpdateSpace(req, id, foto, updateDto);
+    }
+    return this.admin.updateSpace(req.user.id, id, updateDto);
+  }
+
+  private async uploadAndUpdateSpace(req: any, id: number, foto: Express.Multer.File, updateDto: UpdateSpaceDto) {
+    const result = await this.cloudinary.uploadImage(foto);
+    updateDto.foto = result.secure_url;
     return this.admin.updateSpace(req.user.id, id, updateDto);
   }
 

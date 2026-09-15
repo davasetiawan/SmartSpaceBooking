@@ -39,6 +39,19 @@ export class PaymentController {
     );
   }
 
+  @Post('reservasi/:reservasiId/qris')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Generate QRIS untuk reservasi' })
+  async createQris(
+    @Request() req: { user: { id: number } },
+    @Param('reservasiId') reservasiId: string,
+  ) {
+    return this.paymentService.createQrisForReservation(
+      Number(reservasiId),
+      req.user.id,
+    );
+  }
+
   @Get('history')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Riwayat pembayaran user' })

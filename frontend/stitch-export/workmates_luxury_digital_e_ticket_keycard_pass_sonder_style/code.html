@@ -1,0 +1,581 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>WorkMates Hospitality &amp; Coworking — Digital Access Key &amp; Pass</title>
+<!-- Material Symbols Outlined Font -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts: Playfair Display, Plus Jakarta Sans, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#464747",
+            "primary": "#000000",
+            "primary-fixed": "#e5e2e1",
+            "surface-tint": "#5f5e5e",
+            "tertiary-container": "#1c1b1a",
+            "on-secondary-container": "#626262",
+            "surface-container-low": "#f5f3ef",
+            "on-primary-container": "#858383",
+            "on-error-container": "#93000a",
+            "surface-container-highest": "#e4e2de",
+            "on-background": "#1b1c1a",
+            "tertiary-fixed": "#e6e1df",
+            "surface": "#fbf9f5",
+            "outline": "#747878",
+            "on-tertiary-fixed-variant": "#484645",
+            "secondary-container": "#e1dfdf",
+            "surface-container-high": "#eae8e4",
+            "border-warm": "#EBE7DF",
+            "secondary": "#5e5e5e",
+            "error": "#ba1a1a",
+            "on-primary-fixed": "#1c1b1b",
+            "surface-bright": "#fbf9f5",
+            "status-finished": "#333333",
+            "status-active": "#4A6B5D",
+            "on-primary": "#ffffff",
+            "on-tertiary-container": "#868381",
+            "on-secondary-fixed": "#1b1c1c",
+            "outline-variant": "#c4c7c7",
+            "tertiary": "#000000",
+            "tertiary-fixed-dim": "#cac6c3",
+            "secondary-fixed": "#e4e2e2",
+            "primary-fixed-dim": "#c8c6c5",
+            "on-secondary": "#ffffff",
+            "on-surface-variant": "#444748",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#c7c6c6",
+            "background": "#fbf9f5",
+            "inverse-on-surface": "#f2f0ed",
+            "surface-container": "#efeeea",
+            "surface-variant": "#e4e2de",
+            "status-pending": "#C88A2B",
+            "on-tertiary-fixed": "#1c1b1a",
+            "on-primary-fixed-variant": "#474646",
+            "inverse-primary": "#c8c6c5",
+            "on-surface": "#1b1c1a",
+            "inverse-surface": "#30312e",
+            "on-error": "#ffffff",
+            "surface-dim": "#dbdad6",
+            "surface-pure": "#FFFFFF",
+            "status-cancelled": "#9E3B3B",
+            "primary-container": "#1c1b1b"
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "margin-mobile": "1.25rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "space-2xl": "4rem",
+            "space-md": "1rem",
+            "margin": "3rem"
+          },
+          fontFamily: {
+            "headline-md": ["Playfair Display", "serif"],
+            "headline-lg": ["Playfair Display", "serif"],
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "code-monetary": ["JetBrains Mono", "monospace"],
+            "label-md": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-sm": ["Playfair Display", "serif"],
+            "display-lg": ["Playfair Display", "serif"],
+            "display-lg-mobile": ["Playfair Display", "serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "title-md": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-lg-mobile": ["Playfair Display", "serif"],
+            "label-sm": ["Plus Jakarta Sans", "sans-serif"]
+          },
+          fontSize: {
+            "headline-md": ["28px", { lineHeight: "36px", fontWeight: "500" }],
+            "headline-lg": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+            "code-monetary": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+            "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.04em", fontWeight: "600" }],
+            "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "500" }],
+            "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "600" }],
+            "display-lg-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }],
+            "title-md": ["16px", { lineHeight: "24px", fontWeight: "600" }],
+            "headline-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      vertical-align: middle;
+    }
+
+    /* Architectural perforated ticket cutouts */
+    .ticket-edge-left {
+      position: absolute;
+      left: -12px;
+      width: 24px;
+      height: 24px;
+      background-color: #FBF9F5;
+      border-radius: 9999px;
+      box-shadow: inset -2px 0 0 0 #EBE7DF;
+    }
+    .ticket-edge-right {
+      position: absolute;
+      right: -12px;
+      width: 24px;
+      height: 24px;
+      background-color: #FBF9F5;
+      border-radius: 9999px;
+      box-shadow: inset 2px 0 0 0 #EBE7DF;
+    }
+
+    /* Print styling rules */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print, header, footer, nav, .print-hide {
+        display: none !important;
+      }
+      .ticket-container {
+        box-shadow: none !important;
+        border: 1px solid #CCCCCC !important;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        page-break-inside: avoid;
+      }
+      .page-canvas {
+        padding: 0 !important;
+        background: transparent !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-surface-container-high selection:text-primary">
+<!-- TopNavBar (Shared Component JSON Blueprint & Protocol Compliance) -->
+<header class="bg-surface/80 dark:bg-surface/80 backdrop-blur-md text-primary dark:text-inverse-primary border-b border-border-warm dark:border-border-warm/30 docked full-width top-0 sticky z-40">
+<div class="flex justify-between items-center w-full px-6 md:px-12 py-5 max-w-full">
+<!-- Brand Logo Anchor -->
+<div class="flex items-center gap-6">
+<a class="flex flex-col group" href="#">
+<span class="text-headline-md font-headline-md tracking-tight text-primary dark:text-inverse-primary">WorkMates</span>
+<span class="text-label-sm font-label-sm text-secondary tracking-widest uppercase">Senopati Sanctuary</span>
+</a>
+</div>
+<!-- Center Navigation Links -->
+<nav class="hidden lg:flex items-center gap-8">
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Spaces</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Locations</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Journal</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary transition-colors text-label-md font-label-md" href="#">Concierge</a>
+<a class="text-primary dark:text-inverse-primary font-semibold border-b border-primary pb-1 text-label-md font-label-md" href="#">My Bookings</a>
+</nav>
+<!-- Trailing Action / User Profile Pill -->
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center gap-3 bg-surface-container-lowest px-4 py-2 rounded-full border border-border-warm">
+<div class="w-2 h-2 rounded-full bg-status-active"></div>
+<span class="text-body-md font-body-md text-on-surface font-medium">Julian V.</span>
+<span class="text-label-sm font-label-sm text-secondary bg-surface-container-low px-2 py-0.5 rounded-full">Founding Member</span>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full border border-border-warm bg-surface-container-lowest hover:bg-surface-container-low text-secondary transition-colors" title="Concierge Assistance">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="page-canvas flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-8 md:py-12">
+<!-- Top Action / Contextual Return Bar -->
+<div class="no-print flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+<nav class="flex items-center gap-2 text-label-sm font-label-sm text-secondary">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="text-outline-variant">/</span>
+<a class="hover:text-primary transition-colors" href="#">Guest Portal</a>
+<span class="text-outline-variant">/</span>
+<a class="hover:text-primary transition-colors" href="#">My Bookings</a>
+<span class="text-outline-variant">/</span>
+<span class="text-primary font-semibold">Digital E-Ticket &amp; Pass</span>
+</nav>
+<a class="inline-flex items-center gap-2 text-body-md font-body-md text-secondary hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_back">arrow_back</span>
+<span>Back to My Bookings</span>
+</a>
+</div>
+<!-- Editorial Header Section -->
+<div class="mb-10 text-center max-w-2xl mx-auto">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[rgba(74,107,93,0.12)] text-status-active text-label-sm font-label-sm uppercase tracking-wider mb-4 border border-[rgba(74,107,93,0.2)]">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active animate-pulse"></span>
+        Active Verification • Ready for Check-in
+      </div>
+<h1 class="text-headline-lg font-headline-lg text-primary tracking-tight mb-3">Digital Access Key &amp; Pass</h1>
+<p class="text-body-lg font-body-lg text-secondary">
+        Present this architectural pass at the front-desk turnstile or concierge tablet for instant contact-free sanctuary check-in.
+      </p>
+</div>
+<!-- Layout Grid: Pass Centerpiece & Supportive Side Context -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Primary Architectural Ticket Pass Centerpiece (8 Cols) -->
+<div class="lg:col-span-8 flex flex-col items-center">
+<!-- The Voucher Slip Card -->
+<article class="ticket-container w-full max-w-2xl bg-surface-pure rounded-2xl border border-border-warm shadow-[0_10px_30px_rgba(18,18,18,0.03)] overflow-hidden transition-all duration-200 relative">
+<!-- Top Slip Header with Location Context -->
+<div class="p-6 sm:p-8 bg-[#FAF8F5] border-b border-border-warm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-headline-md font-headline-md tracking-tight text-primary">WorkMates</span>
+<span class="text-label-sm font-label-sm text-secondary">• Architectural Workplace</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface font-medium">Senopati Sanctuary</p>
+<p class="text-label-sm font-label-sm text-secondary">Jl. Senopati No. 45, Kebayoran Baru, Jakarta Selatan 12190</p>
+</div>
+<!-- Status Tag -->
+<div class="self-start sm:self-center">
+<span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[rgba(74,107,93,0.12)] text-status-active text-label-sm font-label-sm font-semibold tracking-wider">
+<span class="material-symbols-outlined text-[15px]" data-icon="check_circle">check_circle</span>
+                  DISETUJUI • READY FOR ENTRY
+                </span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-border-warm/70 flex flex-wrap items-center justify-between gap-2 text-label-sm font-label-sm text-secondary">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="support_agent">support_agent</span>
+                Concierge Hotline: <strong class="text-primary font-code-monetary ml-1">+62 812-9876-5432</strong>
+</span>
+<span class="font-code-monetary text-secondary">BOOKING REF: #BOOK-20251024-0042</span>
+</div>
+</div>
+<!-- Hero Scannable QR Code Section -->
+<div class="px-6 py-8 sm:p-10 flex flex-col items-center justify-center bg-surface-pure text-center">
+<!-- High Contrast Architectural QR Frame -->
+<div class="p-4 bg-[#FAF8F5] rounded-2xl border border-border-warm shadow-inner mb-4 transition-transform duration-300 hover:scale-[1.01]">
+<div class="relative bg-white p-3 rounded-xl border border-border-warm">
+<!-- Crisp Vector Mock QR Code (Fully CSS & SVG Driven) -->
+<svg class="w-48 h-48 sm:w-56 sm:h-56" fill="none" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
+<!-- Background -->
+<rect fill="#FFFFFF" height="160" width="160"></rect>
+<!-- Top Left Position Target -->
+<rect fill="#121212" height="40" rx="6" width="40" x="12" y="12"></rect>
+<rect fill="#FFFFFF" height="28" rx="3" width="28" x="18" y="18"></rect>
+<rect fill="#121212" height="16" rx="2" width="16" x="24" y="24"></rect>
+<!-- Top Right Position Target -->
+<rect fill="#121212" height="40" rx="6" width="40" x="108" y="12"></rect>
+<rect fill="#FFFFFF" height="28" rx="3" width="28" x="114" y="18"></rect>
+<rect fill="#121212" height="16" rx="2" width="16" x="120" y="24"></rect>
+<!-- Bottom Left Position Target -->
+<rect fill="#121212" height="40" rx="6" width="40" x="12" y="108"></rect>
+<rect fill="#FFFFFF" height="28" rx="3" width="28" x="18" y="114"></rect>
+<rect fill="#121212" height="16" rx="2" width="16" x="24" y="120"></rect>
+<!-- High Density Grid Modules -->
+<rect fill="#121212" height="8" width="8" x="60" y="14"></rect>
+<rect fill="#121212" height="8" width="16" x="76" y="14"></rect>
+<rect fill="#121212" height="12" width="12" x="60" y="30"></rect>
+<rect fill="#121212" height="10" width="10" x="80" y="30"></rect>
+<rect fill="#121212" height="16" width="8" x="64" y="48"></rect>
+<rect fill="#121212" height="8" width="12" x="84" y="48"></rect>
+<rect fill="#121212" height="8" width="12" x="14" y="60"></rect>
+<rect fill="#121212" height="16" width="8" x="34" y="64"></rect>
+<rect fill="#121212" height="8" width="16" x="14" y="76"></rect>
+<rect fill="#121212" height="8" width="8" x="14" y="92"></rect>
+<rect fill="#121212" height="12" width="14" x="30" y="88"></rect>
+<!-- Center Matrix -->
+<rect fill="#121212" height="8" width="8" x="60" y="64"></rect>
+<rect fill="#121212" height="8" width="8" x="76" y="64"></rect>
+<rect fill="#121212" height="8" width="16" x="68" y="76"></rect>
+<rect fill="#121212" height="8" width="12" x="60" y="88"></rect>
+<rect fill="#121212" height="12" width="12" x="80" y="88"></rect>
+<!-- Bottom Right & Right Columns -->
+<rect fill="#121212" height="14" width="10" x="108" y="60"></rect>
+<rect fill="#121212" height="8" width="18" x="126" y="60"></rect>
+<rect fill="#121212" height="14" width="14" x="114" y="80"></rect>
+<rect fill="#121212" height="18" width="10" x="136" y="76"></rect>
+<rect fill="#121212" height="14" width="8" x="60" y="108"></rect>
+<rect fill="#121212" height="8" width="18" x="76" y="108"></rect>
+<rect fill="#121212" height="8" width="20" x="64" y="130"></rect>
+<rect fill="#121212" height="8" width="12" x="60" y="142"></rect>
+<rect fill="#121212" height="8" width="14" x="80" y="142"></rect>
+<rect fill="#121212" height="8" width="8" x="108" y="108"></rect>
+<rect fill="#121212" height="8" width="22" x="124" y="108"></rect>
+<rect fill="#121212" height="12" width="16" x="108" y="124"></rect>
+<rect fill="#121212" height="8" width="14" x="132" y="124"></rect>
+<rect fill="#121212" height="8" width="18" x="114" y="142"></rect>
+<rect fill="#121212" height="12" width="10" x="138" y="138"></rect>
+<!-- Center Sonder/WorkMates Emblem -->
+<circle cx="80" cy="80" fill="#FFFFFF" r="13"></circle>
+<circle cx="80" cy="80" fill="#121212" r="11"></circle>
+<path d="M76 77C76 75.3431 77.3431 74 79 74H81C82.6569 74 84 75.3431 84 77V77C84 78.6569 82.6569 80 81 80H79C77.3431 80 76 81.3431 76 83V83C76 84.6569 77.3431 86 79 86H81C82.6569 86 84 84.6569 84 83" stroke="#FFFFFF" stroke-linecap="round" stroke-width="1.8"></path>
+</svg>
+</div>
+</div>
+<!-- Monospace Payload & Instructions -->
+<div class="font-code-monetary text-xs tracking-wider text-secondary bg-surface-container-low px-3 py-1.5 rounded-full border border-border-warm mb-2 selection:bg-primary selection:text-white">
+              VERIFY-RESERVASI-042-BOOK-20251024-0042
+            </div>
+<p class="text-body-md font-body-md text-on-surface font-medium mb-2">
+              Scan at Front Desk Scanner or Turnstile for 1-Click Check-In
+            </p>
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-secondary">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="lock">lock</span>
+<span>Manual Check-In PIN:</span>
+<strong class="font-code-monetary text-primary tracking-widest text-body-md bg-[#FAF8F5] px-2 py-0.5 rounded border border-border-warm">8492</strong>
+</div>
+</div>
+<!-- Perforated Tear-Line Architectural Divider -->
+<div class="relative flex items-center justify-center my-0">
+<div class="ticket-edge-left"></div>
+<div class="ticket-edge-right"></div>
+<div class="w-full border-t-2 border-dashed border-border-warm mx-4"></div>
+</div>
+<!-- Verified PRD Booking Details Grid -->
+<div class="p-6 sm:p-8 bg-[#FAF8F5]">
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+<!-- Column 1 -->
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Ticket Number</span>
+<span class="block font-code-monetary text-body-md text-primary font-medium">TICKET-MOKLET-20251024-0042</span>
+</div>
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Booking Code</span>
+<span class="block font-code-monetary text-body-md text-primary font-medium">BOOK-20251024-0042</span>
+</div>
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Guest / Member</span>
+<span class="block text-body-md font-body-md text-primary font-semibold">Julian Vance</span>
+<span class="block text-label-sm font-label-sm text-secondary">Studio Arsitek Nusantara</span>
+</div>
+<!-- Column 2 -->
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Reserved Space</span>
+<span class="block text-title-md font-title-md text-primary">The Sanctuary Suite 04</span>
+<span class="block text-label-sm font-label-sm text-secondary">Private Executive Studio</span>
+</div>
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Location &amp; Level</span>
+<span class="block text-body-md font-body-md text-primary font-medium">Senopati Sanctuary</span>
+<span class="block text-label-sm font-label-sm text-secondary">Level 3 • Suite 302</span>
+</div>
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Scheduled Date</span>
+<span class="block text-body-md font-body-md text-primary font-medium">Friday, 24 Oct 2025</span>
+<span class="block text-label-sm font-label-sm text-secondary">Check-in from 08:50 WIB</span>
+</div>
+<!-- Column 3 -->
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Access Hours</span>
+<span class="block font-code-monetary text-body-md text-primary font-semibold">09:00 — 13:00 WIB</span>
+<span class="block text-label-sm font-label-sm text-secondary">4 Hours (Half Day Deep Focus)</span>
+</div>
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Settlement Status</span>
+<span class="block font-code-monetary text-body-md text-primary font-semibold">IDR 384.000</span>
+<span class="block text-label-sm font-label-sm text-secondary">BCA Virtual Account • Settled</span>
+</div>
+<div>
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-1">Access Protocol</span>
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm text-status-active font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="contactless">contactless</span>
+                  NFC Card + Turnstile QR
+                </span>
+<span class="block text-label-sm font-label-sm text-secondary">Single Pass Holder</span>
+</div>
+</div>
+<!-- Inclusions & Amenity Chips -->
+<div class="mt-8 pt-6 border-t border-border-warm">
+<span class="block text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-3">Keycard Inclusions &amp; Access Privileges</span>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-body-md font-body-md">
+<div class="flex items-center gap-2.5 p-3 rounded-xl bg-surface-pure border border-border-warm">
+<span class="material-symbols-outlined text-primary text-base" data-icon="wifi">wifi</span>
+<div class="text-xs">
+<span class="font-medium text-primary block">Gigabit Fiber WiFi</span>
+<span class="text-secondary font-code-monetary">SSID: WorkMates-Sanctuary-5G / Key: hospitality-calm</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 p-3 rounded-xl bg-surface-pure border border-border-warm">
+<span class="material-symbols-outlined text-primary text-base" data-icon="coffee">coffee</span>
+<div class="text-xs">
+<span class="font-medium text-primary block">Artisanal Pour-Over Bar</span>
+<span class="text-secondary">Complimentary single-origin brews at Level 3 Bar</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 p-3 rounded-xl bg-surface-pure border border-border-warm">
+<span class="material-symbols-outlined text-primary text-base" data-icon="phone_in_talk">phone_in_talk</span>
+<div class="text-xs">
+<span class="font-medium text-primary block">Acoustic Call Booths</span>
+<span class="text-secondary">Unmetered access to Soundproof Booths A &amp; B</span>
+</div>
+</div>
+<div class="flex items-center gap-2.5 p-3 rounded-xl bg-surface-pure border border-border-warm">
+<span class="material-symbols-outlined text-primary text-base" data-icon="chair">chair</span>
+<div class="text-xs">
+<span class="font-medium text-primary block">Ergonomic Suite Equipment</span>
+<span class="text-secondary">Herman Miller Cosm + Solid Oak standing desk</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Notice & Timestamp Verification -->
+<div class="mt-6 pt-4 border-t border-border-warm flex flex-col sm:flex-row items-center justify-between text-label-sm font-label-sm text-secondary gap-2">
+<span>Security Token Generated: 24 Oct 2025 • 07:15:22 GMT+7</span>
+<span class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-sm" data-icon="verified_user">verified_user</span>
+                Sonder Cryptographic Verification Active
+              </span>
+</div>
+</div>
+</article>
+<!-- Pass Action Bar (Web Interaction & Export) -->
+<div class="no-print mt-6 w-full max-w-2xl flex flex-wrap items-center justify-center gap-3">
+<!-- Primary CTA (Strict Pill Token Execution) -->
+<button class="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-primary text-on-primary text-label-md font-label-md font-medium hover:bg-primary/90 transition-all duration-150 active:scale-[0.98] shadow-sm" onclick="window.print()">
+<span class="material-symbols-outlined text-base" data-icon="print">print</span>
+            Print / Save PDF Pass
+          </button>
+<!-- Secondary Action -->
+<button class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-pure border border-border-warm text-primary hover:bg-[#FAF8F5] text-label-md font-label-md font-medium transition-all duration-150 active:scale-[0.98]" onclick="alert('Calendar invite (.ics) has been generated for Julian Vance.')">
+<span class="material-symbols-outlined text-base" data-icon="calendar_today">calendar_today</span>
+            Add to Calendar
+          </button>
+<!-- WhatsApp Pass Send -->
+<a class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-surface-pure border border-border-warm text-primary hover:bg-[#FAF8F5] text-label-md font-label-md font-medium transition-all duration-150 active:scale-[0.98]" href="https://wa.me/6281298765432?text=Halo%20Concierge%20WorkMates%2C%20saya%20Julian%20Vance%20(BOOK-20251024-0042)%20meminta%20link%20digital%20pass." target="_blank">
+<span class="material-symbols-outlined text-base" data-icon="chat">chat</span>
+            Send to WhatsApp
+          </a>
+<!-- Apple Wallet Pass Trigger -->
+<button class="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-surface-container-high hover:bg-surface-container-highest text-primary text-label-md font-label-md transition-colors" onclick="alert('WorkMates Apple Wallet pass token sent to your registered device.')">
+<span class="material-symbols-outlined text-base" data-icon="wallet">wallet</span>
+            Add to Apple Wallet
+          </button>
+</div>
+</div>
+<!-- Supportive Sidebar: Sanctuary Guidelines & Live Space Preview (4 Cols) -->
+<aside class="no-print lg:col-span-4 flex flex-col gap-6 w-full">
+<!-- Space Preview Tile (Architectural Photography) -->
+<div class="bg-surface-pure rounded-2xl border border-border-warm overflow-hidden shadow-[0_10px_30px_rgba(18,18,18,0.02)]">
+<div class="aspect-[4/3] w-full overflow-hidden relative group">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" data-alt="Warm modern architectural private office suite with natural light streaming through expansive floor-to-ceiling glass windows overlooking a serene courtyard garden. Solid white oak desk with minimalist laptop, artisanal ceramic teacup, and refined textured plaster walls in neutral cream and bone tones. Photographed in an editorial Japandi style with calm morning shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAovLKfeZd8vH5nk53xU2za_lbQuvRWt0y7r3JJmb5umlwSXXXw9H21wmO3KuiAbGGf7K82n_u8iUEoOjDu5bnVLX6bz5CTP5s4rm_h6uJTU3dlR2jbyMxDb9GhtSDCg_P3nY3bcs_MlCgpKUcFJR6NOvtzEkIB5fybTtLZOftdiZLW_FJiQDqrnt6UrNJufo8AF6aMtjL8ay-05zSAwjMyPjOyA5OlgPExesYeMg3A7wIIKkPkc0Q9kQ">
+<div class="absolute top-3 right-3 bg-surface-pure/90 backdrop-blur-md px-3 py-1 rounded-full text-label-sm font-label-sm text-primary border border-border-warm">
+              Suite 302 Preview
+            </div>
+</div>
+<div class="p-6">
+<h3 class="text-headline-sm font-headline-sm text-primary mb-1">The Sanctuary Suite 04</h3>
+<p class="text-body-md font-body-md text-secondary mb-4">
+              Carefully curated for architectural designers, strategists, and executives requiring stillness and natural biophilic textures.
+            </p>
+<div class="space-y-2 border-t border-border-warm pt-4 text-body-md font-body-md">
+<div class="flex items-center justify-between text-xs">
+<span class="text-secondary">Soundproofing</span>
+<span class="font-medium text-primary">Acoustic STC 48 Spec</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-secondary">Air Quality</span>
+<span class="font-medium text-primary">HEPA-13 Air Filtered</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-secondary">Desk Exposure</span>
+<span class="font-medium text-primary">North-Facing Daylight</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Arrival & Check-In Protocol Guide -->
+<div class="bg-surface-pure rounded-2xl border border-border-warm p-6">
+<div class="flex items-center gap-2.5 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<h3 class="text-title-md font-title-md text-primary">Sanctuary Arrival Protocol</h3>
+</div>
+<ol class="space-y-4 text-body-md font-body-md text-secondary">
+<li class="flex items-start gap-3">
+<span class="w-6 h-6 rounded-full bg-surface-container-high text-primary flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5">1</span>
+<div>
+<strong class="text-primary block font-medium">Arrival Timing</strong>
+<span>Please arrive approximately 10 minutes prior to your 09:00 slot to settle in comfortably.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="w-6 h-6 rounded-full bg-surface-container-high text-primary flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5">2</span>
+<div>
+<strong class="text-primary block font-medium">Turnstile &amp; Elevator Scan</strong>
+<span>Hold the QR code directly against the scanner optical glass. Elevator access to Level 3 unlocks automatically.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="w-6 h-6 rounded-full bg-surface-container-high text-primary flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5">3</span>
+<div>
+<strong class="text-primary block font-medium">Physical Keycard Pickup</strong>
+<span>If you prefer a physical wooden RFID keycard for your suite door, the lobby concierge will hand you one upon scanning.</span>
+</div>
+</li>
+</ol>
+<!-- Direct Concierge Help Widget -->
+<div class="mt-6 pt-5 border-t border-border-warm bg-[#FAF8F5] p-4 rounded-xl">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-xs font-semibold text-primary">Running late or need assistance?</p>
+<p class="text-label-sm font-label-sm text-secondary">Our Senopati host is on standby.</p>
+</div>
+<a class="px-3 py-1.5 rounded-full bg-primary text-on-primary text-xs font-medium hover:bg-primary/90 transition-colors" href="https://wa.me/6281298765432" target="_blank">
+                Chat Host
+              </a>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer (Shared Component JSON Blueprint & Protocol Compliance) -->
+<footer class="no-print bg-surface-container-low dark:bg-surface-container-low text-primary dark:text-inverse-primary border-t border-border-warm dark:border-border-warm/30 docked full-width bottom mt-16">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-6 md:px-12 py-8 max-w-full gap-4">
+<div class="flex flex-col sm:flex-row items-center gap-4">
+<span class="text-headline-sm font-headline-sm text-primary dark:text-inverse-primary tracking-tight">WorkMates</span>
+<span class="hidden sm:inline text-outline-variant">•</span>
+<p class="text-body-md font-body-md text-secondary">© 2025 Sonder Spaces Hospitality Inc. All rights reserved.</p>
+</div>
+<nav class="flex flex-wrap items-center justify-center gap-6 text-label-sm font-label-sm">
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Architectural Standards</a>
+<a class="text-secondary dark:text-on-secondary-fixed-variant hover:text-primary dark:hover:text-inverse-primary transition-colors" href="#">Support</a>
+</nav>
+</div>
+</footer>
+<script>
+    // Micro-interaction: Keyboard shortcut (Cmd/Ctrl + P) print helper reminder
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'p') {
+        // Native window print handles print styles seamlessly
+      }
+    });
+  </script>
+</body></html>

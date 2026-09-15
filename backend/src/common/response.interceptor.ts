@@ -3,6 +3,7 @@ import {
   ExecutionContext,
   Injectable,
   NestInterceptor,
+  StreamableFile,
 } from '@nestjs/common';
 import { map, Observable } from 'rxjs';
 
@@ -12,6 +13,9 @@ export class ResponseInterceptor implements NestInterceptor {
     const statusCode = context.switchToHttp().getResponse().statusCode;
     return next.handle().pipe(
       map((payload: { message?: string; data?: unknown } | unknown) => {
+        if (payload instanceof StreamableFile) {
+          return payload;
+        }
         const isWrapped =
           payload !== null &&
           typeof payload === 'object' &&

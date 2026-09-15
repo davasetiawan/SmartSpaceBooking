@@ -1,0 +1,659 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>[SCR-MEM-04] Reservation &amp; Availability Checkout - The Sanctuary Suite 04</title>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "secondary-fixed": "#e4e2e2",
+            "surface-container-highest": "#e4e2de",
+            "tertiary-fixed": "#e6e1df",
+            "surface-pure": "#FFFFFF",
+            "tertiary-container": "#1c1b1a",
+            "surface-container-high": "#eae8e4",
+            "inverse-on-surface": "#f2f0ed",
+            "on-tertiary-fixed": "#1c1b1a",
+            "secondary": "#5e5e5e",
+            "primary-container": "#1c1b1b",
+            "error-container": "#ffdad6",
+            "on-secondary-container": "#626262",
+            "surface-container": "#efeeea",
+            "tertiary-fixed-dim": "#cac6c3",
+            "surface-variant": "#e4e2de",
+            "border-warm": "#EBE7DF",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#c7c6c6",
+            "status-active": "#4A6B5D",
+            "on-background": "#1b1c1a",
+            "surface-bright": "#fbf9f5",
+            "surface-dim": "#dbdad6",
+            "primary": "#121212",
+            "on-tertiary-container": "#868381",
+            "status-cancelled": "#9E3B3B",
+            "on-primary-container": "#858383",
+            "surface-tint": "#5f5e5e",
+            "tertiary": "#000000",
+            "on-primary-fixed-variant": "#474646",
+            "on-secondary-fixed": "#1b1c1c",
+            "outline-variant": "#c4c7c7",
+            "on-primary-fixed": "#1c1b1b",
+            "inverse-primary": "#c8c6c5",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed-variant": "#464747",
+            "status-pending": "#C88A2B",
+            "primary-fixed-dim": "#c8c6c5",
+            "surface-container-low": "#f5f3ef",
+            "status-finished": "#333333",
+            "error": "#ba1a1a",
+            "on-tertiary": "#ffffff",
+            "surface": "#fbf9f5",
+            "inverse-surface": "#30312e",
+            "background": "#fbf9f5",
+            "secondary-container": "#e1dfdf",
+            "primary-fixed": "#e5e2e1",
+            "on-primary": "#ffffff",
+            "on-surface-variant": "#444748",
+            "on-error": "#ffffff",
+            "on-error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#484645",
+            "outline": "#747878",
+            "on-surface": "#1b1c1a"
+          },
+          borderRadius: {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "margin": "3rem",
+            "margin-mobile": "1.25rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-2xl": "4rem",
+            "space-xl": "2.5rem",
+            "space-md": "1rem"
+          },
+          fontFamily: {
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-lg": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Playfair Display"],
+            "code-monetary": ["JetBrains Mono"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Playfair Display"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "headline-lg": ["Playfair Display"]
+          },
+          fontSize: {
+            "label-md": ["13px", { lineHeight: "18px", letterSpacing: "0.04em", fontWeight: "600" }],
+            "label-sm": ["11px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600" }],
+            "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "600" }],
+            "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+            "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "500" }],
+            "code-monetary": ["14px", { lineHeight: "20px", fontWeight: "500" }],
+            "title-md": ["16px", { lineHeight: "24px", fontWeight: "600" }],
+            "display-lg-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "headline-lg-mobile": ["28px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }],
+            "headline-md": ["28px", { lineHeight: "36px", fontWeight: "500" }],
+            "headline-lg": ["36px", { lineHeight: "44px", letterSpacing: "-0.01em", fontWeight: "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F5F3EF;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #EBE7DF;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="bg-background text-primary antialiased min-h-screen flex flex-col font-body-md text-body-md selection:bg-surface-container-high selection:text-primary">
+<!-- TOP APP BAR -->
+<header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md transition-all duration-200">
+<div class="max-w-[1360px] mx-auto px-6 md:px-12 py-4 flex items-center justify-between">
+<!-- Brand & Editorial Breadcrumb -->
+<div class="flex items-center space-x-6">
+<a class="font-headline-md text-headline-md tracking-tight text-primary transition-opacity hover:opacity-85" href="#">
+          WorkMates
+        </a>
+<div class="hidden lg:flex items-center text-secondary font-label-md text-label-md space-x-2 pl-6 border-l border-border-warm">
+<a class="hover:text-primary transition-colors" href="#">Spaces</a>
+<span class="text-secondary/50">/</span>
+<a class="hover:text-primary transition-colors" href="#">Senopati Sanctuary</a>
+<span class="text-secondary/50">/</span>
+<span class="text-primary font-medium">The Sanctuary Suite 04</span>
+</div>
+</div>
+<!-- Trailing Member Actions & Concierge Assistance -->
+<div class="flex items-center space-x-4 md:space-x-6">
+<button class="hidden sm:inline-flex items-center space-x-2 text-secondary hover:text-primary transition-colors text-label-md font-label-md">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+<span class="">Concierge Assistance</span>
+</button>
+<div class="flex items-center pl-4 border-l border-border-warm space-x-3">
+<div class="w-9 h-9 rounded-full bg-surface-container-high flex items-center justify-center text-primary font-medium text-xs border border-border-warm">
+            JV
+          </div>
+<div class="hidden sm:block text-left leading-none">
+<span class="block font-label-md text-label-md text-primary font-semibold">Julian V.</span>
+<span class="block font-label-sm text-label-sm text-secondary mt-0.5">Founding Member</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN RESERVATION WORKFLOW CANVAS -->
+<main class="flex-grow max-w-[1360px] w-full mx-auto px-6 md:px-12 pt-6 pb-20">
+<!-- SUB-NAV / BREADCRUMB MOBILE VIEW -->
+<div class="lg:hidden flex items-center text-secondary font-label-sm text-label-sm space-x-2 mb-6">
+<a class="flex items-center text-primary font-medium" href="#">
+<span class="material-symbols-outlined text-sm mr-1">arrow_back</span>
+        Senopati Sanctuary
+      </a>
+<span class="text-secondary/50">/</span>
+<span class="truncate">The Sanctuary Suite 04</span>
+</div>
+<!-- TWO-COLUMN WORKFLOW GRID (60% / 40%) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+<!-- LEFT COLUMN: Space Showcase, Narrative & Curated Amenities (60% -> 7 Cols) -->
+<div class="lg:col-span-7 space-y-10">
+<!-- 1. GALLERY SHOWCASE -->
+<div class="space-y-3">
+<!-- Hero Architectural Image Container -->
+<div class="relative w-full aspect-[16/10] md:aspect-[16/9] rounded-2xl overflow-hidden bg-surface-container border border-border-warm group">
+<img alt="The Sanctuary Suite 04" class="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-700 ease-out" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhxD8HyTv4Xms2aGieZreDyze4wqt2H-zNofIqkHmem4daDTwht21U3gBb2Xv6j5dJObRT_MUcrRLn8s7pU-z_-mAYvWqE3xKKlwBu5xkVS1XhIM3frltyG1lWaUQsy5oIt-rHf-saq3XLHOIcXPgnLC7icb2fDg9lU9LdnUoYQXXHNSLCiU5QcLgO3NPFN3QLYKtcv_wLYqpY_XRKCsAxvk0PVu7grIQHzw8v_xDvL4PFKIwSKa_51g">
+<!-- Architectural Badge / Image Counter -->
+<div class="absolute bottom-4 right-4 bg-primary/75 backdrop-blur-md text-on-primary px-3 py-1.5 rounded-full text-label-sm font-label-sm flex items-center space-x-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[14px]">photo_library</span>
+<span class="">1 of 5 Photos</span>
+</div>
+<!-- Location Pin Ribbon -->
+<div class="absolute top-4 left-4 bg-surface-pure/90 backdrop-blur-md border border-border-warm text-primary px-3 py-1.5 rounded-full text-label-sm font-label-sm flex items-center space-x-1">
+<span class="material-symbols-outlined text-status-active text-[15px]">verified</span>
+<span class="">Architectural Verification</span>
+</div>
+</div>
+<!-- Gallery Secondary Strip -->
+<div class="grid grid-cols-4 gap-3">
+<div class="aspect-[4/3] rounded-xl overflow-hidden border-2 border-primary bg-surface-container relative">
+<img alt="Desk view" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAhxD8HyTv4Xms2aGieZreDyze4wqt2H-zNofIqkHmem4daDTwht21U3gBb2Xv6j5dJObRT_MUcrRLn8s7pU-z_-mAYvWqE3xKKlwBu5xkVS1XhIM3frltyG1lWaUQsy5oIt-rHf-saq3XLHOIcXPgnLC7icb2fDg9lU9LdnUoYQXXHNSLCiU5QcLgO3NPFN3QLYKtcv_wLYqpY_XRKCsAxvk0PVu7grIQHzw8v_xDvL4PFKIwSKa_51g">
+</div>
+<div class="aspect-[4/3] rounded-xl overflow-hidden border border-border-warm bg-surface-container hover:opacity-90 transition-opacity cursor-pointer">
+<img alt="Lounge view" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1WB-0Wb6bHdE19jJ6Ssg7fchlFk3EQePrsflTWFgic-fzGHiFECuFiihw75T7AKRRCCRdoxTk0AWxW9UWK9d28uhPFfpGf7K6sGSeG4_HuLGaQAj2ivD8RsdLrFeU81Hdxw1jbPIQvWkRtDUSlr-ZVwojnTcjA2k2vesqKeoh9miOefvnUKgeWfPOa7mpEPVeRqQYmueN_wUkcFXMHgi84ns4XhWuY8cXjaJP2c3v1DVoxc6-S7JbroUzh2">
+</div>
+<div class="aspect-[4/3] rounded-xl overflow-hidden border border-border-warm bg-surface-container relative hover:opacity-90 transition-opacity cursor-pointer">
+<img class="w-full h-full object-cover" data-alt="A minimalist architectural interior photo of bespoke travertine stone credenza, warm oak wood shelving with ceramic pottery, soft morning window light, high aesthetic luxury studio WorkMates Jakarta." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZH4RqAsogJFMjePF9ApHThHexSNbHNqQpYU7EQPocVcDQDqxWuNxhcaeRYTd5bJk7lS5bP9j88s3iG-nPpiXqxVj8rjUSj_X0RZpfxmbxafs3xxYsgbxERMUcjm_wHZNNNfD6c-MEIXr29Na-Zu92NUotl2FjTGy6lf4UKUHPZfCZy_eI5D8F6XtWI997kFLkXA5Hm8LpoxjNnmSkLqhC85gYJbT_OQN6GXpP_k0Umfkv4ERtWat4JA">
+</div>
+<div class="aspect-[4/3] rounded-xl overflow-hidden border border-border-warm bg-surface-container-high flex flex-col items-center justify-center text-secondary hover:text-primary transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-lg group-hover:scale-110 transition-transform">grid_view</span>
+<span class="font-label-sm text-[10px] uppercase tracking-wider mt-1 font-semibold">View All</span>
+</div>
+</div>
+</div>
+<!-- 2. HEADER & STATUS BADGES -->
+<div class="border-b border-border-warm pb-8 space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-3">
+<span class="font-label-sm text-label-sm tracking-[0.06em] text-secondary font-semibold uppercase">
+              PRIVATE STUDIO • 1–2 PERSONS
+            </span>
+<div class="inline-flex items-center space-x-2 bg-[rgba(74,107,93,0.1)] text-status-active px-3 py-1 rounded-full text-label-sm font-label-sm font-medium">
+<span class="w-2 h-2 rounded-full bg-status-active animate-pulse"></span>
+<span class="">Available for Selected Hours</span>
+</div>
+</div>
+<h1 class="font-headline-lg text-headline-lg md:text-[40px] md:leading-[48px] text-primary">
+            The Sanctuary Suite 04
+          </h1>
+<div class="flex items-center text-secondary font-body-md text-body-md space-x-2">
+<span class="material-symbols-outlined text-secondary text-[18px]">location_on</span>
+<span class="">Level 3, Senopati Sanctuary, South Jakarta</span>
+<span class="text-secondary/40">•</span>
+<a class="text-primary underline underline-offset-4 hover:opacity-80 font-medium" href="#map">View Floorplan</a>
+</div>
+</div>
+<!-- 3. ARCHITECTURAL SPECS & NARRATIVE -->
+<div class="space-y-6">
+<!-- Key Specs Metric Row -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-5 bg-surface-pure rounded-2xl border border-border-warm">
+<div class="space-y-1">
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Area</p>
+<p class="font-title-md text-title-md text-primary font-semibold">28 m²</p>
+</div>
+<div class="space-y-1 border-l border-border-warm/60 pl-4">
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Capacity</p>
+<p class="font-title-md text-title-md text-primary font-semibold">1–2 Guests</p>
+</div>
+<div class="space-y-1 border-l border-border-warm/60 pl-4">
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Fiber WiFi</p>
+<p class="font-title-md text-title-md text-primary font-semibold">1 Gbps</p>
+</div>
+<div class="space-y-1 border-l border-border-warm/60 pl-4">
+<p class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Soundproofing</p>
+<p class="font-title-md text-title-md text-primary font-semibold">STC 52</p>
+</div>
+</div>
+<!-- Editorial Description -->
+<div class="space-y-3">
+<h3 class="font-headline-sm text-headline-sm text-primary">Architectural Narrative</h3>
+<p class="text-secondary font-body-lg text-body-lg leading-relaxed">
+              Curated corner workspace bathed in natural morning light, featuring blonde oak joinery, bespoke travertine stone credenza, ergonomic Hans Wegner seating, and private en-suite lounge for uninterrupted deep work sessions.
+            </p>
+</div>
+</div>
+<!-- 4. CURATED AMENITIES & INCLUSIONS -->
+<div class="border-t border-border-warm pt-8 space-y-6">
+<div class="flex items-baseline justify-between">
+<h3 class="font-headline-sm text-headline-sm text-primary">Curated Amenities &amp; Inclusions</h3>
+<span class="font-label-sm text-label-sm text-secondary">WorkMates Sanctuary Standard</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Amenity Item 1 -->
+<div class="flex items-start space-x-3.5 p-4 rounded-xl bg-surface-pure border border-border-warm">
+<div class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[19px]">coffee</span>
+</div>
+<div class="space-y-0.5">
+<h4 class="font-title-md text-title-md text-primary text-[15px]">V60 Pour-over Barista Coffee</h4>
+<p class="text-secondary font-body-md text-body-md text-xs leading-relaxed">Single origin beans roasted locally, complimentary artisanal bar service.</p>
+</div>
+</div>
+<!-- Amenity Item 2 -->
+<div class="flex items-start space-x-3.5 p-4 rounded-xl bg-surface-pure border border-border-warm">
+<div class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[19px]">desktop_windows</span>
+</div>
+<div class="space-y-0.5">
+<h4 class="font-title-md text-title-md text-primary text-[15px]">Dual 4K Calibrated Monitors</h4>
+<p class="text-secondary font-body-md text-body-md text-xs leading-relaxed">LG UltraFine 32" Thunderbolt 4 hub with 96W power delivery.</p>
+</div>
+</div>
+<!-- Amenity Item 3 -->
+<div class="flex items-start space-x-3.5 p-4 rounded-xl bg-surface-pure border border-border-warm">
+<div class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[19px]">wb_sunny</span>
+</div>
+<div class="space-y-0.5">
+<h4 class="font-title-md text-title-md text-primary text-[15px]">Circadian Smart Lighting</h4>
+<p class="text-secondary font-body-md text-body-md text-xs leading-relaxed">2700K–5000K bio-responsive spectrum synchronized with natural daylight.</p>
+</div>
+</div>
+<!-- Amenity Item 4 -->
+<div class="flex items-start space-x-3.5 p-4 rounded-xl bg-surface-pure border border-border-warm">
+<div class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[19px]">door_sliding</span>
+</div>
+<div class="space-y-0.5">
+<h4 class="font-title-md text-title-md text-primary text-[15px]">Private Restroom &amp; En-suite</h4>
+<p class="text-secondary font-body-md text-body-md text-xs leading-relaxed">Stocked with Aesop botanicals, plush towels, and marble finishes.</p>
+</div>
+</div>
+<!-- Amenity Item 5 -->
+<div class="flex items-start space-x-3.5 p-4 rounded-xl bg-surface-pure border border-border-warm">
+<div class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[19px]">mic_none</span>
+</div>
+<div class="space-y-0.5">
+<h4 class="font-title-md text-title-md text-primary text-[15px]">Acoustic Phone Pod Access</h4>
+<p class="text-secondary font-body-md text-body-md text-xs leading-relaxed">Direct corridor access to private single-occupancy soundproof pods.</p>
+</div>
+</div>
+<!-- Amenity Item 6 -->
+<div class="flex items-start space-x-3.5 p-4 rounded-xl bg-surface-pure border border-border-warm">
+<div class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[19px]">key</span>
+</div>
+<div class="space-y-0.5">
+<h4 class="font-title-md text-title-md text-primary text-[15px]">24/7 Digital Keycard Pass</h4>
+<p class="text-secondary font-body-md text-body-md text-xs leading-relaxed">Instant Apple Wallet / NFC mobile key issued immediately on checkout.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- 5. HOUSE & SPACE STANDARDS -->
+<div class="border-t border-border-warm pt-8 space-y-5">
+<h3 class="font-headline-sm text-headline-sm text-primary">House &amp; Space Standards</h3>
+<div class="space-y-3.5">
+<div class="flex items-start space-x-3 text-secondary font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-[20px] flex-shrink-0">volume_off</span>
+<div class="">
+<strong class="text-primary font-medium">Quiet Sanctuary Policy</strong> — Sound isolation STC 52 rated. We ask guests to keep speakerphones muted in common circulation corridors.
+              </div>
+</div>
+<div class="flex items-start space-x-3 text-secondary font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-[20px] flex-shrink-0">qr_code_scanner</span>
+<div class="">
+<strong class="text-primary font-medium">Seamless 1-Click QR Check-in</strong> — Tap your dynamic digital key at the Suite 04 perimeter sensor. No front desk queues.
+              </div>
+</div>
+<div class="flex items-start space-x-3 text-secondary font-body-md text-body-md">
+<span class="material-symbols-outlined text-primary text-[20px] flex-shrink-0">schedule</span>
+<div class="">
+<strong class="text-primary font-medium">Complimentary Rescheduling</strong> — Reschedule or modify reservation up to 2 hours prior to scheduled start time at zero penalty.
+              </div>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT COLUMN: Sticky Reservation Engine & Checkout Card (40% -> 5 Cols) -->
+<div class="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
+<!-- MAIN CHECKOUT CARD CONTAINER -->
+<div class="bg-surface-pure rounded-2xl border border-border-warm shadow-[0_10px_30px_rgba(18,18,18,0.03)] overflow-hidden p-6 md:p-8 space-y-6">
+<!-- Rate Header & Pricing Toggle -->
+<div class="flex items-baseline justify-between border-b border-border-warm pb-5">
+<div>
+<div class="flex items-baseline space-x-1.5">
+<span class="font-headline-md text-headline-md text-primary font-bold">IDR 120.000</span>
+<span class="text-secondary font-body-md text-body-md">/ hour</span>
+</div>
+<p class="font-label-sm text-label-sm text-secondary mt-0.5">Tier 1 Workspace • High Season Regular</p>
+</div>
+<div class="text-right">
+<span class="inline-block bg-surface-container text-secondary text-label-sm font-label-sm px-2.5 py-1 rounded-full border border-border-warm">
+                IDR 850.000 / day
+              </span>
+</div>
+</div>
+<!-- BOOKING ENGINE FORM FIELDS -->
+<div class="space-y-4">
+<!-- Date Picker (tanggal_reservasi) -->
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-secondary uppercase tracking-wider block">
+                Tanggal Reservasi (Date)
+              </label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-secondary text-[20px] pointer-events-none">calendar_today</span>
+<input class="w-full pl-11 pr-4 py-3 bg-surface-bright border border-border-warm rounded-full text-primary font-body-md text-body-md font-medium focus:outline-none focus:border-primary transition-colors cursor-pointer" name="tanggal_reservasi" readonly="" type="text" value="Friday, 24 Oct 2025">
+<span class="material-symbols-outlined absolute right-3.5 text-secondary text-[18px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Time Slot Selection Grid -->
+<div class="grid grid-cols-2 gap-3">
+<!-- Jam Mulai (jam_mulai) -->
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-secondary uppercase tracking-wider block">
+                  Jam Mulai
+                </label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-secondary text-[18px] pointer-events-none">schedule</span>
+<select class="w-full pl-9 pr-8 py-2.5 bg-surface-bright border border-border-warm rounded-full text-primary font-body-md text-body-md font-medium appearance-none focus:outline-none focus:border-primary transition-colors cursor-pointer" name="jam_mulai">
+<option value="08:00">08:00 WIB</option>
+<option selected="" value="09:00">09:00 WIB</option>
+<option value="10:00">10:00 WIB</option>
+<option value="13:00">13:00 WIB</option>
+<option value="14:00">14:00 WIB</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-[16px] pointer-events-none">expand_more</span>
+</div>
+</div>
+<!-- Durasi Sewa (durasi_jam) -->
+<div class="space-y-1.5">
+<label class="font-label-sm text-label-sm text-secondary uppercase tracking-wider block">
+                  Durasi Sewa
+                </label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3 text-secondary text-[18px] pointer-events-none">timelapse</span>
+<select class="w-full pl-9 pr-8 py-2.5 bg-surface-bright border border-border-warm rounded-full text-primary font-body-md text-body-md font-medium appearance-none focus:outline-none focus:border-primary transition-colors cursor-pointer" name="durasi_jam">
+<option value="2">2 Jam</option>
+<option selected="" value="4">4 Jam</option>
+<option value="8">8 Jam</option>
+<option value="full">Seharian (Full Day)</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 text-secondary text-[16px] pointer-events-none">expand_more</span>
+</div>
+</div>
+</div>
+<!-- Jam Selesai Auto-Calculated Indicator (jam_selesai) -->
+<div class="flex items-center justify-between px-4 py-2.5 bg-surface-bright rounded-xl border border-border-warm text-body-md">
+<div class="flex items-center space-x-2 text-secondary font-label-md text-label-md">
+<span class="">Jam Selesai:</span>
+<strong class="text-primary font-semibold font-code-monetary">13:00 WIB</strong>
+</div>
+<div class="flex items-center text-status-active font-label-sm text-label-sm font-semibold space-x-1">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span class="">Waktu Tersedia</span>
+</div>
+</div>
+</div>
+<!-- PROMO VOUCHER SECTION (nama_diskon) -->
+<div class="space-y-2 pt-1 border-t border-border-warm">
+<label class="font-label-sm text-label-sm text-secondary uppercase tracking-wider block">
+              Voucher Promo / Kode Referral
+            </label>
+<div class="flex items-center space-x-2">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-secondary text-[18px]">sell</span>
+<input class="w-full pl-10 pr-24 py-2.5 bg-surface-bright border border-border-warm rounded-full text-primary font-code-monetary text-xs font-semibold focus:outline-none uppercase" name="nama_diskon" placeholder="MASUKKAN KODE" type="text" value="WORKMATES20">
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary text-xs font-medium underline" type="button">
+                  Ganti
+                </button>
+</div>
+</div>
+<!-- Active Applied Voucher Pill -->
+<div class="flex items-center justify-between bg-[rgba(74,107,93,0.08)] border border-[rgba(74,107,93,0.2)] px-3.5 py-2 rounded-xl text-status-active">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span class="font-label-sm text-label-sm font-medium">Diskon Spesial 20% Member Baru</span>
+</div>
+<button class="text-status-active/70 hover:text-status-active transition-colors p-0.5">
+<span class="material-symbols-outlined text-[16px]">close</span>
+</button>
+</div>
+</div><div class="space-y-3 pt-3 border-t border-border-warm" id="payment-method-section">
+  <div>
+    <h3 class="font-headline-sm text-[18px] text-primary font-medium tracking-tight">Select Payment Method</h3>
+    <p class="font-body-md text-xs text-secondary mt-0.5">Choose how you would like to complete your reservation</p>
+  </div>
+
+  <!-- Payment Method Toggle Pills -->
+  <div class="grid grid-cols-2 p-1 bg-surface-bright rounded-xl border border-border-warm gap-1 text-label-md">
+    <button type="button" id="btn-method-bank" onclick="document.getElementById('method-bank-content').classList.remove('hidden'); document.getElementById('method-qris-content').classList.add('hidden'); this.className='flex items-center justify-center space-x-1.5 py-2 px-3 rounded-lg bg-surface-pure text-primary font-semibold shadow-sm border border-border-warm transition-all text-xs'; document.getElementById('btn-method-qris').className='flex items-center justify-center space-x-1.5 py-2 px-3 rounded-lg text-secondary hover:text-primary font-medium transition-all text-xs';" class="flex items-center justify-center space-x-1.5 py-2 px-3 rounded-lg bg-surface-pure text-primary font-semibold shadow-sm border border-border-warm transition-all text-xs">
+      <span class="material-symbols-outlined text-[16px]">account_balance</span>
+      <span class="">Bank Transfer</span>
+    </button>
+    <button type="button" id="btn-method-qris" onclick="document.getElementById('method-qris-content').classList.remove('hidden'); document.getElementById('method-bank-content').classList.add('hidden'); this.className='flex items-center justify-center space-x-1.5 py-2 px-3 rounded-lg bg-surface-pure text-primary font-semibold shadow-sm border border-border-warm transition-all text-xs'; document.getElementById('btn-method-bank').className='flex items-center justify-center space-x-1.5 py-2 px-3 rounded-lg text-secondary hover:text-primary font-medium transition-all text-xs';" class="flex items-center justify-center space-x-1.5 py-2 px-3 rounded-lg text-secondary hover:text-primary font-medium transition-all text-xs">
+      <span class="material-symbols-outlined text-[16px]">qr_code_scanner</span>
+      <span class="">Instant QRIS</span>
+    </button>
+  </div>
+
+  <!-- Option 1: Bank Transfer View -->
+  <div id="method-bank-content" class="space-y-2.5 pt-1">
+    <!-- BCA Account Card -->
+    <div class="p-3 bg-surface-bright rounded-xl border border-border-warm flex items-center justify-between">
+      <div class="space-y-1">
+        <div class="flex items-center space-x-2">
+          <span class="bg-surface-container text-primary font-code-monetary font-bold text-[10px] px-1.5 py-0.5 rounded border border-border-warm">BCA</span>
+          <span class="font-label-sm text-[11px] text-secondary">PT Moklet Smart Space</span>
+        </div>
+        <p class="font-code-monetary text-xs font-semibold text-primary tracking-wider">8830-1234-9900</p>
+      </div>
+      <button type="button" onclick="navigator.clipboard?.writeText('883012349900'); this.innerText='Tersalin'; setTimeout(() =&gt; this.innerText='Salin', 2000);" class="px-2.5 py-1 text-xs font-label-md font-medium text-primary bg-surface-pure border border-border-warm rounded-full hover:bg-surface-container transition-colors">
+        Salin
+      </button>
+    </div>
+
+    <!-- Mandiri Account Card -->
+    <div class="p-3 bg-surface-bright rounded-xl border border-border-warm flex items-center justify-between">
+      <div class="space-y-1">
+        <div class="flex items-center space-x-2">
+          <span class="bg-surface-container text-primary font-code-monetary font-bold text-[10px] px-1.5 py-0.5 rounded border border-border-warm">MANDIRI</span>
+          <span class="font-label-sm text-[11px] text-secondary">PT Moklet Smart Space</span>
+        </div>
+        <p class="font-code-monetary text-xs font-semibold text-primary tracking-wider">137-00-9876543-2</p>
+      </div>
+      <button type="button" onclick="navigator.clipboard?.writeText('1370098765432'); this.innerText='Tersalin'; setTimeout(() =&gt; this.innerText='Salin', 2000);" class="px-2.5 py-1 text-xs font-label-md font-medium text-primary bg-surface-pure border border-border-warm rounded-full hover:bg-surface-container transition-colors">
+        Salin
+      </button>
+    </div>
+
+    <!-- BNI Account Card -->
+    <div class="p-3 bg-surface-bright rounded-xl border border-border-warm flex items-center justify-between">
+      <div class="space-y-1">
+        <div class="flex items-center space-x-2">
+          <span class="bg-surface-container text-primary font-code-monetary font-bold text-[10px] px-1.5 py-0.5 rounded border border-border-warm">BNI</span>
+          <span class="font-label-sm text-[11px] text-secondary">PT Moklet Smart Space</span>
+        </div>
+        <p class="font-code-monetary text-xs font-semibold text-primary tracking-wider">0987-6543-21</p>
+      </div>
+      <button type="button" onclick="navigator.clipboard?.writeText('0987654321'); this.innerText='Tersalin'; setTimeout(() =&gt; this.innerText='Salin', 2000);" class="px-2.5 py-1 text-xs font-label-md font-medium text-primary bg-surface-pure border border-border-warm rounded-full hover:bg-surface-container transition-colors">
+        Salin
+      </button>
+    </div>
+
+    <p class="font-body-md text-[11px] text-secondary/80 italic leading-relaxed pt-1">
+      * Please transfer the exact net amount. Booking status will be set to Pending until automatically verified.
+    </p>
+  </div>
+
+  <!-- Option 2: Instant QRIS View (Hidden by default) -->
+  <div id="method-qris-content" class="hidden space-y-3 pt-1 text-center">
+    <div class="p-4 bg-surface-bright rounded-2xl border border-border-warm flex flex-col items-center justify-center space-y-3">
+      <div class="flex items-center space-x-2 px-2.5 py-0.5 bg-surface-pure rounded-full border border-border-warm">
+        <span class="font-code-monetary font-bold text-[11px] tracking-widest text-primary">QRIS</span>
+        <span class="text-secondary/40 text-xs">|</span>
+        <span class="font-label-sm text-[10px] text-secondary uppercase">Standar Pembayaran Nasional</span>
+      </div>
+      <div class="p-2.5 bg-surface-pure rounded-xl border border-border-warm shadow-sm flex items-center justify-center">
+        <svg class="w-36 h-36 text-primary" fill="currentColor" viewBox="0 0 100 100">
+          <path d="M10,10 h30 v30 h-30 z M15,15 v20 h20 v-20 z M20,20 h10 v10 h-10 z" fill-rule="evenodd"></path>
+          <path d="M60,10 h30 v30 h-30 z M65,15 v20 h20 v-20 z M70,20 h10 v10 h-10 z" fill-rule="evenodd"></path>
+          <path d="M10,60 h30 v30 h-30 z M15,65 v20 h20 v-20 z M20,70 h10 v10 h-10 z" fill-rule="evenodd"></path>
+          <rect x="45" y="12" width="8" height="6"></rect>
+          <rect x="45" y="24" width="6" height="12"></rect>
+          <rect x="54" y="32" width="8" height="6"></rect>
+          <rect x="22" y="46" width="14" height="6"></rect>
+          <rect x="42" y="46" width="12" height="8"></rect>
+          <rect x="60" y="46" width="16" height="6"></rect>
+          <rect x="82" y="46" width="8" height="14"></rect>
+          <rect x="46" y="60" width="8" height="18"></rect>
+          <rect x="60" y="58" width="10" height="8"></rect>
+          <rect x="76" y="66" width="14" height="8"></rect>
+          <rect x="60" y="72" width="8" height="18"></rect>
+          <rect x="74" y="80" width="16" height="10"></rect>
+        </svg>
+      </div>
+      <div class="flex flex-wrap items-center justify-center gap-1.5 pt-0.5 text-[10px] font-semibold text-secondary">
+        <span class="px-2 py-0.5 bg-surface-pure rounded border border-border-warm">GoPay</span>
+        <span class="px-2 py-0.5 bg-surface-pure rounded border border-border-warm">OVO</span>
+        <span class="px-2 py-0.5 bg-surface-pure rounded border border-border-warm">ShopeePay</span>
+        <span class="px-2 py-0.5 bg-surface-pure rounded border border-border-warm">Dana</span>
+        <span class="px-2 py-0.5 bg-surface-pure rounded border border-border-warm">BCA</span>
+      </div>
+      <p class="font-body-md text-xs text-secondary leading-normal max-w-[260px]">
+        Scan with any Indonesian e-wallet or banking app to pay instantly.
+      </p>
+    </div>
+  </div>
+</div>
+<!-- TRANSPARENT BILL BREAKDOWN -->
+<div class="space-y-3 pt-3 border-t border-border-warm">
+<div class="flex items-center justify-between text-body-md text-secondary">
+<span class="">Tarif Dasar (total_harga_awal: IDR 120.000 × 4 jam)</span>
+<span class="font-code-monetary text-primary">IDR 480.000</span>
+</div>
+<div class="flex items-center justify-between text-body-md text-secondary">
+<span class="flex items-center space-x-1">
+<span class="">Service &amp; Hospitality Fee</span>
+<span class="material-symbols-outlined text-[14px] text-secondary/70 cursor-help" title="Complimentary daily concierge and high speed internet">info</span>
+</span>
+<span class="font-code-monetary text-status-active font-medium">IDR 0 (Free)</span>
+</div>
+<div class="flex items-center justify-between text-body-md text-status-active">
+<span class="flex items-center space-x-1">
+<span class="">Promo Member (potongan_diskon) [WORKMATES20]</span>
+</span>
+<span class="font-code-monetary font-semibold">- IDR 96.000</span>
+</div>
+<div class="flex items-center justify-between text-body-md text-secondary">
+<span class="">Pajak Restoran PB1 &amp; Fasilitas</span>
+<span class="font-body-md text-secondary text-xs">Termasuk (Nett)</span>
+</div>
+<div class="h-px w-full bg-border-warm my-2"></div>
+<!-- Final Net Total -->
+<div class="flex items-baseline justify-between pt-1">
+<div>
+<span class="block font-title-md text-title-md text-primary font-bold">Total Pembayaran (Nett)</span>
+<span class="block font-label-sm text-label-sm text-secondary">Semua pajak &amp; layanan sudah termasuk</span>
+</div>
+<div class="text-right">
+<span class="font-code-monetary text-2xl font-bold text-primary tracking-tight">IDR 384.000</span>
+</div>
+</div>
+</div>
+<!-- BOOKING CTA BUTTON -->
+<div class="space-y-3 pt-2"><button class="w-full py-4 px-8 rounded-full bg-primary hover:bg-primary/90 active:scale-[0.98] text-on-primary font-title-md text-title-md flex items-center justify-center space-x-2 transition-all duration-150 shadow-sm cursor-pointer group">
+  <span class="">Pay &amp; Submit Reservation</span>
+  <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<!-- Frictionless guarantee subtext -->
+<p class="font-label-sm text-label-sm text-secondary text-center leading-relaxed flex items-center justify-center space-x-1">
+  <span class="material-symbols-outlined text-[14px] text-status-active">lock</span>
+  <span class="">Secure 256-bit encrypted checkout. Instant reservation confirmation &amp; digital pass.</span>
+</p></div>
+</div>
+<!-- HOST CONCIERGE GUARANTEE CARD -->
+<div class="bg-surface-pure rounded-2xl border border-border-warm p-4 flex items-center space-x-3.5">
+<div class="w-11 h-11 rounded-full bg-surface-container-high border border-border-warm flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-[22px]">room_service</span>
+</div>
+<div class="space-y-0.5">
+<h4 class="font-title-md text-[14px] text-primary font-semibold">Concierge on Arrival</h4>
+<p class="text-secondary font-body-md text-body-md text-xs leading-tight">
+              On-demand Concierge assistance ready on arrival at Senopati Sanctuary lobby.
+            </p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FOOTER -->
+<footer class="bg-surface-container-low border-t border-border-warm/30 mt-auto">
+<div class="max-w-[1360px] mx-auto px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between items-center w-full gap-4">
+<div class="flex items-center space-x-3">
+<span class="font-headline-sm text-headline-sm text-primary">WorkMates</span>
+<span class="text-secondary/40 text-xs">•</span>
+<p class="text-secondary text-label-sm font-label-sm">
+          © 2025 Sonder Spaces Hospitality Inc. All rights reserved.
+        </p>
+</div>
+<div class="flex flex-wrap items-center gap-6 text-label-sm font-label-sm">
+<a class="text-secondary hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="text-secondary hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-secondary hover:text-primary transition-colors" href="#">Architectural Standards</a>
+<a class="text-secondary hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+
+
+</body></html>

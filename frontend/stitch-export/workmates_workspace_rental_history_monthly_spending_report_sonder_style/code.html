@@ -1,0 +1,658 @@
+<!DOCTYPE html><html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Rental History &amp; Folio Statements — WorkMates Hospitality</title>
+<!-- Material Symbols Outlined Font -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Google Fonts: Playfair Display, Plus Jakarta Sans, JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration matching Visual Tokens -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container": "#efeeea",
+            "primary-container": "#1c1b1b",
+            "on-surface-variant": "#444748",
+            "on-primary-fixed": "#1c1b1b",
+            "outline-variant": "#c4c7c7",
+            "surface-dim": "#dbdad6",
+            "status-finished": "#333333",
+            "on-background": "#1b1c1a",
+            "status-pending": "#C88A2B",
+            "on-secondary-fixed": "#1b1c1c",
+            "tertiary-container": "#1c1b1a",
+            "inverse-primary": "#c8c6c5",
+            "error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#474646",
+            "on-tertiary-fixed": "#1c1b1a",
+            "status-cancelled": "#9E3B3B",
+            "secondary-fixed-dim": "#c7c6c6",
+            "error": "#ba1a1a",
+            "surface-variant": "#e4e2de",
+            "primary-fixed": "#e5e2e1",
+            "surface-container-low": "#f5f3ef",
+            "on-primary": "#ffffff",
+            "surface": "#fbf9f5",
+            "status-active": "#4A6B5D",
+            "surface-bright": "#fbf9f5",
+            "on-tertiary": "#ffffff",
+            "surface-pure": "#FFFFFF",
+            "primary-fixed-dim": "#c8c6c5",
+            "secondary-container": "#e1dfdf",
+            "secondary-fixed": "#e4e2e2",
+            "inverse-on-surface": "#f2f0ed",
+            "outline": "#747878",
+            "background": "#fbf9f5",
+            "surface-container-highest": "#e4e2de",
+            "on-surface": "#1b1c1a",
+            "on-tertiary-fixed-variant": "#484645",
+            "on-tertiary-container": "#868381",
+            "border-warm": "#EBE7DF",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed": "#e6e1df",
+            "on-error-container": "#93000a",
+            "inverse-surface": "#30312e",
+            "surface-container-high": "#eae8e4",
+            "primary": "#000000",
+            "tertiary": "#000000",
+            "on-secondary-container": "#626262",
+            "on-secondary-fixed-variant": "#464747",
+            "surface-container-lowest": "#ffffff",
+            "on-error": "#ffffff",
+            "secondary": "#5e5e5e",
+            "tertiary-fixed-dim": "#cac6c3",
+            "surface-tint": "#5f5e5e",
+            "on-primary-container": "#858383"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-2xl": "4rem",
+            "gutter-mobile": "1rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "margin": "3rem",
+            "space-xs": "0.25rem",
+            "margin-mobile": "1.25rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "headline-lg-mobile": ["Playfair Display", "serif"],
+            "label-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "title-md": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-lg": ["Playfair Display", "serif"],
+            "headline-md": ["Playfair Display", "serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "display-lg-mobile": ["Playfair Display", "serif"],
+            "code-monetary": ["JetBrains Mono", "monospace"],
+            "label-md": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-sm": ["Playfair Display", "serif"],
+            "display-lg": ["Playfair Display", "serif"]
+          },
+          "fontSize": {
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "500" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "code-monetary": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 350, 'GRAD' 0, 'opsz' 24;
+      font-size: 20px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #EBE7DF;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col selection:bg-surface-variant selection:text-primary">
+<!-- ================= TOP APP BAR (Shared Component JSON Blueprint) ================= -->
+<header class="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-border-warm transition-all duration-200">
+<div class="flex justify-between items-center w-full px-6 md:px-12 py-5 max-w-full">
+<!-- Left Brand & Sanctuary Location Badge -->
+<div class="flex items-center gap-4">
+<a class="text-headline-md font-headline-md tracking-tight text-primary hover:opacity-90 transition-opacity" href="#">
+          WorkMates
+        </a>
+<div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 bg-surface-container-low rounded-full border border-border-warm text-label-sm font-label-sm text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-status-active"></span>
+          Senopati Sanctuary
+        </div>
+</div>
+<!-- Navigation Links (Spaces, Locations, Journal, Concierge) -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-secondary hover:text-primary transition-colors text-label-md font-label-md" href="#">Spaces</a>
+<a class="text-secondary hover:text-primary transition-colors text-label-md font-label-md" href="#">Locations</a>
+<a class="text-secondary hover:text-primary transition-colors text-label-md font-label-md" href="#">Journal</a>
+<a class="text-secondary hover:text-primary transition-colors text-label-md font-label-md" href="#">Concierge</a>
+<a class="text-primary font-semibold border-b border-primary pb-1 text-label-md font-label-md" href="#">Folio &amp; Statements</a>
+</nav>
+<!-- Right Action Cluster: Notifications, Help, User Profile -->
+<div class="flex items-center gap-3">
+<button aria-label="Help and Concierge" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-secondary hover:text-primary" type="button">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button aria-label="Notifications" class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors text-secondary hover:text-primary relative" type="button">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-status-pending ring-2 ring-surface"></span>
+</button>
+<div class="h-5 w-px bg-border-warm mx-1 hidden sm:block"></div>
+<div class="flex items-center gap-2.5 pl-1">
+<div class="w-9 h-9 rounded-full bg-surface-container border border-border-warm flex items-center justify-center text-label-md font-medium text-primary shadow-sm">
+            JV
+          </div>
+<div class="hidden lg:flex flex-col text-left">
+<span class="text-label-md font-label-md text-primary leading-tight">Julian V.</span>
+<span class="text-label-sm font-label-sm text-secondary leading-tight">Founding Member</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- ================= MAIN CONTENT CANVAS ================= -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-12">
+<!-- BREADCRUMBS -->
+<nav aria-label="Breadcrumb" class="flex items-center gap-2 text-label-sm font-label-sm text-secondary mb-6">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="text-outline-variant">/</span>
+<a class="hover:text-primary transition-colors" href="#">Guest Portal</a>
+<span class="text-outline-variant">/</span>
+<span class="text-primary font-medium">Statements &amp; History</span>
+</nav>
+<!-- PAGE HEADER -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-border-warm">
+<div class="max-w-2xl">
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight mb-2">
+          Rental History &amp; Folio Statements
+        </h1>
+<p class="font-body-md text-body-md text-secondary leading-relaxed">
+          Review your completed workspace reservations, archive of architectural stays, and downloadable VAT/PB1 tax invoices.
+        </p>
+</div>
+<div class="flex items-center gap-3">
+<button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-border-warm bg-surface-pure text-primary text-label-md font-label-md hover:bg-surface-container-low transition-colors shadow-sm active:scale-95 duration-150" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+          Download Annual Tax Summary (PDF)
+        </button>
+</div>
+</div>
+<!-- FINANCIAL SUMMARY ANALYTICS (PRD Compliant 2-Card Bento) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+<!-- Card 1: Total Reservations Counter -->
+<div class="p-6 md:p-8 rounded-2xl bg-surface-pure border border-border-warm hover:border-outline-variant transition-all duration-200">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="text-label-sm font-label-sm text-secondary tracking-wider">LIFETIME ENGAGEMENT</span>
+<h2 class="font-headline-md text-headline-md text-primary mt-1">14 Stays Completed</h2>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary border border-border-warm">
+<span class="material-symbols-outlined">meeting_room</span>
+</div>
+</div>
+<div class="mt-6 pt-5 border-t border-border-warm flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm px-2.5 py-1 rounded-full bg-surface-container-low text-primary font-medium">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+              +2 this month
+            </span>
+<span class="text-body-md font-body-md text-secondary">•</span>
+<span class="text-label-md font-label-md text-secondary">56 Hours of Focus</span>
+</div>
+<span class="text-label-sm font-label-sm text-secondary font-code-monetary">Top: Suite 04 (Senopati)</span>
+</div>
+</div>
+<!-- Card 2: Total Spending (IDR) -->
+<div class="p-6 md:p-8 rounded-2xl bg-surface-pure border border-border-warm hover:border-outline-variant transition-all duration-200">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<span class="text-label-sm font-label-sm text-secondary tracking-wider">TOTAL EXPENDITURE (IDR)</span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="font-code-monetary text-headline-md font-code-monetary font-semibold text-primary">IDR 5.129.000</span>
+</div>
+</div>
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center text-primary border border-border-warm">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+</div>
+<div class="mt-6 pt-5 border-t border-border-warm flex flex-wrap items-center justify-between gap-3">
+<span class="text-label-sm font-label-sm text-secondary">
+            Nett inclusive of hospitality taxes (PB1 10%) &amp; perks
+          </span>
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm px-2.5 py-1 rounded-full bg-[#4A6B5D]/10 text-status-active font-medium">
+<span class="material-symbols-outlined text-[14px]">loyalty</span>
+            Saved IDR 780.000 via Perks
+          </span>
+</div>
+</div>
+</section>
+<!-- FILTER & SEARCH CONTROLS BAR -->
+<section class="bg-surface-pure p-4 md:p-5 rounded-2xl border border-border-warm mb-8">
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+<!-- Search Input -->
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-secondary text-[20px]">
+            search
+          </span>
+<input class="w-full pl-11 pr-4 py-2.5 bg-surface text-body-md font-body-md text-primary rounded-full border border-border-warm focus:outline-none focus:border-primary focus:ring-0 placeholder:text-secondary/70 transition-colors" placeholder="Search by booking code, sanctuary name, or space..." type="text">
+</div>
+<!-- Dropdowns & Filter Actions -->
+<div class="flex flex-wrap items-center gap-2.5">
+<!-- Month Dropdown -->
+<div class="relative">
+<select class="appearance-none bg-surface pl-4 pr-9 py-2.5 rounded-full border border-border-warm text-label-md font-label-md text-primary focus:outline-none focus:border-primary cursor-pointer">
+<option value="all">All Months</option>
+<option selected="" value="10">October (Current)</option>
+<option value="09">September</option>
+<option value="08">August</option>
+<option value="07">July</option>
+<option value="06">June</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">
+              expand_more
+            </span>
+</div>
+<!-- Year Dropdown -->
+<div class="relative">
+<select class="appearance-none bg-surface pl-4 pr-9 py-2.5 rounded-full border border-border-warm text-label-md font-label-md text-primary focus:outline-none focus:border-primary cursor-pointer">
+<option selected="" value="2025">2025</option>
+<option value="2024">2024</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">
+              expand_more
+            </span>
+</div>
+<!-- Sanctuary Location Filter -->
+<div class="relative">
+<select class="appearance-none bg-surface pl-4 pr-9 py-2.5 rounded-full border border-border-warm text-label-md font-label-md text-primary focus:outline-none focus:border-primary cursor-pointer">
+<option selected="" value="all">All Locations • Senopati &amp; Menteng</option>
+<option value="senopati">Senopati Sanctuary</option>
+<option value="menteng">Menteng Pavilion</option>
+</select>
+<span class="material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-[18px]">
+              expand_more
+            </span>
+</div>
+<!-- Reset Filter Button -->
+<button class="p-2.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container-low text-secondary hover:text-primary transition-colors flex items-center justify-center" title="Reset Filters" type="button">
+<span class="material-symbols-outlined text-[18px]">restart_alt</span>
+</button>
+</div>
+</div>
+</section>
+<!-- FOLIO TABLE & TRANSACTION LIST (PRD Compliant) -->
+<section class="bg-surface-pure rounded-2xl border border-border-warm overflow-hidden shadow-[0_4px_20px_rgba(18,18,18,0.02)] mb-8">
+<!-- Table Header Bar -->
+<div class="px-6 py-4 border-b border-border-warm bg-surface-container-low flex items-center justify-between">
+<h3 class="font-headline-sm text-headline-sm text-primary">Archived Stays &amp; Invoices</h3>
+<span class="text-label-sm font-label-sm text-secondary">Currency: IDR (Rupiah)</span>
+</div>
+<!-- Table Content Container with Horizontal Scroll Support -->
+<div class="overflow-x-auto custom-scrollbar">
+<table class="w-full text-left border-collapse min-w-[960px]">
+<thead>
+<tr class="border-b border-border-warm text-label-sm font-label-sm text-secondary tracking-wider bg-surface/50">
+<th class="py-4 px-6 font-semibold" scope="col">DATE &amp; FOLIO CODE</th>
+<th class="py-4 px-6 font-semibold" scope="col">SANCTUARY &amp; SPACE TYPE</th>
+<th class="py-4 px-6 font-semibold" scope="col">DURATION / SCHEDULE</th>
+<th class="py-4 px-6 font-semibold" scope="col">PERK / PROMO APPLIED</th>
+<th class="py-4 px-6 font-semibold" scope="col">TOTAL SETTLED</th>
+<th class="py-4 px-6 font-semibold text-right" scope="col">FOLIO &amp; TAX RECEIPT</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-warm text-body-md font-body-md">
+<!-- Row 1: Suite 04 Senopati -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="font-medium text-primary">15 Oct 2025</div>
+<div class="font-code-monetary text-[12px] text-secondary tracking-tight mt-0.5">BOOK-20251015-0018</div>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg overflow-hidden border border-border-warm shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A serene Scandinavian Japanese minimalist wooden home office with a natural light oak desk, bonsai tree, tea set, and tranquil courtyard garden through large glass windows under soft daylight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAPTB8kK2_aCtuGuuwbfbwkHiALD9pZVxllSXyaorwavvAMrVVKZjklvZWhEB3IB1ZBNiOpMefKjtTeLFKmwt8PL3pJ5LpKxdWs1eJ1vxk4myavJHyEsO5iRmy4UTJWa9NT4mxLfa6zUrN9KQN5Ugnm50UhbgDQOmnJvyd_9Ybwy9wUrOHZV8NDxyhpEEcz6jckctSVzOMgi3WrsFHBv3vPIL6uDm8bFLR4SttoZVYbvu5DHwc9TDkPnA">
+</div>
+<div>
+<div class="font-medium text-primary">The Sanctuary Suite 04</div>
+<div class="text-label-sm font-label-sm text-secondary">Private Studio • Senopati Sanctuary</div>
+</div>
+</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="text-primary font-medium">8 Hours</div>
+<div class="text-label-sm font-label-sm text-secondary">09:00 — 17:00 WIB</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-surface-container-high text-primary border border-border-warm font-code-monetary">
+                  WORKMATES20 (-IDR 80.000)
+                </span>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="font-code-monetary font-semibold text-primary">IDR 320.000</span>
+<div class="text-label-sm text-secondary text-[11px]">PB1 10% Included</div>
+</td>
+<td class="py-5 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2.5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-status-finished/10 text-status-finished font-medium">
+                    Settled
+                  </span>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container text-label-sm font-label-sm text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+                    Receipt PDF
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Executive Walnut Suite -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="font-medium text-primary">12 Oct 2025</div>
+<div class="font-code-monetary text-[12px] text-secondary tracking-tight mt-0.5">BOOK-20251012-0094</div>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg overflow-hidden border border-border-warm shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A modern executive office interior with dark walnut slatted wood acoustic walls, warm pendant lighting, bespoke leather chair, and clean architectural lines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbVToySCcFA9T9YLHKg3CYaM9E7Uu2ILWrwfmDMQDGcaFCRyg2C9p4MT82qIa8cxMBwU_td6_R3JWFd01Fq6Je-eOnhuHyUwWV4BdBhv2RlIAjIeWXfFcPskY6ubAiWHzXwGDhJEqaJexXcuoi2cqrXpAgjTxDx5L6JfTnQwNUYG5D-xcFVW_RB-vhMbhhnacWOcG81EcTa0dJ64JAQVc4II8SBQmvkJ8Q2WwL86XIN0Pna5P5bzzBJQ">
+</div>
+<div>
+<div class="font-medium text-primary">Executive Walnut Suite</div>
+<div class="text-label-sm font-label-sm text-secondary">Private Office • Menteng Pavilion</div>
+</div>
+</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="text-primary font-medium">4 Hours</div>
+<div class="text-label-sm font-label-sm text-secondary">13:00 — 17:00 WIB</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-surface-container-high text-primary border border-border-warm font-code-monetary">
+                  FOUNDINGMEMBER (-IDR 150.000)
+                </span>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="font-code-monetary font-semibold text-primary">IDR 384.000</span>
+<div class="text-label-sm text-secondary text-[11px]">PB1 10% Included</div>
+</td>
+<td class="py-5 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2.5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-status-finished/10 text-status-finished font-medium">
+                    Settled
+                  </span>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container text-label-sm font-label-sm text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+                    Receipt PDF
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 3: The Boardroom Pavilion -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="font-medium text-primary">04 Oct 2025</div>
+<div class="font-code-monetary text-[12px] text-secondary tracking-tight mt-0.5">BOOK-20251004-0041</div>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg overflow-hidden border border-border-warm shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="An expansive boutique boardroom pavilion featuring a monolithic travertine conference table, matte black metal accents, linen drapery, and soft diffuse perimeter lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAX0_GXv-tOhLh1wjLGRo-x_p9AHMqz4zTpGVB4Bq6-l25RBUeUz06fD4HJ5eOEHCXCeuyq8_pPseaPkmjV1tLrWhwepQ3VuUACxGepRGGlF4MSodU3cSvb60uoVRAo1pLPnRcoR3jGlzV5nJ2QobCnukMjn2dFWjnXac2Sfh4RN7RkJ8ulXK39KyMVqh0BMylKrxErQM3d7CAztX54uaNkBTI44JBqBWhy-55H8puy7tJwxltpXeb17g">
+</div>
+<div>
+<div class="font-medium text-primary">The Boardroom Pavilion</div>
+<div class="text-label-sm font-label-sm text-secondary">Meeting Room • Senopati Sanctuary</div>
+</div>
+</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="text-primary font-medium">5 Hours</div>
+<div class="text-label-sm font-label-sm text-secondary">10:00 — 15:00 WIB</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="text-secondary text-label-sm font-label-sm">None / Standard Rate</span>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="font-code-monetary font-semibold text-primary">IDR 1.000.000</span>
+<div class="text-label-sm text-secondary text-[11px]">PB1 10% Included</div>
+</td>
+<td class="py-5 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2.5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-status-finished/10 text-status-finished font-medium">
+                    Settled
+                  </span>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container text-label-sm font-label-sm text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+                    Receipt PDF
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 4: The Atelier Hot Desk -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="font-medium text-primary">28 Sep 2025</div>
+<div class="font-code-monetary text-[12px] text-secondary tracking-tight mt-0.5">BOOK-20250928-0112</div>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg overflow-hidden border border-border-warm shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A dedicated silent co-working hot desk with brass desk lamp, neutral ceramic mug, natural wood desk partitions, and soft atmospheric natural light." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAG1dVk2KwXUDfQOhzxsi4YyzBQVDnl7NHgW3AyCFMogOGM_N-6BDlq-QdKAAc3RwlaatOXwirAsHHR8UZSLeFDVGOFxhxlH_Ezh_GoLv62dabkmNZpnP4yEdK43kmO4B5yqGeE72lOHj5IGL29RU6GzD07tfSm9EXAiO2c2Y_5C3rIEPGEcuqAchLSgA1Wg6vulRyZvEVoDPf5zFCqHoFr9JyURvMVhq8Lo43bbSCr4ISKna3mfZRjsg">
+</div>
+<div>
+<div class="font-medium text-primary">The Atelier Hot Desk • Desk 12</div>
+<div class="text-label-sm font-label-sm text-secondary">Dedicated Silent Desk • Senopati</div>
+</div>
+</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="text-primary font-medium">6 Hours</div>
+<div class="text-label-sm font-label-sm text-secondary">11:00 — 17:00 WIB</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-surface-container-high text-primary border border-border-warm font-code-monetary">
+                  FALLPASS15 (-IDR 50.000)
+                </span>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="font-code-monetary font-semibold text-primary">IDR 275.000</span>
+<div class="text-label-sm text-secondary text-[11px]">PB1 10% Included</div>
+</td>
+<td class="py-5 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2.5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-status-finished/10 text-status-finished font-medium">
+                    Settled
+                  </span>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container text-label-sm font-label-sm text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+                    Receipt PDF
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 5: The Library Mezzanine Booth -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="font-medium text-primary">19 Sep 2025</div>
+<div class="font-code-monetary text-[12px] text-secondary tracking-tight mt-0.5">BOOK-20250919-0077</div>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg overflow-hidden border border-border-warm shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="An architectural private library phone booth booth lined with tactile felt fabric, recessed warm LED vertical strip lighting, and ergonomic wooden bench in an upscale office." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoEIds6q5wVAiKOZVONkh7ybMEkz42hBkrA3Ie0nSZgXs1_JHflRnXHEDcTORAabpxDKh6OIDtIX0o8TlbK6UvzwTFa2Hh_kEmuoELhJRzyEvEdsSdBwwgYyT9Wh8gDQyEUl7ll2UKApv_jK4InG_pjHX6d7ipOrQso5Hv78Ve-v3Zaz9ziZmNOfKrWjgzx34X7dBSTyVzlei0Mp9tdkeMSEsmE5OfwFYAcXETyXKzs9NQyV7cYoDX6w">
+</div>
+<div>
+<div class="font-medium text-primary">The Library Mezzanine Booth</div>
+<div class="text-label-sm font-label-sm text-secondary">Acoustic Focus Booth • Menteng</div>
+</div>
+</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="text-primary font-medium">3 Hours</div>
+<div class="text-label-sm font-label-sm text-secondary">14:00 — 17:00 WIB</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="text-secondary text-label-sm font-label-sm">None / Standard Rate</span>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="font-code-monetary font-semibold text-primary">IDR 150.000</span>
+<div class="text-label-sm text-secondary text-[11px]">PB1 10% Included</div>
+</td>
+<td class="py-5 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2.5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-status-finished/10 text-status-finished font-medium">
+                    Settled
+                  </span>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container text-label-sm font-label-sm text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+                    Receipt PDF
+                  </button>
+</div>
+</td>
+</tr>
+<!-- Row 6: The Glass Pavilion Penthouse -->
+<tr class="hover:bg-surface transition-colors group">
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="font-medium text-primary">03 Sep 2025</div>
+<div class="font-code-monetary text-[12px] text-secondary tracking-tight mt-0.5">BOOK-20250903-0003</div>
+</td>
+<td class="py-5 px-6">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg overflow-hidden border border-border-warm shrink-0 relative bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A sunlit penthouse workspace suite overlooking lush tropical city foliage, featuring floor to ceiling glass walls, bleached oak carpentry, and minimal midcentury modern styling." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8LFI0xk1-VjBBfExUWWkPiFww4oD2rZio7qzlyPAZEis8m3faZWrTtcdg08XD04WDc4dQTTB71_bQQYX-RDZsDmu4QILUpxJ_Avt0GzLsQoD-XHRjFcQ7Cq6-Lu8bMZMzj6DyxtTcw2dVQblhbNu6B1Fr7qUpU3RChpiIofDn6dXij17MLaywcqcNJWYCVpPxZy3Bw0G9_7sjuufizT4gGWO3i4GM2v3FQstkDpYvaeGdH_b95UC8xQ">
+</div>
+<div>
+<div class="font-medium text-primary">Glass Pavilion Penthouse</div>
+<div class="text-label-sm font-label-sm text-secondary">Full Day Pass • Senopati Sanctuary</div>
+</div>
+</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<div class="text-primary font-medium">10 Hours</div>
+<div class="text-label-sm font-label-sm text-secondary">08:30 — 18:30 WIB</div>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-surface-container-high text-primary border border-border-warm font-code-monetary">
+                  MEMBERDAY50 (-IDR 500.000)
+                </span>
+</td>
+<td class="py-5 px-6 whitespace-nowrap">
+<span class="font-code-monetary font-semibold text-primary">IDR 3.000.000</span>
+<div class="text-label-sm text-secondary text-[11px]">PB1 10% Included</div>
+</td>
+<td class="py-5 px-6 text-right whitespace-nowrap">
+<div class="flex items-center justify-end gap-2.5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-status-finished/10 text-status-finished font-medium">
+                    Settled
+                  </span>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container text-label-sm font-label-sm text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px]">receipt</span>
+                    Receipt PDF
+                  </button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- PAGINATION & RECORD STATUS FOOTER -->
+<div class="px-6 py-4 border-t border-border-warm bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-label-sm font-label-sm text-secondary">
+          Showing <span class="font-semibold text-primary">6</span> of <span class="font-semibold text-primary">14</span> completed stays
+        </div>
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-1.5 rounded-full border border-border-warm bg-surface text-secondary text-label-sm font-label-sm opacity-50 cursor-not-allowed" disabled="" type="button">
+            Previous
+          </button>
+<button class="w-8 h-8 rounded-full bg-primary text-on-primary text-label-sm font-label-sm flex items-center justify-center font-medium" type="button">
+            1
+          </button>
+<button class="w-8 h-8 rounded-full hover:bg-surface border border-transparent hover:border-border-warm text-secondary text-label-sm font-label-sm flex items-center justify-center font-medium transition-colors" type="button">
+            2
+          </button>
+<button class="w-8 h-8 rounded-full hover:bg-surface border border-transparent hover:border-border-warm text-secondary text-label-sm font-label-sm flex items-center justify-center font-medium transition-colors" type="button">
+            3
+          </button>
+<button class="px-3.5 py-1.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container text-primary text-label-sm font-label-sm transition-colors" type="button">
+            Next
+          </button>
+</div>
+</div>
+</section>
+<!-- CONCIERGE & FINANCIAL SUPPORT BANNER -->
+<section class="rounded-2xl border border-border-warm bg-surface-pure p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+<div class="max-w-xl">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low border border-border-warm text-label-sm font-label-sm text-secondary mb-3">
+<span class="material-symbols-outlined text-[15px]">corporate_fare</span>
+          Corporate Folio &amp; Tax Compliance
+        </div>
+<h3 class="font-headline-sm text-headline-sm text-primary mb-1">
+          Need a consolidated corporate statement or custom VAT invoice?
+        </h3>
+<p class="font-body-md text-body-md text-secondary">
+          Our hospitality finance desk can supply validated Indonesian Faktur Pajak (NPWP registered) or consolidated multi-member billing statements upon request.
+        </p>
+</div>
+<div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+<a class="px-5 py-2.5 rounded-full border border-border-warm bg-surface hover:bg-surface-container text-primary text-label-md font-label-md text-center transition-colors" href="mailto:billing@workmates.com">
+          Email Finance Desk
+        </a>
+<a class="px-6 py-2.5 rounded-full bg-primary text-on-primary hover:bg-primary/90 text-label-md font-label-md flex items-center justify-center gap-2 transition-all active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+          WhatsApp Concierge
+        </a>
+</div>
+</section>
+</main>
+<!-- ================= FOOTER (Shared Component JSON Blueprint) ================= -->
+<footer class="bg-surface-container-low border-t border-border-warm mt-12">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-6 md:px-12 py-8 max-w-full gap-4">
+<div class="flex items-center gap-4">
+<span class="text-headline-sm font-headline-sm text-primary">WorkMates</span>
+<span class="text-label-sm font-label-sm text-secondary">
+          © 2025 Sonder Spaces Hospitality Inc. All rights reserved.
+        </span>
+</div>
+<nav class="flex flex-wrap items-center gap-6">
+<a class="text-secondary hover:text-primary transition-colors text-label-sm font-label-sm" href="#">Privacy Policy</a>
+<a class="text-secondary hover:text-primary transition-colors text-label-sm font-label-sm" href="#">Terms of Service</a>
+<a class="text-secondary hover:text-primary transition-colors text-label-sm font-label-sm" href="#">Architectural Standards</a>
+<a class="text-secondary hover:text-primary transition-colors text-label-sm font-label-sm" href="#">Support</a>
+</nav>
+</div>
+</footer>
+</body></html>

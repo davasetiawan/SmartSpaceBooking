@@ -81,6 +81,62 @@ export class PaymentService {
     };
   }
 
+  async createQrisForReservation(reservasiId: number, userId: number) {
+    const reservasi = await this.prisma.reservasi.findUnique({
+      where: { id: reservasiId },
+      include: { 
+        space: true, 
+        member: {
+          include: { users: true }
+        }
+      },
+    });
+
+    if (!reservasi) throw new NotFoundException('Reservasi tidak ditemukan');
+    if (reservasi.id_member !== userId) throw new ForbiddenException('Tidak berhak membayar reservasi ini');
+
+    const qrisMethod = await this.prisma.payment_method.findFirst({
+      where: { tipe: 'qris', is_aktif: true },
+    });
+
+    if (!qrisMethod) throw new NotFoundException('Metode pembayaran QRIS tidak aktif atau tidak ditemukan');
+
+    const orderId = `QRIS-${Date.now()}-${reservasiId}`;
+    const grossAmount = reservasi.total_bayar;
+
+    const midtransResponse: any = await this.midtrans.createQrisCharge({
+      orderId,
+      grossAmount,
+      customerDetails: {
+        firstName: reservasi.member?.nama_member || 'Customer',
+        email: reservasi.member?.users?.email || 'customer@example.com',
+        phone: reservasi.member?.telp,
+      },
+    });
+
+    // Ambil QRIS URL dari actions
+    const qrisAction = midtransResponse.actions?.find((a: any) => a.name === 'generate-qr-code');
+    const qrisUrl = qrisAction?.url;
+
+    await this.prisma.payment_transaction.create({
+      data: {
+        id_reservasi: reservasiId,
+        id_payment_method: qrisMethod.id,
+        midtrans_order_id: orderId,
+        gross_amount: grossAmount,
+        status: 'pending',
+        payment_type: 'qris',
+      },
+    });
+
+    return {
+      qrisUrl,
+      orderId,
+      grossAmount,
+      expiryTime: midtransResponse.expiry_time,
+    };
+  }
+
   async handleMidtransNotification(notificationJson: any) {
     const notification = await this.midtrans.handleNotification(notificationJson);
     

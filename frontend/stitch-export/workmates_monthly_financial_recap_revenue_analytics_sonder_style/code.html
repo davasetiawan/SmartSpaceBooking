@@ -1,0 +1,780 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>WorkMates – Monthly Financial Recap &amp; Revenue Analytics | Executive Portal</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#1b1c1a",
+            "on-error": "#ffffff",
+            "on-surface-variant": "#444748",
+            "surface-container": "#efeeea",
+            "tertiary-fixed-dim": "#cac6c3",
+            "primary-fixed-dim": "#c8c6c5",
+            "secondary": "#5e5e5e",
+            "on-secondary-fixed": "#1b1c1c",
+            "on-primary-fixed": "#1c1b1b",
+            "primary-fixed": "#e5e2e1",
+            "on-background": "#1b1c1a",
+            "status-active": "#4A6B5D",
+            "secondary-fixed": "#e4e2e2",
+            "on-primary-container": "#858383",
+            "inverse-on-surface": "#f2f0ed",
+            "on-primary-fixed-variant": "#474646",
+            "inverse-primary": "#c8c6c5",
+            "status-finished": "#333333",
+            "surface": "#fbf9f5",
+            "on-secondary-fixed-variant": "#464747",
+            "tertiary-fixed": "#e6e1df",
+            "tertiary-container": "#1c1b1a",
+            "surface-bright": "#fbf9f5",
+            "status-pending": "#C88A2B",
+            "inverse-surface": "#30312e",
+            "border-warm": "#EBE7DF",
+            "secondary-container": "#e1dfdf",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-high": "#eae8e4",
+            "surface-container-low": "#f5f3ef",
+            "status-cancelled": "#9E3B3B",
+            "on-tertiary-fixed-variant": "#484645",
+            "background": "#fbf9f5",
+            "surface-tint": "#5f5e5e",
+            "primary-container": "#1c1b1b",
+            "surface-container-highest": "#e4e2de",
+            "surface-variant": "#e4e2de",
+            "surface-dim": "#dbdad6",
+            "secondary-fixed-dim": "#c7c6c6",
+            "primary": "#121212",
+            "on-secondary": "#ffffff",
+            "on-tertiary-fixed": "#1c1b1a",
+            "outline": "#747878",
+            "tertiary": "#000000",
+            "on-error-container": "#93000a",
+            "on-tertiary-container": "#868381",
+            "on-secondary-container": "#626262",
+            "on-primary": "#ffffff",
+            "surface-pure": "#FFFFFF",
+            "outline-variant": "#c4c7c7",
+            "error": "#ba1a1a",
+            "accent-sage": "#4A6B5D",
+            "accent-amber": "#C88A2B",
+            "accent-terracotta": "#9E5B3B",
+            "accent-slate": "#5B6A72"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-mobile": "1.25rem",
+            "space-md": "1rem",
+            "space-sm": "0.5rem",
+            "gutter": "1.5rem",
+            "gutter-mobile": "1rem",
+            "margin": "3rem",
+            "space-2xl": "4rem",
+            "space-xl": "2.5rem",
+            "space-lg": "1.5rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "body-md": ["Plus Jakarta Sans", "sans-serif"],
+            "display-lg-mobile": ["Playfair Display", "serif"],
+            "headline-sm": ["Playfair Display", "serif"],
+            "headline-lg-mobile": ["Playfair Display", "serif"],
+            "label-sm": ["Plus Jakarta Sans", "sans-serif"],
+            "body-lg": ["Plus Jakarta Sans", "sans-serif"],
+            "headline-lg": ["Playfair Display", "serif"],
+            "title-md": ["Plus Jakarta Sans", "sans-serif"],
+            "code-monetary": ["JetBrains Mono", "monospace"],
+            "display-lg": ["Playfair Display", "serif"],
+            "headline-md": ["Playfair Display", "serif"],
+            "label-md": ["Plus Jakarta Sans", "sans-serif"]
+          },
+          "fontSize": {
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "code-monetary": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "500" }],
+            "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.04em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Print Specific Rules */
+    @media print {
+      body {
+        background-color: #FFFFFF !important;
+        color: #121212 !important;
+      }
+      .no-print, header, nav, #period-toolbar-actions, #quick-action-btn, #search-bar {
+        display: none !important;
+      }
+      .print-full-width {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .page-break {
+        page-break-before: always;
+      }
+      .card-print {
+        border: 1px solid #CCCCCC !important;
+        box-shadow: none !important;
+      }
+    }
+
+    /* Clean Subtle Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F5F3EF;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D8D4CC;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #B5B0A6;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-stone-200 selection:text-primary">
+<!-- ================= TOP APP BAR & EXECUTIVE BRAND HEADER ================= -->
+<header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md border-b border-[#EBE7DF] no-print transition-all duration-200">
+  <!-- TIER 1: Top Bar -->
+  <div class="max-w-[1440px] mx-auto px-6 md:px-10 h-20 flex items-center justify-between gap-4">
+    <!-- Left: Brand title & executive badge pill -->
+    <div class="flex items-center gap-3 md:gap-4">
+      <span class="text-[#121212] text-xl font-bold font-serif tracking-tight">SMART SPACE</span>
+      <span class="bg-[#EBE7DF] text-[#121212] text-xs px-3 py-1 rounded-full font-medium">ADMIN PORTAL • Jakarta Hub</span>
+    </div>
+    <!-- Right: Live status, Notification bell, Admin profile pill -->
+    <div class="flex items-center gap-3 md:gap-4">
+      <div class="hidden sm:flex items-center gap-1.5 text-xs font-medium text-[#4A6B5D] bg-[#4A6B5D]/10 px-3 py-1 rounded-full">
+        <span class="w-2 h-2 rounded-full bg-[#4A6B5D]"></span>
+        <span class="">System Online / Front Desk Ready</span>
+      </div>
+      <button class="relative w-9 h-9 rounded-full flex items-center justify-center text-secondary hover:text-primary hover:bg-surface-container transition-colors" title="Notifications">
+        <span class="material-symbols-outlined text-[20px]">notifications</span>
+        <span class="absolute top-1 right-1 w-4 h-4 bg-accent-amber text-white text-[10px] font-bold rounded-full flex items-center justify-center leading-none">4</span>
+      </button>
+      <div class="rounded-full border border-[#EBE7DF] bg-white px-3 py-1.5 flex items-center gap-2 cursor-pointer hover:bg-surface-container transition-colors">
+        <div class="w-7 h-7 rounded-full bg-primary text-white text-xs font-semibold flex items-center justify-center font-serif">
+          JV
+        </div>
+        <span class="text-xs font-medium text-[#121212] hidden md:inline">Julian Vance (Space Owner)</span>
+        <span class="material-symbols-outlined text-[16px] text-secondary">expand_more</span>
+      </div>
+    </div>
+  </div>
+  <!-- TIER 2: Horizontal Tab Strip -->
+  <nav class="max-w-[1440px] mx-auto px-6 md:px-10 flex items-center gap-8 overflow-x-auto no-scrollbar border-t border-[#EBE7DF] pt-3 text-sm">
+    <a href="#" class="text-[#666666] hover:text-[#121212] pb-3 font-medium text-sm whitespace-nowrap transition-colors">Overview</a>
+    <a href="#" class="text-[#666666] hover:text-[#121212] pb-3 font-medium text-sm whitespace-nowrap transition-colors">Property Profile</a>
+    <a href="#" class="text-[#666666] hover:text-[#121212] pb-3 font-medium text-sm whitespace-nowrap transition-colors">Member Directory</a>
+    <a href="#" class="text-[#666666] hover:text-[#121212] pb-3 font-medium text-sm whitespace-nowrap transition-colors">Space Inventory</a>
+    <a href="#" class="text-[#666666] hover:text-[#121212] pb-3 font-medium text-sm whitespace-nowrap transition-colors">Promos &amp; Discounts</a>
+    <a href="#" class="text-[#666666] hover:text-[#121212] pb-3 font-medium text-sm whitespace-nowrap transition-colors">Front Desk &amp; QR</a>
+    <a href="#" class="text-[#666666] hover:text-[#121212] pb-3 font-medium text-sm whitespace-nowrap transition-colors">Master Bookings</a>
+    <a href="#" class="font-semibold text-[#121212] border-b-2 border-[#121212] pb-3 -mb-[1px] whitespace-nowrap">Financial Reports</a>
+  </nav>
+</header>
+<!-- ================= MAIN CONTENT CANVAS ================= -->
+<main class="flex-1 max-w-[1440px] w-full mx-auto px-6 md:px-10 py-8 space-y-8">
+<!-- Breadcrumb Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-label-sm font-label-sm text-secondary">
+<div class="flex items-center gap-2 flex-wrap">
+<a class="hover:text-primary transition-colors" href="#">Home</a>
+<span class="text-secondary/40">/</span>
+<a class="hover:text-primary transition-colors" href="#">Executive Console</a>
+<span class="text-secondary/40">/</span>
+<a class="hover:text-primary transition-colors" href="#">Financial Intelligence</a>
+<span class="text-secondary/40">/</span>
+<span class="text-primary font-medium">Monthly Audit &amp; Revenue Analytics</span>
+</div>
+<div class="flex items-center gap-2 text-[12px] text-secondary font-mono">
+<span class="w-2 h-2 rounded-full bg-accent-sage animate-pulse"></span>
+<span class="">ID: SCR-ADM-09-FIN</span>
+<span class="text-secondary/40">•</span>
+<span class="">LEDGER CLEARED</span>
+</div>
+</div>
+<!-- Title & Top Action Toolbar -->
+<div class="flex flex-col xl:flex-row xl:items-end justify-between gap-6 pb-2">
+<div>
+<div class="inline-flex items-center gap-2 mb-2 px-2.5 py-0.5 rounded-full bg-surface-container text-secondary text-label-sm font-label-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-[14px] text-accent-amber">verified</span>
+          Official Period Audit
+        </div>
+<h1 class="font-headline-lg text-headline-lg md:text-[38px] text-primary font-serif tracking-tight leading-tight">
+          Monthly Financial Recap &amp; Revenue Analytics
+        </h1>
+<p class="text-body-md font-body-md text-secondary mt-1.5 max-w-3xl">
+          Audited monthly revenue realization, space yield velocity, and promotional deduction ledger across Senopati Sanctuary.
+        </p>
+</div>
+<!-- Action Toolbar (Export & Print) -->
+<div class="flex items-center gap-3 no-print" id="period-toolbar-actions">
+<button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-surface-pure border border-border-warm text-primary font-medium hover:bg-surface-container transition-all text-[13px] active:scale-[0.98]" onclick="alert('Exporting Statement CSV &amp; Excel reports for October 2026...')">
+<span class="material-symbols-outlined text-[18px] text-secondary">sim_card_download</span>
+<span class="">Export Statement</span>
+</button>
+<button class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-on-primary font-medium hover:bg-black/85 transition-all text-[13px] shadow-sm active:scale-[0.98]" onclick="window.print()">
+<span class="material-symbols-outlined text-[18px]">print</span>
+<span class="">Print Financial Report</span>
+</button>
+</div>
+</div>
+<!-- Filter Strip Toolbar -->
+<div class="bg-surface-pure border border-border-warm rounded-2xl p-4 md:p-5 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+<div class="flex flex-wrap items-center gap-3">
+<!-- Month Selector -->
+<div class="flex items-center gap-2 bg-surface rounded-xl border border-border-warm px-3 py-1.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">calendar_month</span>
+<label class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Month:</label>
+<select class="bg-transparent text-[13px] font-medium text-primary border-none p-0 focus:ring-0 cursor-pointer pr-5">
+<option selected="" value="10">October (10)</option>
+<option value="09">September (09)</option>
+<option value="08">August (08)</option>
+<option value="07">July (07)</option>
+</select>
+</div>
+<!-- Year Selector -->
+<div class="flex items-center gap-2 bg-surface rounded-xl border border-border-warm px-3 py-1.5">
+<label class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Year:</label>
+<select class="bg-transparent text-[13px] font-medium text-primary border-none p-0 focus:ring-0 cursor-pointer pr-5">
+<option selected="" value="2026">2026</option>
+<option value="2025">2025</option>
+</select>
+</div>
+<!-- Space Category Dropdown -->
+<div class="flex items-center gap-2 bg-surface rounded-xl border border-border-warm px-3 py-1.5">
+<span class="material-symbols-outlined text-secondary text-[16px]">category</span>
+<label class="text-[11px] font-semibold text-secondary uppercase tracking-wider">Category:</label>
+<select class="bg-transparent text-[13px] font-medium text-primary border-none p-0 focus:ring-0 cursor-pointer pr-6">
+<option selected="" value="all">All Categories (Full Suite)</option>
+<option value="offices">Private Offices</option>
+<option value="meetings">Meeting Rooms</option>
+<option value="desks">Personal Desks</option>
+</select>
+</div>
+</div>
+<!-- Quick Toggles Strip -->
+<div class="flex items-center gap-1.5 p-1 bg-surface-container rounded-full self-start md:self-auto border border-border-warm/60">
+<button class="px-3.5 py-1 text-label-sm font-label-sm rounded-full text-secondary hover:text-primary transition-colors">MTD</button>
+<button class="px-3.5 py-1 text-label-sm font-label-sm rounded-full bg-surface-pure text-primary font-semibold shadow-xs">Full Month</button>
+<button class="px-3.5 py-1 text-label-sm font-label-sm rounded-full text-secondary hover:text-primary transition-colors">Q4 YTD</button>
+</div>
+</div>
+<!-- ================= SECTION 1: 5 KEY METRICS CARDS ================= -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+<!-- Card 1: Completed Bookings -->
+<div class="bg-surface-pure border border-border-warm rounded-2xl p-5 flex flex-col justify-between hover:border-neutral-400 transition-colors">
+<div>
+<div class="flex items-center justify-between text-secondary mb-3">
+<span class="text-label-sm font-label-sm uppercase tracking-wider">Total Completed</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">check_circle_outline</span>
+</div>
+<div class="text-[24px] font-serif font-semibold text-primary tracking-tight">
+            265 Selesai
+          </div>
+</div>
+<div class="pt-4 border-t border-border-warm/60 mt-3 flex items-center justify-between text-[11px]">
+<span class="text-secondary">98.2% completion rate</span>
+<span class="text-accent-sage font-semibold font-mono flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span> +14.2%
+          </span>
+</div>
+</div>
+<!-- Card 2: Total Hours Rented -->
+<div class="bg-surface-pure border border-border-warm rounded-2xl p-5 flex flex-col justify-between hover:border-neutral-400 transition-colors">
+<div>
+<div class="flex items-center justify-between text-secondary mb-3">
+<span class="text-label-sm font-label-sm uppercase tracking-wider">Hours Rented</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">schedule</span>
+</div>
+<div class="text-[24px] font-serif font-semibold text-primary tracking-tight">
+            1,840 Hours
+          </div>
+</div>
+<div class="pt-4 border-t border-border-warm/60 mt-3 flex items-center justify-between text-[11px]">
+<span class="text-secondary">Avg. 6.9 hrs / booking</span>
+<span class="text-primary font-medium font-mono">84% util.</span>
+</div>
+</div>
+<!-- Card 3: Gross Revenue -->
+<div class="bg-surface-pure border border-border-warm rounded-2xl p-5 flex flex-col justify-between hover:border-neutral-400 transition-colors">
+<div>
+<div class="flex items-center justify-between text-secondary mb-3">
+<span class="text-label-sm font-label-sm uppercase tracking-wider">Gross Billed Tariff</span>
+<span class="material-symbols-outlined text-secondary text-[20px]">payments</span>
+</div>
+<div class="font-code-monetary text-[19px] font-semibold text-primary tracking-tight">
+            IDR 184.200.000
+          </div>
+</div>
+<div class="pt-4 border-t border-border-warm/60 mt-3 flex items-center justify-between text-[11px]">
+<span class="text-secondary truncate">Tariff pre-deductions</span>
+<span class="text-secondary font-mono">100% Base</span>
+</div>
+</div>
+<!-- Card 4: Promotional Deductions -->
+<div class="bg-surface-pure border border-border-warm rounded-2xl p-5 flex flex-col justify-between hover:border-neutral-400 transition-colors">
+<div>
+<div class="flex items-center justify-between text-secondary mb-3">
+<span class="text-label-sm font-label-sm uppercase tracking-wider">Discount Deductions</span>
+<span class="material-symbols-outlined text-accent-terracotta text-[20px]">loyalty</span>
+</div>
+<div class="font-code-monetary text-[19px] font-semibold text-accent-terracotta tracking-tight">
+            - IDR 35.550.000
+          </div>
+</div>
+<div class="pt-4 border-t border-border-warm/60 mt-3 flex items-center justify-between text-[11px]">
+<span class="text-secondary">19.3% avg promo cut</span>
+<span class="text-accent-terracotta font-medium">84 vouchers</span>
+</div>
+</div>
+<!-- Card 5: Net Realized Income (High-Contrast Highlight) -->
+<div class="bg-[#181818] text-white border border-[#2A2A2A] rounded-2xl p-5 flex flex-col justify-between shadow-md relative overflow-hidden group">
+<!-- Subtle architectural ambient motif -->
+<div class="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-accent-sage/10 blur-xl pointer-events-none"></div>
+<div>
+<div class="flex items-center justify-between text-[#B3B3B3] mb-3">
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-[#DCD6CA] flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-accent-sage"></span>
+              Net Realized Income
+            </span>
+<span class="material-symbols-outlined text-accent-sage text-[20px]">account_balance_wallet</span>
+</div>
+<div class="font-code-monetary text-[20px] font-bold text-white tracking-tight">
+            IDR 148.650.000
+          </div>
+</div>
+<div class="pt-4 border-t border-white/10 mt-3 flex items-center justify-between text-[11px]">
+<span class="text-[#A3A3A3] truncate">Cleared via BCA QRIS / VA</span>
+<span class="text-accent-sage font-semibold font-mono flex items-center gap-0.5">
+            +16.4% MoM
+          </span>
+</div>
+</div>
+</section>
+<!-- ================= SECTION 2: 2-COLUMN ANALYTICS CHARTS GRID ================= -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Column: Daily Revenue Trend Line Chart (7 Cols) -->
+<div class="lg:col-span-7 bg-surface-pure border border-border-warm rounded-2xl p-6 flex flex-col justify-between">
+<div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-4 border-b border-border-warm/60">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary font-serif">Daily Realized Revenue Fluctuations</h2>
+<p class="text-[13px] text-secondary mt-0.5">Verified daily collections vs target baseline for October 2026</p>
+</div>
+<!-- Range Selector Toggles -->
+<div class="flex items-center gap-1 bg-surface-container rounded-full p-1 self-start sm:self-auto text-[11px]">
+<button class="px-2.5 py-0.5 rounded-full text-secondary hover:text-primary">7 Days</button>
+<button class="px-2.5 py-0.5 rounded-full bg-surface-pure text-primary font-semibold shadow-xs">30 Days</button>
+<button class="px-2.5 py-0.5 rounded-full text-secondary hover:text-primary">Q4 View</button>
+</div>
+</div>
+<!-- Chart Metrics Summary Callout -->
+<div class="flex items-center gap-6 mb-4 text-[12px]">
+<div class="flex items-center gap-2">
+<span class="w-3 h-0.5 bg-primary"></span>
+<span class="text-secondary">Realized Daily Income</span>
+<span class="font-mono font-medium text-primary ml-1">Avg IDR 4.79M/day</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-0.5 border-b-2 border-dashed border-accent-amber"></span>
+<span class="text-secondary">Target Trajectory</span>
+</div>
+<div class="hidden sm:flex items-center gap-2">
+<span class="w-3 h-0.5 border-b-2 border-dotted border-neutral-400"></span>
+<span class="text-secondary">Last Month</span>
+</div>
+</div>
+<!-- Responsive SVG Line Chart -->
+<div class="relative w-full h-[280px] select-none pt-2">
+<svg class="w-full h-full overflow-visible" fill="none" viewBox="0 0 680 240" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<!-- Area Gradient -->
+<linearGradient id="revenueFill" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#C88A2B" stop-opacity="0.18"></stop>
+<stop offset="70%" stop-color="#C88A2B" stop-opacity="0.03"></stop>
+<stop offset="100%" stop-color="#C88A2B" stop-opacity="0.0"></stop>
+</linearGradient>
+<filter height="140%" id="shadowPoint" width="140%" x="-20%" y="-20%">
+<feDropShadow dx="0" dy="2" flood-color="#121212" flood-opacity="0.15" stdDeviation="2"></feDropShadow>
+</filter>
+</defs>
+<!-- Subtle Warm Horizontal Grid Lines & Y-Axis Labels -->
+<g stroke="#EBE7DF" stroke-dasharray="3 3" stroke-width="1">
+<line x1="45" x2="670" y1="20" y2="20"></line>
+<line x1="45" x2="670" y1="70" y2="70"></line>
+<line x1="45" x2="670" y1="120" y2="120"></line>
+<line x1="45" x2="670" y1="170" y2="170"></line>
+<line stroke="#DDD7CC" stroke-dasharray="0" x1="45" x2="670" y1="210" y2="210"></line>
+</g>
+<!-- Y-Axis Values -->
+<text fill="#888888" font-family="JetBrains Mono" font-size="10" text-anchor="end" x="36" y="24">15M</text>
+<text fill="#888888" font-family="JetBrains Mono" font-size="10" text-anchor="end" x="36" y="74">10M</text>
+<text fill="#888888" font-family="JetBrains Mono" font-size="10" text-anchor="end" x="36" y="124">6M</text>
+<text fill="#888888" font-family="JetBrains Mono" font-size="10" text-anchor="end" x="36" y="174">3M</text>
+<text fill="#888888" font-family="JetBrains Mono" font-size="10" text-anchor="end" x="36" y="214">0</text>
+<!-- Target Trajectory (Dashed Warm Amber Line) -->
+<path d="M 50 145 C 130 140, 200 130, 290 115 C 380 100, 480 85, 660 65" fill="none" stroke="#C88A2B" stroke-dasharray="4 4" stroke-opacity="0.8" stroke-width="1.75"></path>
+<!-- Previous Month Comparison (Dotted Grey Line) -->
+<path d="M 50 160 C 100 170, 160 140, 230 150 C 310 160, 400 135, 490 120 C 580 105, 630 115, 660 95" fill="none" stroke="#A8A59E" stroke-dasharray="2 3" stroke-opacity="0.7" stroke-width="1.5"></path>
+<!-- Area Fill Under Realized Curve -->
+<path d="M 50 155 
+                       C 90 150, 120 120, 160 135 
+                       C 200 150, 240 100, 280 80 
+                       C 320 60, 340 38, 370 38 
+                       C 400 38, 430 110, 470 95 
+                       C 510 80, 540 60, 580 75 
+                       C 620 90, 640 50, 660 45 
+                       L 660 210 L 50 210 Z" fill="url(#revenueFill)"></path>
+<!-- Realized Revenue Curve (Solid Charcoal/Primary Line) -->
+<path d="M 50 155 
+                       C 90 150, 120 120, 160 135 
+                       C 200 150, 240 100, 280 80 
+                       C 320 60, 340 38, 370 38 
+                       C 400 38, 430 110, 470 95 
+                       C 510 80, 540 60, 580 75 
+                       C 620 90, 640 50, 660 45" fill="none" stroke="#121212" stroke-linecap="round" stroke-width="2.5"></path>
+<!-- Highlight Key Milestone Points -->
+<circle cx="160" cy="135" fill="#121212" r="4" stroke="#FFFFFF" stroke-width="2"></circle>
+<circle cx="280" cy="80" fill="#121212" r="4" stroke="#FFFFFF" stroke-width="2"></circle>
+<circle cx="470" cy="95" fill="#121212" r="4" stroke="#FFFFFF" stroke-width="2"></circle>
+<circle cx="660" cy="45" fill="#121212" r="4" stroke="#FFFFFF" stroke-width="2"></circle>
+<!-- Peak Callout Point (15 Oct Peak) -->
+<g>
+<circle cx="370" cy="38" fill="#C88A2B" filter="url(#shadowPoint)" r="6" stroke="#FFFFFF" stroke-width="2"></circle>
+<circle cx="370" cy="38" fill="none" r="10" stroke="#C88A2B" stroke-opacity="0.4" stroke-width="1"></circle>
+<!-- Floating Tooltip Box -->
+<rect fill="#181818" height="34" rx="8" stroke="#333333" stroke-width="1" width="220" x="260" y="-12"></rect>
+<text fill="#FBF9F5" font-family="Plus Jakarta Sans" font-size="11" font-weight="600" x="272" y="8">15 Oct Peak:</text>
+<text fill="#E5E2DF" font-family="JetBrains Mono" font-size="11" font-weight="600" x="345" y="8">IDR 12.850.000</text>
+<text fill="#9E9E9E" font-family="Plus Jakarta Sans" font-size="8.5" x="272" y="18">Kyoto Suite &amp; Studio 04 Corporate Retainer</text>
+<!-- Little Down Arrow -->
+<polygon fill="#181818" points="366,22 374,22 370,27"></polygon>
+</g>
+<!-- X-Axis Labels -->
+<text fill="#888888" font-family="Plus Jakarta Sans" font-size="10" text-anchor="middle" x="50" y="228">01 Oct</text>
+<text fill="#888888" font-family="Plus Jakarta Sans" font-size="10" text-anchor="middle" x="150" y="228">06 Oct</text>
+<text fill="#888888" font-family="Plus Jakarta Sans" font-size="10" text-anchor="middle" x="260" y="228">12 Oct</text>
+<text fill="#121212" font-family="Plus Jakarta Sans" font-size="10" font-weight="600" text-anchor="middle" x="370" y="228">15 Oct</text>
+<text fill="#888888" font-family="Plus Jakarta Sans" font-size="10" text-anchor="middle" x="470" y="228">21 Oct</text>
+<text fill="#888888" font-family="Plus Jakarta Sans" font-size="10" text-anchor="middle" x="570" y="228">26 Oct</text>
+<text fill="#888888" font-family="Plus Jakarta Sans" font-size="10" text-anchor="middle" x="660" y="228">31 Oct</text>
+</svg>
+</div>
+</div>
+<!-- Footnote Metric -->
+<div class="mt-4 pt-3 border-t border-border-warm/60 flex items-center justify-between text-[12px] text-secondary">
+<span class="">Highest Velocity: Week 3 (Oct 13 - 19) generated IDR 48.2M</span>
+<span class="text-accent-sage font-medium">Clearance: 100% Settled</span>
+</div>
+</div>
+<!-- Right Column: Revenue Distribution by Space Category (5 Cols) -->
+<div class="lg:col-span-5 bg-surface-pure border border-border-warm rounded-2xl p-6 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-4 border-b border-border-warm/60">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary font-serif">Yield Breakdown</h2>
+<p class="text-[13px] text-secondary mt-0.5">Contribution across architectural tiers</p>
+</div>
+<span class="text-label-sm font-label-sm px-2.5 py-1 rounded-full bg-surface-container text-secondary font-medium">3 Tiers</span>
+</div>
+<!-- Donut Chart & Center Metric -->
+<div class="flex flex-col sm:flex-row items-center justify-center gap-6 py-4">
+<div class="relative w-44 h-44 flex-shrink-0">
+<svg class="w-full h-full transform -rotate-90" viewBox="0 0 160 160">
+<!-- Track background ring -->
+<circle cx="80" cy="80" fill="none" r="62" stroke="#F0ECE4" stroke-width="18"></circle>
+<!-- Segment 1: Private Offices (56.8% of 389.5 circ = ~221.2) -->
+<!-- stroke-dasharray="length remaining" -->
+<circle class="transition-all duration-700 hover:opacity-90" cx="80" cy="80" fill="none" r="62" stroke="#4A6B5D" stroke-dasharray="221 390" stroke-dashoffset="0" stroke-width="18"></circle>
+<!-- Segment 2: Meeting Rooms (28.4% of 389.5 circ = ~110.6) -->
+<circle class="transition-all duration-700 hover:opacity-90" cx="80" cy="80" fill="none" r="62" stroke="#C88A2B" stroke-dasharray="110 390" stroke-dashoffset="-223" stroke-width="18"></circle>
+<!-- Segment 3: Personal Desks (14.8% of 389.5 circ = ~57.6) -->
+<circle class="transition-all duration-700 hover:opacity-90" cx="80" cy="80" fill="none" r="62" stroke="#121212" stroke-dasharray="55 390" stroke-dashoffset="-335" stroke-width="18"></circle>
+</svg>
+<!-- Central Monogram & Amount -->
+<div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
+<span class="text-[10px] uppercase font-semibold tracking-wider text-secondary">Total Realized</span>
+<span class="font-code-monetary font-bold text-primary text-[15px] leading-tight">148.65M</span>
+<span class="text-[10px] text-secondary font-mono">IDR Net</span>
+</div>
+</div>
+<!-- Inline Micro Summary -->
+<div class="text-left space-y-1 text-[12px] text-secondary">
+<p class=""><strong class="text-primary font-medium">Private Offices</strong> generate over half of gross revenue with high contract retention.</p>
+<p class="pt-1 text-[11px] text-secondary/80">Meeting suites drive high volume turnaround across weekday business hours.</p>
+</div>
+</div>
+<!-- Detailed Tier Category Breakdown List -->
+<div class="space-y-3 pt-2">
+<!-- Tier 1: Private Offices -->
+<div class="p-3 rounded-xl bg-surface border border-border-warm/80 hover:border-accent-sage/60 transition-colors">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-sm bg-accent-sage"></span>
+<span class="font-medium text-[13px] text-primary">Private Office Suites</span>
+</div>
+<span class="font-code-monetary font-semibold text-[13px] text-primary">IDR 84.500.000</span>
+</div>
+<div class="flex items-center justify-between text-[11px] text-secondary">
+<span class="">56.8% yield • 88 completed bookings</span>
+<span class="text-accent-sage font-medium">92% occupancy</span>
+</div>
+</div>
+<!-- Tier 2: Meeting Rooms -->
+<div class="p-3 rounded-xl bg-surface border border-border-warm/80 hover:border-accent-amber/60 transition-colors">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-sm bg-accent-amber"></span>
+<span class="font-medium text-[13px] text-primary">Meeting &amp; Boardrooms</span>
+</div>
+<span class="font-code-monetary font-semibold text-[13px] text-primary">IDR 42.150.000</span>
+</div>
+<div class="flex items-center justify-between text-[11px] text-secondary">
+<span class="">28.4% yield • 94 completed bookings</span>
+<span class="text-accent-amber font-medium">78% occupancy</span>
+</div>
+</div>
+<!-- Tier 3: Personal Desks -->
+<div class="p-3 rounded-xl bg-surface border border-border-warm/80 hover:border-primary/60 transition-colors">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-sm bg-primary"></span>
+<span class="font-medium text-[13px] text-primary">Personal Workstations</span>
+</div>
+<span class="font-code-monetary font-semibold text-[13px] text-primary">IDR 22.000.000</span>
+</div>
+<div class="flex items-center justify-between text-[11px] text-secondary">
+<span class="">14.8% yield • 83 completed bookings</span>
+<span class="text-primary font-medium">68% occupancy</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-border-warm/60 flex items-center justify-between text-[11px] text-secondary">
+<span class="">Weighted Portfolio Margin: 80.7%</span>
+<span class="font-mono text-primary font-medium">Audit Match 100%</span>
+</div>
+</div>
+</section>
+<!-- ================= SECTION 3: BOTTOM PERFORMANCE & CATEGORY AUDIT TABLE ================= -->
+<section class="bg-surface-pure border border-border-warm rounded-2xl overflow-hidden shadow-xs">
+<!-- Table Header Title Bar -->
+<div class="p-6 border-b border-border-warm flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h2 class="font-headline-sm text-headline-sm text-primary font-serif">Space Category Financial Performance Summary</h2>
+<p class="text-[13px] text-secondary mt-0.5">Comprehensive audit of bookings count, billed duration, and net revenue yield</p>
+</div>
+<div class="flex items-center gap-2 text-label-sm font-label-sm text-secondary">
+<span class="material-symbols-outlined text-[16px] text-accent-sage">verified_user</span>
+<span class="">Single Currency: Indonesian Rupiah (IDR)</span>
+</div>
+</div>
+<!-- Responsive Audit Table Container -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-border-warm text-[11px] uppercase tracking-wider text-secondary font-label-sm">
+<th class="py-3.5 px-6 font-semibold">Space Category</th>
+<th class="py-3.5 px-4 font-semibold text-center">Active Inventory</th>
+<th class="py-3.5 px-4 font-semibold text-center">Bookings</th>
+<th class="py-3.5 px-4 font-semibold text-center">Hours Billed</th>
+<th class="py-3.5 px-4 font-semibold text-right">Gross Tariff</th>
+<th class="py-3.5 px-4 font-semibold text-right">Discounts</th>
+<th class="py-3.5 px-4 font-semibold text-right">Net Realized</th>
+<th class="py-3.5 px-4 font-semibold text-right">Avg Hourly Yield</th>
+<th class="py-3.5 px-6 font-semibold text-right">MoM Growth</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-border-warm text-[13px]">
+<!-- Row 1: Private Office Suites -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-accent-sage/10 text-accent-sage flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">domain</span>
+</div>
+<div>
+<div class="font-semibold text-primary font-serif text-[15px]">Private Office Suites</div>
+<div class="text-[11px] text-secondary">Executive Sanctuary, Studio 04, Atelier Suite</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-4 text-center font-mono text-secondary">8 Units</td>
+<td class="py-4 px-4 text-center font-mono font-medium text-primary">88 Selesai</td>
+<td class="py-4 px-4 text-center font-mono text-secondary">704 Hrs</td>
+<td class="py-4 px-4 text-right font-code-monetary text-secondary">IDR 102.400.000</td>
+<td class="py-4 px-4 text-right font-code-monetary text-accent-terracotta">-IDR 17.900.000</td>
+<td class="py-4 px-4 text-right font-code-monetary font-bold text-primary">IDR 84.500.000</td>
+<td class="py-4 px-4 text-right font-code-monetary text-secondary">IDR 120.000/hr</td>
+<td class="py-4 px-6 text-right">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold font-mono bg-accent-sage/10 text-accent-sage">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>+18.2%
+                </span>
+</td>
+</tr>
+<!-- Row 2: Meeting & Boardroom Sanctuaries -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-accent-amber/10 text-accent-amber flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">meeting_room</span>
+</div>
+<div>
+<div class="font-semibold text-primary font-serif text-[15px]">Meeting &amp; Boardrooms</div>
+<div class="text-[11px] text-secondary">Glasshouse Pavilion, Kyoto Garden Suite</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-4 text-center font-mono text-secondary">6 Units</td>
+<td class="py-4 px-4 text-center font-mono font-medium text-primary">94 Selesai</td>
+<td class="py-4 px-4 text-center font-mono text-secondary">470 Hrs</td>
+<td class="py-4 px-4 text-right font-code-monetary text-secondary">IDR 52.800.000</td>
+<td class="py-4 px-4 text-right font-code-monetary text-accent-terracotta">-IDR 10.650.000</td>
+<td class="py-4 px-4 text-right font-code-monetary font-bold text-primary">IDR 42.150.000</td>
+<td class="py-4 px-4 text-right font-code-monetary text-secondary">IDR 89.680/hr</td>
+<td class="py-4 px-6 text-right">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold font-mono bg-accent-sage/10 text-accent-sage">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>+12.5%
+                </span>
+</td>
+</tr>
+<!-- Row 3: Personal Workstations & Nooks -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-4 px-6">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-stone-200 text-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]">desk</span>
+</div>
+<div>
+<div class="font-semibold text-primary font-serif text-[15px]">Personal Workstations &amp; Nooks</div>
+<div class="text-[11px] text-secondary">Solitary Oak Nook, Hot Desk Level 2</div>
+</div>
+</div>
+</td>
+<td class="py-4 px-4 text-center font-mono text-secondary">10 Units</td>
+<td class="py-4 px-4 text-center font-mono font-medium text-primary">83 Selesai</td>
+<td class="py-4 px-4 text-center font-mono text-secondary">666 Hrs</td>
+<td class="py-4 px-4 text-right font-code-monetary text-secondary">IDR 29.000.000</td>
+<td class="py-4 px-4 text-right font-code-monetary text-accent-terracotta">-IDR 7.000.000</td>
+<td class="py-4 px-4 text-right font-code-monetary font-bold text-primary">IDR 22.000.000</td>
+<td class="py-4 px-4 text-right font-code-monetary text-secondary">IDR 33.030/hr</td>
+<td class="py-4 px-6 text-right">
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[11px] font-semibold font-mono bg-accent-sage/10 text-accent-sage">
+<span class="material-symbols-outlined text-[13px]">arrow_upward</span>+8.4%
+                </span>
+</td>
+</tr>
+</tbody>
+<!-- Highlight Summary Total Row -->
+<tfoot>
+<tr class="bg-surface-container-high font-semibold text-primary border-t-2 border-primary/20">
+<td class="py-4 px-6">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-accent-sage"></span>
+<span class="font-serif text-[15px] font-bold">Total Consolidated Ledger</span>
+</div>
+</td>
+<td class="py-4 px-4 text-center font-mono font-bold">24 Units</td>
+<td class="py-4 px-4 text-center font-mono font-bold text-primary">265 Selesai</td>
+<td class="py-4 px-4 text-center font-mono font-bold text-primary">1,840 Hrs</td>
+<td class="py-4 px-4 text-right font-code-monetary font-bold">IDR 184.200.000</td>
+<td class="py-4 px-4 text-right font-code-monetary font-bold text-accent-terracotta">-IDR 35.550.000</td>
+<td class="py-4 px-4 text-right font-code-monetary text-[16px] font-bold text-primary">IDR 148.650.000</td>
+<td class="py-4 px-4 text-right font-code-monetary font-bold">IDR 80.780/hr</td>
+<td class="py-4 px-6 text-right">
+<span class="inline-flex items-center gap-0.5 px-2.5 py-1 rounded-full text-[11px] font-bold font-mono bg-accent-sage text-white shadow-2xs">
+                  +16.4% MoM
+                </span>
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</section>
+<!-- ================= SECTION 4: FINANCIAL AUDIT SIGN-OFF ================= -->
+<section class="bg-surface-container-low border border-border-warm rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[12px] text-secondary">
+<div class="flex items-start md:items-center gap-3.5">
+<div class="w-10 h-10 rounded-full bg-surface-pure border border-border-warm flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<div>
+<div class="font-semibold text-primary text-[13px]">Official Controller Certification</div>
+<div class="">Report Certified by Master Controller <strong class="text-primary font-medium">Julian Vance</strong> • Verified against Indonesian Tax &amp; Financial Standards (UKK RPL Paket B 2026/2027).</div>
+</div>
+</div>
+<div class="flex items-center gap-4 self-end md:self-auto font-mono text-[11px] text-secondary/90 bg-surface-pure px-3.5 py-2 rounded-xl border border-border-warm">
+<span class="">Timestamp: 31 October 2026, 23:59:59 WIB</span>
+<span class="text-accent-sage font-bold">HASH: #8F9A-OCT26-AUDIT</span>
+</div>
+</section>
+</main>
+<!-- ================= FOOTER ================= -->
+<footer class="bg-surface-container-low border-t border-border-warm mt-12 py-8 px-6 md:px-12 text-secondary no-print">
+<div class="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-[13px]">
+<div class="flex items-center gap-3">
+<span class="font-serif font-bold text-primary tracking-tight">WorkMates</span>
+<span class="text-secondary/40">|</span>
+<span class="">© 2025 WorkMates Hospitality Group Inc. Senopati Sanctuary Executive Console. All rights reserved.</span>
+</div>
+<div class="flex items-center gap-6 text-label-sm font-label-sm">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Architectural Standards</a>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+</div>
+</div>
+</footer>
+
+
+</body></html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html><html class="h-full bg-surface" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Authentication | SmartSpace &amp; Sonder Spaces</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;family=Playfair+Display:ital,wght@0,400..700;1,400..700&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary": "#000000",
+            "on-primary-fixed-variant": "#474646",
+            "on-primary": "#ffffff",
+            "on-tertiary-fixed-variant": "#484645",
+            "status-active": "#4A6B5D",
+            "primary-fixed": "#e5e2e1",
+            "on-secondary-fixed-variant": "#464747",
+            "on-tertiary-container": "#868381",
+            "surface-container-lowest": "#ffffff",
+            "surface-bright": "#fbf9f5",
+            "surface-container": "#efeeea",
+            "on-tertiary": "#ffffff",
+            "error": "#ba1a1a",
+            "surface-container-high": "#eae8e4",
+            "on-background": "#1b1c1a",
+            "on-error-container": "#93000a",
+            "tertiary-container": "#1c1b1a",
+            "primary-fixed-dim": "#c8c6c5",
+            "inverse-primary": "#c8c6c5",
+            "status-pending": "#C88A2B",
+            "on-surface": "#1b1c1a",
+            "primary-container": "#1c1b1b",
+            "outline-variant": "#c4c7c7",
+            "surface-pure": "#FFFFFF",
+            "surface-container-low": "#f5f3ef",
+            "on-secondary-fixed": "#1b1c1c",
+            "on-surface-variant": "#444748",
+            "status-finished": "#333333",
+            "secondary": "#5e5e5e",
+            "secondary-container": "#e1dfdf",
+            "secondary-fixed": "#e4e2e2",
+            "background": "#fbf9f5",
+            "surface-variant": "#e4e2de",
+            "on-tertiary-fixed": "#1c1b1a",
+            "secondary-fixed-dim": "#c7c6c6",
+            "on-error": "#ffffff",
+            "on-secondary": "#ffffff",
+            "error-container": "#ffdad6",
+            "inverse-on-surface": "#f2f0ed",
+            "inverse-surface": "#30312e",
+            "on-secondary-container": "#626262",
+            "on-primary-container": "#858383",
+            "surface-dim": "#dbdad6",
+            "primary": "#000000",
+            "tertiary-fixed": "#e6e1df",
+            "surface-container-highest": "#e4e2de",
+            "on-primary-fixed": "#1c1b1b",
+            "outline": "#747878",
+            "tertiary-fixed-dim": "#cac6c3",
+            "surface-tint": "#5f5e5e",
+            "surface": "#fbf9f5",
+            "border-warm": "#EBE7DF",
+            "status-cancelled": "#9E3B3B"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1.5rem",
+            "margin": "3rem",
+            "space-2xl": "4rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "space-lg": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem",
+            "margin-mobile": "1.25rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "display-lg": ["Playfair Display"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "code-monetary": ["JetBrains Mono"],
+            "headline-sm": ["Playfair Display"],
+            "title-md": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "headline-lg-mobile": ["Playfair Display"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Playfair Display"],
+            "display-lg-mobile": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+            "code-monetary": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "500" }],
+            "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "500" }],
+            "headline-lg-mobile": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-md": ["13px", { "lineHeight": "18px", "letterSpacing": "0.04em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="h-full bg-surface text-on-surface antialiased selection:bg-border-warm selection:text-primary">
+<main class="h-full flex flex-col md:flex-row w-full min-h-screen overflow-hidden">
+<!-- LEFT COLUMN: Architectural Editorial Photography -->
+<div class="relative w-full md:w-[48%] lg:w-[50%] h-64 md:h-full bg-surface-container shrink-0 overflow-hidden select-none">
+<img alt="The Sanctuary Suite interior" class="w-full h-full object-cover object-center transform scale-[1.01] transition-transform duration-700 hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxyPd1_80PvImhRNZY1shXV82rwD_M9zgvpum97RbCYO6aZbJEEKBVJVwkU6zPin2BKVeFjhBR0rpV_Kh5HDANysbkowhnHuWe48Dn-JnTnWCu6YcLKO5ndYi8fsoxOZvKZcZ6-p0oH_aYQgGmLYGd3BexJttrHjsnkLEDjrEivhvczJ94bwnkl3bYtf3YDNSiGHcDSyjB6E1x-87c8iIhnNsoppFNTK7xrIABCmBz5FNNzkBnhMNV-g">
+<!-- Atmospheric Warm Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/15 to-transparent pointer-events-none"></div>
+<!-- Top Back Navigation -->
+<div class="absolute top-6 left-6 md:top-8 md:left-8 z-10">
+<a class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-pure/80 backdrop-blur-md text-primary hover:bg-surface-pure transition-all duration-200 shadow-sm border border-border-warm/40" href="#back">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+<span class="font-label-md text-label-md tracking-wide">Back to Spaces</span>
+</a>
+</div>
+<!-- Bottom Editorial Badge & Architectural Info -->
+<div class="absolute bottom-6 left-6 right-6 md:bottom-10 md:left-10 md:right-10 z-10 text-on-primary">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 mb-3">
+<span class="w-2 h-2 rounded-full bg-status-active"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-white">Private Studio 04</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-white mb-2 leading-tight">The Sanctuary Suite</h2>
+<p class="font-body-md text-body-md text-white/80 max-w-md">Curated workspaces designed for clarity and deep focus, bathed in natural morning light.</p>
+</div>
+</div>
+<!-- RIGHT COLUMN: Authentication Canvas & Form Engine -->
+<div class="w-full md:w-[52%] lg:w-[50%] h-full flex flex-col bg-surface overflow-y-auto">
+<!-- Right Column Header / Utility Bar -->
+<header class="flex items-center justify-between px-6 md:px-12 py-6 shrink-0 border-b border-border-warm/60">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm tracking-tight text-primary font-semibold">WorkMates</span>
+<span class="text-xs px-2 py-0.5 rounded-full bg-surface-container text-secondary font-mono">EST. 2025</span>
+</div>
+<a class="inline-flex items-center gap-1.5 text-secondary hover:text-primary transition-colors font-label-md text-label-md" href="#concierge">
+<span class="material-symbols-outlined text-[18px]" data-icon="help_outline">help_outline</span>
+<span class="">Concierge</span>
+</a>
+</header>
+<!-- Scrollable Form Container -->
+<div class="flex-1 px-6 md:px-16 lg:px-20 py-8 md:py-12 max-w-xl mx-auto w-full flex flex-col justify-center">
+<!-- Header Text -->
+<div class="mb-8">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary tracking-tight mb-2">Welcome to WorkMates</h1>
+<p class="font-body-md text-body-md text-secondary">A boutique sanctuary for modern thinkers and creators.</p>
+</div>
+<!-- Mode Segmented Toggle -->
+<div class="inline-flex p-1 bg-surface-container rounded-full mb-8 self-start border border-border-warm/50">
+<button class="px-6 py-2 rounded-full font-label-md text-label-md transition-all duration-200 bg-surface-pure text-primary shadow-sm font-semibold" id="tab-signin" onclick="switchAuthMode('login')" type="button">
+            Sign In
+          </button>
+<button class="px-6 py-2 rounded-full font-label-md text-label-md transition-all duration-200 text-secondary hover:text-primary font-medium" id="tab-register" onclick="switchAuthMode('register')" type="button">
+            Create Account
+          </button>
+</div>
+<!-- FORM 1: LOGIN (SCR-MEM-02) -->
+<form class="space-y-6" id="form-login" onsubmit="event.preventDefault();">
+<!-- Username / Email -->
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary" for="login-identifier">
+              Username or Corporate Email
+            </label>
+<div class="relative">
+<input class="w-full px-4 py-3.5 bg-surface-pure rounded-xl border border-border-warm text-on-surface font-body-md text-body-md placeholder:text-secondary/60 focus:outline-none focus:border-primary focus:ring-0 transition-colors" id="login-identifier" placeholder="julian@architecture.studio" required="" type="text">
+<div class="absolute inset-y-0 right-0 flex items-center pr-3.5 pointer-events-none text-secondary">
+<span class="material-symbols-outlined text-[20px]" data-icon="mail">mail</span>
+</div>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary" for="login-password">
+                Password
+              </label>
+<a class="font-label-sm text-label-sm text-secondary hover:text-primary transition-colors underline-offset-4 hover:underline" href="#forgot">
+                Forgot password?
+              </a>
+</div>
+<div class="relative">
+<input class="w-full px-4 py-3.5 bg-surface-pure rounded-xl border border-border-warm text-on-surface font-body-md text-body-md placeholder:text-secondary/60 focus:outline-none focus:border-primary focus:ring-0 transition-colors" id="login-password" placeholder="••••••••••••" required="" type="password">
+<button class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-secondary hover:text-primary transition-colors focus:outline-none" onclick="togglePasswordVisibility('login-password', 'pwd-toggle-icon')" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility" id="pwd-toggle-icon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me & Checkbox -->
+<div class="flex items-center justify-between pt-1">
+<label class="inline-flex items-center gap-2.5 cursor-pointer select-none">
+<input class="w-4 h-4 rounded border-border-warm text-primary focus:ring-0 focus:ring-offset-0 bg-surface-pure transition" type="checkbox">
+<span class="font-body-md text-body-md text-secondary">Remember this device</span>
+</label>
+</div>
+<!-- Primary CTA Button -->
+<button class="w-full py-4 px-8 rounded-full bg-tertiary text-on-primary font-label-md text-label-md uppercase tracking-wider hover:opacity-90 active:scale-[0.99] transition-all duration-150 flex items-center justify-center gap-2" type="submit">
+<span class="">Sign In to Space</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Alternative subtle identity divider -->
+<div class="pt-4 flex items-center gap-4 text-secondary/40">
+<div class="h-px flex-1 bg-border-warm"></div>
+<span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary">Or Access via</span>
+<div class="h-px flex-1 bg-border-warm"></div>
+</div>
+<!-- Secondary Access Option -->
+<button class="w-full py-3.5 px-6 rounded-full bg-surface-pure border border-border-warm text-primary font-label-md text-label-md hover:bg-surface-container-low transition-colors flex items-center justify-center gap-3" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="badge">badge</span>
+<span class="">Digital Keycard / SSO</span>
+</button>
+</form>
+<!-- FORM 2: REGISTER (SCR-MEM-01 PRD Compliant) -->
+<form class="space-y-5 hidden" id="form-register" onsubmit="event.preventDefault();">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Full Name (nama_member) -->
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary" for="reg-nama">
+                Full Name (nama_member)
+              </label>
+<input class="w-full px-4 py-3 bg-surface-pure rounded-xl border border-border-warm text-on-surface font-body-md text-body-md placeholder:text-secondary/60 focus:outline-none focus:border-primary focus:ring-0 transition-colors" id="reg-nama" placeholder="Julian Vance" required="" type="text">
+</div>
+<!-- Username -->
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary" for="reg-username">
+                Username
+              </label>
+<input class="w-full px-4 py-3 bg-surface-pure rounded-xl border border-border-warm text-on-surface font-body-md text-body-md placeholder:text-secondary/60 focus:outline-none focus:border-primary focus:ring-0 transition-colors" id="reg-username" placeholder="jvance" required="" type="text">
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Institution / Company (instansi) -->
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary" for="reg-instansi">
+                Institution / Studio (instansi)
+              </label>
+<input class="w-full px-4 py-3 bg-surface-pure rounded-xl border border-border-warm text-on-surface font-body-md text-body-md placeholder:text-secondary/60 focus:outline-none focus:border-primary focus:ring-0 transition-colors" id="reg-instansi" placeholder="Atelier Nord" required="" type="text">
+</div>
+<!-- WhatsApp Phone (telp) with +62 prefix -->
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary" for="reg-telp">
+                WhatsApp Phone (telp)
+              </label>
+<div class="flex">
+<span class="inline-flex items-center px-3.5 rounded-l-xl border border-r-0 border-border-warm bg-surface-container text-primary font-code-monetary text-code-monetary">
+                  +62
+                </span>
+<input class="w-full px-4 py-3 bg-surface-pure rounded-r-xl border border-border-warm text-on-surface font-body-md text-body-md placeholder:text-secondary/60 focus:outline-none focus:border-primary focus:ring-0 transition-colors" id="reg-telp" placeholder="812-3456-7890" required="" type="tel">
+</div>
+</div>
+</div>
+<!-- Password -->
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary" for="reg-password">
+              Password (minimum 8 characters)
+            </label>
+<div class="relative">
+<input class="w-full px-4 py-3 bg-surface-pure rounded-xl border border-border-warm text-on-surface font-body-md text-body-md placeholder:text-secondary/60 focus:outline-none focus:border-primary focus:ring-0 transition-colors" id="reg-password" minlength="8" placeholder="••••••••••••" required="" type="password">
+<button class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-secondary hover:text-primary transition-colors focus:outline-none" onclick="togglePasswordVisibility('reg-password', 'reg-pwd-toggle-icon')" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility" id="reg-pwd-toggle-icon">visibility</span>
+</button>
+</div>
+</div>
+<!-- Full Address (alamat) -->
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary" for="reg-alamat">
+              Physical Address (alamat)
+            </label>
+<textarea class="w-full px-4 py-3 bg-surface-pure rounded-xl border border-border-warm text-on-surface font-body-md text-body-md placeholder:text-secondary/60 focus:outline-none focus:border-primary focus:ring-0 transition-colors resize-none" id="reg-alamat" placeholder="Jl. Senopati No. 42, Kebayoran Baru, Jakarta Selatan" required="" rows="2"></textarea>
+</div>
+<!-- Profile Photo Upload (foto) -->
+<div class="space-y-1.5">
+<label class="block font-label-sm text-label-sm uppercase tracking-wider text-secondary">
+              Member Portrait (foto)
+            </label>
+<div class="relative border border-dashed border-border-warm rounded-xl p-4 bg-surface-pure hover:bg-surface-container-low/50 transition-colors text-center cursor-pointer group">
+<input accept="image/png, image/jpeg" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" type="file">
+<div class="flex flex-col items-center justify-center gap-1.5">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_a_photo">add_a_photo</span>
+</div>
+<p class="font-body-md text-body-md text-primary font-medium">Drop your portrait here or <span class="underline">browse</span></p>
+<p class="font-label-sm text-label-sm text-secondary">PNG, JPG up to 5MB (3:4 ratio recommended)</p>
+</div>
+</div>
+</div>
+<!-- Primary Register CTA -->
+<button class="w-full py-4 px-8 rounded-full bg-tertiary text-on-primary font-label-md text-label-md uppercase tracking-wider hover:opacity-90 active:scale-[0.99] transition-all duration-150 flex items-center justify-center gap-2 mt-4" type="submit">
+<span class="">Create Member Account</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle">check_circle</span>
+</button>
+</form>
+<!-- Terms and Privacy Footer Note -->
+<p class="font-body-md text-body-md text-secondary/70 text-center mt-8 leading-relaxed">By continuing, you agree to WorkMates' <a class="text-primary hover:underline underline-offset-2" href="#terms">Architectural Standards</a> and <a class="text-primary hover:underline underline-offset-2" href="#privacy">Privacy Policy</a>.</p>
+</div>
+<!-- Footer Micro-bar -->
+<footer class="mt-auto px-6 md:px-12 py-5 border-t border-border-warm/60 flex flex-col sm:flex-row items-center justify-between text-secondary font-label-sm text-label-sm gap-2">
+<span class="">© 2025 WorkMates Hospitality Inc. All rights reserved.</span>
+<div class="flex items-center gap-4">
+<a class="hover:text-primary transition-colors" href="#concierge">Support Concierge</a>
+<span class="">•</span>
+<span class="font-code-monetary">v2.4-STABLE</span>
+</div>
+</footer>
+</div>
+</main>
+<!-- Interactive JavaScript for Tab Switching & Micro-interactions -->
+<script>
+    function switchAuthMode(mode) {
+      const loginForm = document.getElementById('form-login');
+      const registerForm = document.getElementById('form-register');
+      const tabSignIn = document.getElementById('tab-signin');
+      const tabRegister = document.getElementById('tab-register');
+
+      if (mode === 'login') {
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+
+        // Style Active Sign In Tab
+        tabSignIn.className = "px-6 py-2 rounded-full font-label-md text-label-md transition-all duration-200 bg-surface-pure text-primary shadow-sm font-semibold";
+        tabRegister.className = "px-6 py-2 rounded-full font-label-md text-label-md transition-all duration-200 text-secondary hover:text-primary font-medium";
+      } else {
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+
+        // Style Active Register Tab
+        tabRegister.className = "px-6 py-2 rounded-full font-label-md text-label-md transition-all duration-200 bg-surface-pure text-primary shadow-sm font-semibold";
+        tabSignIn.className = "px-6 py-2 rounded-full font-label-md text-label-md transition-all duration-200 text-secondary hover:text-primary font-medium";
+      }
+    }
+
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility_off';
+      } else {
+        input.type = 'password';
+        icon.textContent = 'visibility';
+      }
+    }
+  </script>
+
+
+</body></html>

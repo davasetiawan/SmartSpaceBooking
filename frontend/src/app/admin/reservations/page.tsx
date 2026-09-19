@@ -1,204 +1,215 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Search, Filter, Calendar, AlertCircle, CheckCircle, ChevronDown } from "lucide-react";
-import { Reservation, ReservationStatus } from "@/lib/api";
-import { api, apiErrorMessage } from "@/lib/api";
-import { cn, formatCurrency, formatDate, formatClock, RESERVATION_STATUS, SPACE_TYPES } from "@/lib/utils";
-
-const STATUS_OPTIONS: { value: string; label: string }[] = [
-  { value: "all", label: "Semua Status" },
-  { value: "belum_dikonfirm", label: "Menunggu Konfirmasi" },
-  { value: "disetujui", label: "Disetujui" },
-  { value: "aktif", label: "Aktif" },
-  { value: "selesai", label: "Selesai" },
-  { value: "dibatalkan", label: "Dibatalkan" },
-];
+import React, { useState } from 'react';
+import Link from 'next/link';
+import AdminSidebar from '@/components/layout/AdminSidebar';
+import { useSpaceStore } from '@/lib/SpaceStoreContext';
+import { Booking } from '@/lib/mockData';
 
 export default function AdminReservationsPage() {
-  const [reservations, setReservations] = useState<Reservation[]>([]);
-  const [spaces, setSpaces] = useState<Array<{ id: number; nama_space: string }>>([]);
-  const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    month: "",
-    year: "",
-    status: "all",
-    id_space: "all",
+  const { bookings, updateBookingStatus } = useSpaceStore();
+  const [statusFilter, setStatusFilter] = useState<'all' | Booking['status']>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  type StatusFilter = typeof statusFilter;
+
+  const totalRevenue = bookings.reduce((sum, b) => (b.status !== 'cancelled' ? sum + b.totalAmount : sum), 0);
+
+  const filtered = bookings.filter((b) => {
+    const matchStatus = statusFilter === 'all' || b.status === statusFilter;
+    const matchSearch =
+      b.bookingCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      b.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      b.spaceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      b.assignedSeat.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchStatus && matchSearch;
   });
-  const [showStatus, setShowStatus] = useState(false);
-  const [showSpace, setShowSpace] = useState(false);
-
-  useEffect(() => {
-    fetchSpaces();
-  }, []);
-
-  useEffect(() => {
-    fetchReservations();
-  }, [filters]);
-
-  const fetchSpaces = async () => {
-    try {
-      const data = await api.adminSpaces();
-      setSpaces(data.map((s) => ({ id: s.id, nama_space: s.nama_space })));
-    } catch {}
-  };
-
-  const fetchReservations = async () => {
-    setLoading(true);
-    try {
-      const params: Record<string, string> = {};
-      if (filters.month) params.month = filters.month;
-      if (filters.year) params.year = filters.year;
-      if (filters.status !== "all") params.status = filters.status;
-      if (filters.id_space !== "all") params.id_space = filters.id_space;
-      const data = await api.adminReservations(params);
-      setReservations(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleStatusChange = async (id: number, status: "disetujui" | "ditolak") => {
-    try {
-      await api.confirmReservation(id, status);
-      fetchReservations();
-    } catch (err) {
-      alert(apiErrorMessage(err, "Gagal mengubah status"));
-    }
-  };
-
-  const handleCheckIn = async (id: number) => {
-    try {
-      await api.checkIn(id);
-      fetchReservations();
-    } catch (err) {
-      alert(apiErrorMessage(err, "Gagal check-in"));
-    }
-  };
-
-  const handleCheckOut = async (id: number) => {
-    try {
-      await api.checkOut(id);
-      fetchReservations();
-    } catch (err) {
-      alert(apiErrorMessage(err, "Gagal check-out"));
-    }
-  };
-
-  if (loading) {
-    return <div className="flex items-center justify-center h-64"><Loader2 className="h-8 w-8 animate-spin" /></div>;
-  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[var(--color-border)] pb-4">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-[var(--color-text-secondary)]">MASTER BOOKINGS</p>
-          <h1 className="font-[family-name:var(--font-heading)] text-3xl mt-1">Log Reservasi</h1>
-        </div>
-      </div>
+    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#fbf9f5] text-[#1b1c1a]">
+      <AdminSidebar />
 
-      <div className="bg-white rounded-2xl border border-[var(--color-border)] overflow-hidden">
-        <div className="p-4 border-b border-[var(--color-border)]">
-          <div className="flex flex-wrap gap-3">
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-text-secondary)]" />
-              <input type="month" value={`${filters.year}-${filters.month}`} onChange={(e) => { const [y, m] = e.target.value.split("-"); setFilters({ ...filters, year: y, month: m }); }} className="pl-10 pr-4 py-2 rounded-[10px] border border-[var(--color-border)]" />
+      <main className="flex-1 p-6 sm:p-10 lg:p-12 overflow-y-auto">
+        <div className="w-full max-w-7xl mx-auto space-y-8">
+          
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#EBE7DF]">
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-[#747878] font-bold block mb-1">
+                MASTER AUDIT &amp; FOLIO MONITORING
+              </span>
+              <h1 className="font-serif text-3xl sm:text-4xl font-semibold text-[#121212] tracking-tight">
+                Monitoring &amp; Audit Reservasi
+              </h1>
+              <p className="text-xs sm:text-sm text-[#5e5e5e] font-light mt-1">
+                Pantau seluruh siklus hidup booking, validasi kunci digital, dan rekam jejak pembayaran tamu.
+              </p>
             </div>
-            <div className="relative">
-              <button onClick={() => setShowStatus(!showStatus)} className="flex items-center gap-2 px-3 py-2 rounded-[10px] border border-[var(--color-border)] bg-white text-sm">
-                <Filter className="h-4 w-4" />
-                {STATUS_OPTIONS.find((s) => s.value === filters.status)?.label}
-                <ChevronDown className="h-4 w-4" />
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => alert('Master CSV Ledger telah diexport.')}
+                className="px-5 py-2.5 rounded-full border border-[#EBE7DF] bg-white text-xs font-mono font-semibold text-[#121212] hover:bg-[#fbf9f5] flex items-center gap-2 shadow-sm"
+              >
+                <span className="material-symbols-outlined text-[16px]">download</span>
+                <span>Export CSV</span>
               </button>
-              <AnimatePresence>
-                {showStatus && (
-                  <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="absolute top-full left-0 mt-1 w-48 bg-white border border-[var(--color-border)] rounded-[12px] shadow-lg py-1 z-20">
-                    {STATUS_OPTIONS.map((opt) => (
-                      <button key={opt.value} onClick={() => { setFilters({ ...filters, status: opt.value }); setShowStatus(false); }} className={cn("w-full px-3 py-2 text-left text-sm", filters.status === opt.value ? "bg-[var(--color-bg-primary)] font-medium" : "")}>{opt.label}</button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </div>
-            <div className="relative">
-              <button onClick={() => setShowSpace(!showSpace)} className="flex items-center gap-2 px-3 py-2 rounded-[10px] border border-[var(--color-border)] bg-white text-sm">
-                <Filter className="h-4 w-4" />
-                {filters.id_space === "all" ? "Semua Space" : spaces.find((s) => s.id === Number(filters.id_space))?.nama_space}
-                <ChevronDown className="h-4 w-4" />
-              </button>
-              <AnimatePresence>
-                {showSpace && (
-                  <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }} className="absolute top-full left-0 mt-1 w-56 bg-white border border-[var(--color-border)] rounded-[12px] shadow-lg py-1 z-20 max-h-60 overflow-auto">
-                    <button onClick={() => { setFilters({ ...filters, id_space: "all" }); setShowSpace(false); }} className={cn("w-full px-3 py-2 text-left text-sm", filters.id_space === "all" ? "bg-[var(--color-bg-primary)] font-medium" : "")}>Semua Space</button>
-                    {spaces.map((s) => (
-                      <button key={s.id} onClick={() => { setFilters({ ...filters, id_space: String(s.id) }); setShowSpace(false); }} className={cn("w-full px-3 py-2 text-left text-sm", filters.id_space === String(s.id) ? "bg-[var(--color-bg-primary)] font-medium" : "")}>{s.nama_space}</button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-            {(filters.month || filters.year || filters.status !== "all" || filters.id_space !== "all") && (
-              <button onClick={() => setFilters({ month: "", year: "", status: "all", id_space: "all" })} className="px-3 py-2 rounded-[10px] border border-[var(--color-border)] text-sm text-[var(--color-text-secondary)] hover:bg-[var(--color-bg-primary)]">Hapus Filter</button>
-            )}
           </div>
-        </div>
 
-        {reservations.length === 0 ? (
-          <div className="p-8 text-center text-[var(--color-text-secondary)]">Tidak ada reservasi</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-[var(--color-bg-primary)] text-left text-sm text-[var(--color-text-secondary)]">
-                  <th className="p-4">Kode Booking</th>
-                  <th className="p-4">Space</th>
-                  <th className="p-4">Member</th>
-                  <th className="p-4">Tanggal & Jam</th>
-                  <th className="p-4">Total</th>
-                  <th className="p-4">Status</th>
-                  <th className="p-4">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reservations.map((res) => (
-                  <tr key={res.id} className="border-t border-[var(--color-border)] hover:bg-[var(--color-bg-primary)]">
-                    <td className="p-4 font-mono text-sm">{res.kode_booking}</td>
-                    <td className="p-4">{res.space?.nama_space || `Space #${res.id_space}`} <span className="text-xs text-[var(--color-text-secondary)]">({SPACE_TYPES[res.space?.tipe || "desk"]})</span></td>
-                    <td className="p-4">{res.member?.nama_member}</td>
-                    <td className="p-4 text-sm text-[var(--color-text-secondary)]">{formatDate(res.tanggal_reservasi)}<br />{formatClock(res.jam_mulai)}–{formatClock(res.jam_selesai)}</td>
-                    <td className="p-4 font-mono">{formatCurrency(res.total_bayar)}</td>
-                    <td className="p-4">
-                      <span className={cn("rounded-full px-2.5 py-1 text-xs font-medium", RESERVATION_STATUS[res.status as ReservationStatus].color)}>
-                        {RESERVATION_STATUS[res.status as ReservationStatus].label}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center justify-end gap-1">
-                        {res.status === "belum_dikonfirm" && (
-                          <>
-                            <button onClick={() => handleStatusChange(res.id, "disetujui")} className="px-2 py-1 rounded-[6px] bg-[#4A6B5D]/10 text-[#4A6B5D] text-xs hover:bg-[#4A6B5D]/20">Setujui</button>
-                            <button onClick={() => handleStatusChange(res.id, "ditolak")} className="px-2 py-1 rounded-[6px] bg-rose-100 text-rose-700 text-xs hover:bg-rose-200">Tolak</button>
-                          </>
-                        )}
-                        {res.status === "disetujui" && (
-                          <button onClick={() => handleCheckIn(res.id)} className="px-2 py-1 rounded-[6px] bg-[#C88A2B]/10 text-[#C88A2B] text-xs hover:bg-[#C88A2B]/20">Check-In</button>
-                        )}
-                        {res.status === "aktif" && (
-                          <button onClick={() => handleCheckOut(res.id)} className="px-2 py-1 rounded-[6px] bg-[#121212]/10 text-[#121212] text-xs hover:bg-[#121212]/20">Check-Out</button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
+          {/* 4-Card KPI Strip */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div className="p-5 rounded-2xl bg-white border border-[#EBE7DF] shadow-sm">
+              <span className="text-[10px] font-mono uppercase text-[#747878] block mb-1">TOTAL BOOKING TERCATAT</span>
+              <div className="font-serif text-2xl font-bold text-[#121212]">{bookings.length} Reservasi</div>
+              <span className="text-[10px] font-mono text-[#4A6B5D]">+12% vs minggu lalu</span>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white border border-[#EBE7DF] shadow-sm">
+              <span className="text-[10px] font-mono uppercase text-[#747878] block mb-1">TOTAL REVENUE SETTLED</span>
+              <div className="font-mono text-xl font-bold text-[#121212]">Rp {totalRevenue.toLocaleString('id-ID')}</div>
+              <span className="text-[10px] font-mono text-[#4A6B5D]">100% Verified</span>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white border border-[#EBE7DF] shadow-sm">
+              <span className="text-[10px] font-mono uppercase text-[#747878] block mb-1">PAS AKTIF / IN SESSION</span>
+              <div className="font-serif text-2xl font-bold text-[#4A6B5D]">
+                {bookings.filter(b => b.status === 'active').length} Tamu
+              </div>
+              <span className="text-[10px] font-mono text-[#747878]">Pintu Terbuka</span>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white border border-[#EBE7DF] shadow-sm">
+              <span className="text-[10px] font-mono uppercase text-[#747878] block mb-1">MENUNGGU VALIDASI</span>
+              <div className="font-serif text-2xl font-bold text-[#C88A2B]">
+                {bookings.filter(b => b.status === 'pending').length} Tamu
+              </div>
+              <span className="text-[10px] font-mono text-[#C88A2B]">Menunggu Check-in</span>
+            </div>
+          </div>
+
+          {/* Filter & Search */}
+          <div className="bg-white p-4 sm:p-6 rounded-3xl border border-[#EBE7DF] shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="w-full sm:w-80 relative">
+                <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-[#747878] text-[18px]">
+                  search
+                </span>
+                <input
+                  type="text"
+                  placeholder="Cari Kode Booking, Nama Tamu, Seat ID..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 rounded-full border border-[#EBE7DF] bg-[#fbf9f5] text-xs font-mono text-[#121212] focus:border-[#121212] outline-none"
+                />
+              </div>
+
+              {/* Status Filter Tabs */}
+              <div className="flex items-center gap-1.5 overflow-x-auto p-1 bg-[#fbf9f5] rounded-full border border-[#EBE7DF]">
+                {[
+                  { id: 'all', label: 'Semua' },
+                  { id: 'pending', label: 'Menunggu' },
+                  { id: 'active', label: 'Aktif' },
+                  { id: 'finished', label: 'Selesai' },
+                  { id: 'cancelled', label: 'Dibatalkan' },
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setStatusFilter(tab.id as StatusFilter)}
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-medium transition-all ${
+                      statusFilter === tab.id
+                        ? 'bg-[#121212] text-white font-bold shadow-sm'
+                        : 'text-[#747878] hover:text-[#121212]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
                 ))}
-              </tbody>
-            </table>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+
+          {/* Master Ledger Table */}
+          <div className="bg-white rounded-3xl border border-[#EBE7DF] shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs">
+                <thead className="bg-[#fbf9f5] text-[#747878] border-b border-[#EBE7DF] uppercase text-[10px] tracking-wider">
+                  <tr>
+                    <th className="py-3.5 px-6">Kode Booking</th>
+                    <th className="py-3.5 px-6">Identitas Tamu</th>
+                    <th className="py-3.5 px-6">Ruang &amp; Sesi</th>
+                    <th className="py-3.5 px-6">Seat ID / PIN</th>
+                    <th className="py-3.5 px-6">Total Tarif</th>
+                    <th className="py-3.5 px-6">Status Reservasi</th>
+                    <th className="py-3.5 px-6 text-center">Aksi Override</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#EBE7DF]">
+                  {filtered.map((booking) => (
+                    <tr key={booking.id} className="hover:bg-[#fbf9f5]/60 transition-colors">
+                      <td className="py-4 px-6 font-bold text-[#121212]">
+                        <Link href={`/admin/reservations/${booking.id}`} className="hover:text-[#4A6B5D] hover:underline">
+                          {booking.bookingCode}
+                        </Link>
+                      </td>
+
+                      <td className="py-4 px-6">
+                        <div className="font-sans font-bold text-sm text-[#121212]">{booking.guestName}</div>
+                        <div className="text-[11px] text-[#747878]">{booking.guestEmail}</div>
+                      </td>
+
+                      <td className="py-4 px-6">
+                        <div className="font-sans font-semibold text-[#121212]">{booking.spaceName}</div>
+                        <div className="text-[11px] text-[#747878]">{booking.date} &bull; {booking.timeSlot}</div>
+                      </td>
+
+                      <td className="py-4 px-6">
+                        <span className="font-bold text-[#4A6B5D]">{booking.assignedSeat}</span>
+                        <span className="text-[#747878] block text-[10px]">PIN: {booking.keycardPin}</span>
+                      </td>
+
+                      <td className="py-4 px-6 font-bold text-[#121212]">
+                        Rp {booking.totalAmount.toLocaleString('id-ID')}
+                      </td>
+
+                      <td className="py-4 px-6">
+                        <select
+                          value={booking.status}
+                          onChange={(e) => updateBookingStatus(booking.id, e.target.value as Booking['status'])}
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase cursor-pointer border ${
+                            booking.status === 'active'
+                              ? 'bg-[#4A6B5D]/10 text-[#4A6B5D] border-[#4A6B5D]/30'
+                              : booking.status === 'pending'
+                              ? 'bg-[#C88A2B]/10 text-[#C88A2B] border-[#C88A2B]/30'
+                              : booking.status === 'finished'
+                              ? 'bg-[#333333]/10 text-[#333333] border-[#333333]/30'
+                              : 'bg-[#9E3B3B]/10 text-[#9E3B3B] border-[#9E3B3B]/30'
+                          }`}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="active">Active</option>
+                          <option value="finished">Finished</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                      </td>
+
+                      <td className="py-4 px-6 text-center">
+                        <Link
+                          href={`/admin/reservations/${booking.id}`}
+                          className="px-3 py-1.5 rounded-full border border-[#EBE7DF] bg-[#fbf9f5] hover:bg-[#121212] hover:text-white transition-colors text-[11px] font-semibold inline-flex items-center gap-1"
+                        >
+                          <span className="material-symbols-outlined text-[14px]">visibility</span>
+                          <span>Folio</span>
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </main>
     </div>
   );
 }

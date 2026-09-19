@@ -18,31 +18,25 @@
   "onMatchHeaders": [],
   "rewrites": {
     "beforeFiles": [],
-    "afterFiles": [
-      {
-        "source": "/api/:path*",
-        "destination": "http://localhost:3001/api/:path*",
-        "regex": "^/api(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
-      }
-    ],
+    "afterFiles": [],
     "fallback": []
   },
   "dynamicRoutes": [
     {
-      "page": "/my-bookings/[id]",
-      "regex": "^/my\\-bookings/([^/]+?)(?:/)?$",
+      "page": "/admin/reservations/[id]",
+      "regex": "^/admin/reservations/([^/]+?)(?:/)?$",
       "routeKeys": {
         "nxtPid": "nxtPid"
       },
-      "namedRegex": "^/my\\-bookings/(?<nxtPid>[^/]+?)(?:/)?$"
+      "namedRegex": "^/admin/reservations/(?<nxtPid>[^/]+?)(?:/)?$"
     },
     {
-      "page": "/spaces/[id]",
-      "regex": "^/spaces/([^/]+?)(?:/)?$",
+      "page": "/ticket/[id]",
+      "regex": "^/ticket/([^/]+?)(?:/)?$",
       "routeKeys": {
         "nxtPid": "nxtPid"
       },
-      "namedRegex": "^/spaces/(?<nxtPid>[^/]+?)(?:/)?$"
+      "namedRegex": "^/ticket/(?<nxtPid>[^/]+?)(?:/)?$"
     }
   ],
   "staticRoutes": [
@@ -65,16 +59,22 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
-      "page": "/admin/dashboard",
-      "regex": "^/admin/dashboard(?:/)?$",
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/admin/dashboard(?:/)?$"
+      "namedRegex": "^/admin(?:/)?$"
     },
     {
-      "page": "/admin/login",
-      "regex": "^/admin/login(?:/)?$",
+      "page": "/admin/checkin",
+      "regex": "^/admin/checkin(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/admin/login(?:/)?$"
+      "namedRegex": "^/admin/checkin(?:/)?$"
+    },
+    {
+      "page": "/admin/finance",
+      "regex": "^/admin/finance(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/finance(?:/)?$"
     },
     {
       "page": "/admin/members",
@@ -89,28 +89,10 @@
       "namedRegex": "^/admin/profile(?:/)?$"
     },
     {
-      "page": "/admin/promos",
-      "regex": "^/admin/promos(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/admin/promos(?:/)?$"
-    },
-    {
-      "page": "/admin/reports",
-      "regex": "^/admin/reports(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/admin/reports(?:/)?$"
-    },
-    {
       "page": "/admin/reservations",
       "regex": "^/admin/reservations(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/admin/reservations(?:/)?$"
-    },
-    {
-      "page": "/admin/scanner",
-      "regex": "^/admin/scanner(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/admin/scanner(?:/)?$"
     },
     {
       "page": "/admin/spaces",
@@ -119,10 +101,16 @@
       "namedRegex": "^/admin/spaces(?:/)?$"
     },
     {
-      "page": "/auth",
-      "regex": "^/auth(?:/)?$",
+      "page": "/admin/vouchers",
+      "regex": "^/admin/vouchers(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/auth(?:/)?$"
+      "namedRegex": "^/admin/vouchers(?:/)?$"
+    },
+    {
+      "page": "/booking",
+      "regex": "^/booking(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/booking(?:/)?$"
     },
     {
       "page": "/favicon.ico",
@@ -137,10 +125,22 @@
       "namedRegex": "^/login(?:/)?$"
     },
     {
-      "page": "/my-bookings",
-      "regex": "^/my\\-bookings(?:/)?$",
+      "page": "/member/bookings",
+      "regex": "^/member/bookings(?:/)?$",
       "routeKeys": {},
-      "namedRegex": "^/my\\-bookings(?:/)?$"
+      "namedRegex": "^/member/bookings(?:/)?$"
+    },
+    {
+      "page": "/member/history",
+      "regex": "^/member/history(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/member/history(?:/)?$"
+    },
+    {
+      "page": "/member/profile",
+      "regex": "^/member/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/member/profile(?:/)?$"
     },
     {
       "page": "/profile",
@@ -153,6 +153,18 @@
       "regex": "^/register(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/register(?:/)?$"
+    },
+    {
+      "page": "/spaces",
+      "regex": "^/spaces(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/spaces(?:/)?$"
+    },
+    {
+      "page": "/ticket",
+      "regex": "^/ticket(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ticket(?:/)?$"
     }
   ],
   "dataRoutes": [],

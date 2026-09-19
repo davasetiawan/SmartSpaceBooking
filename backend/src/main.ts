@@ -14,6 +14,8 @@ async function bootstrap() {
   app.enableCors();
   app.use('/uploads', express.static(join(process.cwd(), 'uploads')));
   app.use('/uploads', express.static(join(__dirname, '..', 'uploads')));
+  app.use(express.static(join(process.cwd(), 'public')));
+  app.use(express.static(join(__dirname, '..', 'public')));
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new ApiExceptionFilter());

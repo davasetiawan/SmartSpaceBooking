@@ -21,7 +21,7 @@ export class PaymentService {
     });
 
     if (!reservasi) throw new NotFoundException('Reservasi tidak ditemukan');
-    if (reservasi.id_member !== userId) throw new ForbiddenException('Tidak berhak membayar reservasi ini');
+    if (reservasi.member.id_user !== userId) throw new ForbiddenException('Tidak berhak membayar reservasi ini');
 
     const paymentMethod = await this.prisma.payment_method.findUnique({
       where: { id: paymentMethodId },
@@ -93,7 +93,7 @@ export class PaymentService {
     });
 
     if (!reservasi) throw new NotFoundException('Reservasi tidak ditemukan');
-    if (reservasi.id_member !== userId) throw new ForbiddenException('Tidak berhak membayar reservasi ini');
+    if (reservasi.member.id_user !== userId) throw new ForbiddenException('Tidak berhak membayar reservasi ini');
 
     const qrisMethod = await this.prisma.payment_method.findFirst({
       where: { tipe: 'qris', is_aktif: true },
@@ -233,6 +233,14 @@ export class PaymentService {
       grossAmount: paymentTransaction.gross_amount,
       paymentType: paymentTransaction.payment_type,
     };
+  }
+
+  async listActiveMethods() {
+    const items = await this.prisma.payment_method.findMany({
+      where: { is_aktif: true },
+      orderBy: { created_at: 'desc' },
+    });
+    return { data: items };
   }
 
   async getPaymentHistory(userId: number) {

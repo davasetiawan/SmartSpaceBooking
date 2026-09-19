@@ -1,5 +1,2 @@
-import { redirect } from "next/navigation";
-
-export default function RegisterAlias() {
-  redirect("/auth");
-}
+import LoginPage from '../login/page';
+export default LoginPage;

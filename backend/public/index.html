@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartSpace — Architectural Coworking & Workstation Reservations</title>
+  <meta name="description" content="Platform reservasi online coworking space, personal desk, meeting room, dan private office modern. Bebas bentrok jadwal, dilengkapi e-ticket QR Code dan fasilitas premium.">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
+  
+  <!-- FontAwesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- External JS Libraries (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+  <!-- Application CSS -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       Navigation Bar
+       ========================================================================== -->
+  <nav class="navbar">
+    <div class="container navbar-inner">
+      <a href="/" class="brand-logo">
+        <div class="logo-icon"><i class="fa-solid fa-building-columns"></i></div>
+        <div class="logo-text">Smart<span>Space</span></div>
+      </a>
+
+      <div class="live-badge">
+        <span class="pulse-dot"></span>
+        <span id="liveStatusText">6 Spaces Available Today</span>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="#spaces" class="nav-link active" onclick="app.showSection('spaces')">Explore Spaces</a></li>
+        <li><a href="#amenities" class="nav-link" onclick="app.showSection('amenities')">Amenities</a></li>
+        <li><a href="#promos" class="nav-link" onclick="app.showSection('promos')">Promotions</a></li>
+        <li class="auth-only-member" style="display: none;"><a href="#my-bookings" class="nav-link" onclick="app.showSection('my-bookings')">My Bookings</a></li>
+        <li class="auth-only-admin" style="display: none;"><a href="#admin" class="nav-link" onclick="app.showSection('admin')">Admin Portal</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <div id="loggedOutNav" style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-ghost" onclick="app.openAuthModal('login')">Sign In</button>
+          <button class="btn btn-primary" onclick="app.openAuthModal('register')">Get Started</button>
+        </div>
+        <div id="loggedInNav" style="display: none;">
+          <div class="user-pill" onclick="app.toggleUserMenu()">
+            <div class="user-avatar" id="navAvatar">U</div>
+            <div class="user-info">
+              <span class="user-name" id="navUserName">User</span>
+              <span class="user-role" id="navUserRole">Member</span>
+            </div>
+            <i class="fa-solid fa-chevron-down" style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.3rem;"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main View Container -->
+  <main id="mainContainer">
+
+    <!-- ==========================================================================
+         Hero Section
+         ========================================================================== -->
+    <section class="hero" id="heroSection">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="hero-tag">
+            <i class="fa-solid fa-sparkles"></i> Boutique Architectural Workspaces
+          </div>
+          <h1 class="hero-title">Bespoke Spaces Designed for <span>Focus & Growth</span></h1>
+          <p class="hero-subtitle">
+            Seamlessly reserve hot desks, quiet executive suites, and soundproof meeting rooms. Verified real-time availability, instant e-tickets, and zero scheduling conflicts.
+          </p>
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <a href="#spaces" class="btn btn-accent btn-lg"><i class="fa-solid fa-calendar-check"></i> Book Your Space</a>
+            <a href="#amenities" class="btn btn-secondary btn-lg"><i class="fa-solid fa-compass"></i> Explore Amenities</a>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <h3 id="statTotalSpaces">12+</h3>
+              <p>Curated Spaces</p>
+            </div>
+            <div class="stat-item">
+              <h3>100%</h3>
+              <p>Conflict-Free</p>
+            </div>
+            <div class="stat-item">
+              <h3>24/7</h3>
+              <p>Smart Key Access</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="hero-img-wrapper">
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=1200&auto=format&fit=crop" alt="Modern Coworking Interior">
+          </div>
+          <div class="hero-floating-card">
+            <div class="floating-icon">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div class="floating-text">
+              <h4>Real-Time Overlap Check</h4>
+              <p>Direct database sync prevents double bookings</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Search & Instant Availability Widget Bar
+         ========================================================================== -->
+    <section class="search-widget-section">
+      <div class="container">
+        <div class="search-widget-card">
+          <form class="widget-form" id="searchWidgetForm" onsubmit="app.handleSearchWidget(event)">
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-layer-group"></i> Space Category</label>
+              <select class="form-select" id="widgetType">
+                <option value="">All Categories</option>
+                <option value="desk">Personal Hot Desk</option>
+                <option value="meeting_room">Meeting Room</option>
+                <option value="private_office">Private Executive Office</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-calendar-day"></i> Reservation Date</label>
+              <input type="date" class="form-input" id="widgetDate" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-clock"></i> Start Time</label>
+              <input type="time" class="form-input" id="widgetTime" value="09:00" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"><i class="fa-solid fa-hourglass-half"></i> Duration (Hours)</label>
+              <select class="form-select" id="widgetDuration">
+                <option value="1">1 Hour</option>
+                <option value="2" selected>2 Hours</option>
+                <option value="3">3 Hours</option>
+                <option value="4">4 Hours</option>
+                <option value="8">8 Hours (Full Day)</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-accent" style="height: 48px;"><i class="fa-solid fa-magnifying-glass"></i> Check & Search</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Catalog & Spaces Showcase Section
+         ========================================================================== -->
+    <section class="catalog-section" id="spaces">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <h2>Architectural Space Collection</h2>
+            <p>Select your ideal workstation tailored for high productivity & meetings.</p>
+          </div>
+
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <div class="catalog-tabs">
+              <button class="tab-btn active" data-type="all" onclick="app.filterCatalog('all', this)">All</button>
+              <button class="tab-btn" data-type="desk" onclick="app.filterCatalog('desk', this)">Desks</button>
+              <button class="tab-btn" data-type="meeting_room" onclick="app.filterCatalog('meeting_room', this)">Meeting Rooms</button>
+              <button class="tab-btn" data-type="private_office" onclick="app.filterCatalog('private_office', this)">Private Offices</button>
+            </div>
+            
+            <input type="text" class="form-input" id="catalogSearchInput" placeholder="Search spaces..." oninput="app.handleCatalogSearch(this.value)" style="width: 220px;">
+          </div>
+        </div>
+
+        <div class="spaces-grid" id="spacesGrid">
+          <!-- Dynamic Space Cards Rendered via JS -->
+          <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 2rem; color: var(--accent-wood);"></i>
+            <p style="margin-top: 1rem;">Loading available spaces...</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Amenity Highlights Section
+         ========================================================================== -->
+    <section class="amenities-section" id="amenities">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-title-wrap">
+            <h2>Designed for Seamless Performance</h2>
+            <p>Every detail engineered for your comfort, privacy, and technical demands.</p>
+          </div>
+        </div>
+
+        <div class="amenities-grid">
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fa-solid fa-wifi"></i></div>
+            <h3>1 Gbps Fiber Network</h3>
+            <p>Redundant enterprise Wi-Fi 6 with private VLAN capabilities and dedicated ethernet drops.</p>
+          </div>
+
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fa-solid fa-volume-xmark"></i></div>
+            <h3>Acoustic Isolation</h3>
+            <p>Soundproof phone booths and acoustically dampened meeting rooms for absolute confidentiality.</p>
+          </div>
+
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fa-solid fa-mug-hot"></i></div>
+            <h3>Artisan Espresso Bar</h3>
+            <p>Complimentary single-origin espresso, cold brew, and loose-leaf tea selection updated weekly.</p>
+          </div>
+
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fa-solid fa-chair"></i></div>
+            <h3>Ergonomic Architecture</h3>
+            <p>Herman Miller Aeron chairs, electric height-adjustable desks, and adaptive task lighting.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Promotions Section
+         ========================================================================== -->
+    <section class="promos-section" id="promos">
+      <div class="container">
+        <div class="promo-banner">
+          <div class="promo-content">
+            <h3>Limited Time Offer</h3>
+            <h2>Special Workspace Discounts</h2>
+            <p>Apply valid promo codes during checkout to enjoy up to 20% off your booking.</p>
+          </div>
+          <div id="promosContainer" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <div class="promo-code-box">
+              <div>
+                <div style="font-size: 0.8rem; color: var(--text-light-muted);">CODE</div>
+                <div class="code-text">PROMOAGUSTUS</div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="app.copyPromo('PROMOAGUSTUS')"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Member Portal & User Dashboard View (Hidden by default, shown via nav)
+         ========================================================================== -->
+    <section class="dashboard-view" id="my-bookings" style="display: none;">
+      <div class="container">
+        <div class="dashboard-header">
+          <div>
+            <h2>Member Reservation Portal</h2>
+            <p>Track your active bookings, view digital QR tickets, and manage profile settings.</p>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-secondary" onclick="app.openProfileModal()"><i class="fa-solid fa-user-gear"></i> Edit Profile</button>
+            <button class="btn btn-accent" onclick="app.showSection('spaces')"><i class="fa-solid fa-plus"></i> New Booking</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+          <button class="btn btn-ghost active" onclick="app.switchMemberTab('active', this)">Active Bookings</button>
+          <button class="btn btn-ghost" onclick="app.switchMemberTab('history', this)">Spending History</button>
+        </div>
+
+        <!-- Active Bookings Tab -->
+        <div id="memberTabActive">
+          <div id="memberBookingsList" class="spaces-grid">
+            <!-- Dynamic Bookings Rendered Here -->
+          </div>
+        </div>
+
+        <!-- Spending History Tab -->
+        <div id="memberTabHistory" style="display: none;">
+          <div style="background: var(--bg-surface); border-radius: var(--radius-xl); padding: 2rem; border: 1px solid var(--border-subtle);">
+            <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 2rem;">
+              <select class="form-select" id="historyMonth" style="width: 160px;">
+                <option value="9" selected>September</option>
+                <option value="8">August</option>
+                <option value="7">July</option>
+              </select>
+              <select class="form-select" id="historyYear" style="width: 140px;">
+                <option value="2026" selected>2026</option>
+                <option value="2025">2025</option>
+              </select>
+              <button class="btn btn-primary btn-sm" onclick="app.loadMemberHistory()"><i class="fa-solid fa-filter"></i> Filter</button>
+            </div>
+            <div id="historySummaryBox" style="font-size: 1.2rem; font-weight: 700; color: var(--accent-wood); margin-bottom: 1.5rem;">
+              Total Monthly Spending: Rp 0
+            </div>
+            <div id="historyTableContainer">
+              <!-- History Table -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         Admin & Space Owner Portal View (Hidden by default, shown for admin)
+         ========================================================================== -->
+    <section class="dashboard-view" id="admin" style="display: none;">
+      <div class="container">
+        <div class="dashboard-header">
+          <div>
+            <h2>Space Manager Portal</h2>
+            <p>Control room listings, approve reservations, verify QR check-ins, and inspect revenue charts.</p>
+          </div>
+          <div style="display: flex; gap: 1rem;">
+            <button class="btn btn-accent" onclick="app.openScannerModal()"><i class="fa-solid fa-qrcode"></i> Front Desk QR Scanner</button>
+            <button class="btn btn-primary" onclick="app.openAddSpaceModal()"><i class="fa-solid fa-plus"></i> Add New Space</button>
+          </div>
+        </div>
+
+        <!-- KPI Metrics -->
+        <div class="admin-grid">
+          <div class="kpi-card">
+            <span class="kpi-title">Monthly Revenue</span>
+            <span class="kpi-value" id="kpiRevenue">Rp 0</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Total Reservations</span>
+            <span class="kpi-value" id="kpiTotalBookings">0</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Active Spaces</span>
+            <span class="kpi-value" id="kpiActiveSpaces">0</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-title">Registered Members</span>
+            <span class="kpi-value" id="kpiMembers">0</span>
+          </div>
+        </div>
+
+        <!-- Admin Tabs -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem;">
+          <button class="btn btn-ghost active" onclick="app.switchAdminTab('reservations', this)">Reservations Manager</button>
+          <button class="btn btn-ghost" onclick="app.switchAdminTab('spaces', this)">Space Catalog</button>
+          <button class="btn btn-ghost" onclick="app.switchAdminTab('promos', this)">Promo Codes</button>
+          <button class="btn btn-ghost" onclick="app.switchAdminTab('reports', this)">Revenue Analytics</button>
+        </div>
+
+        <!-- Reservations Tab -->
+        <div id="adminTabReservations">
+          <div style="background: var(--bg-surface); border-radius: var(--radius-xl); padding: 2rem; border: 1px solid var(--border-subtle);">
+            <div id="adminReservationsList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Spaces Management Tab -->
+        <div id="adminTabSpaces" style="display: none;">
+          <div id="adminSpacesGrid" class="spaces-grid">
+            <!-- Spaces list -->
+          </div>
+        </div>
+
+        <!-- Promo Code Tab -->
+        <div id="adminTabPromos" style="display: none;">
+          <div style="background: var(--bg-surface); border-radius: var(--radius-xl); padding: 2rem; border: 1px solid var(--border-subtle);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <h3>Active Promo Codes</h3>
+              <button class="btn btn-accent btn-sm" onclick="app.openAddPromoModal()"><i class="fa-solid fa-plus"></i> Add Promo</button>
+            </div>
+            <div id="adminPromosList">
+              <!-- Promo codes table -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="adminTabReports" style="display: none;">
+          <div style="background: var(--bg-surface); border-radius: var(--radius-xl); padding: 2rem; border: 1px solid var(--border-subtle);">
+            <h3 style="margin-bottom: 1.5rem;">Monthly Income Realization vs Estimation</h3>
+            <canvas id="revenueChart" style="width: 100%; max-height: 400px;"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================================================
+       MODALS SYSTEM
+       ========================================================================== -->
+
+  <!-- 1. AUTH MODAL (Login / Register) -->
+  <div class="modal-backdrop" id="authModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="authModalTitle">Welcome to SmartSpace</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('authModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div style="display: flex; gap: 0.5rem; background: var(--bg-main); padding: 0.3rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+          <button class="btn btn-ghost active" id="authTabLoginBtn" style="flex: 1;" onclick="app.switchAuthMode('login')">Login</button>
+          <button class="btn btn-ghost" id="authTabRegisterBtn" style="flex: 1;" onclick="app.switchAuthMode('register')">Register</button>
+        </div>
+
+        <form id="authForm" onsubmit="app.handleAuthSubmit(event)">
+          <!-- Role selector for registration -->
+          <div id="registerRoleBox" style="display: none; margin-bottom: 1.25rem;">
+            <label class="form-label">I want to register as:</label>
+            <div style="display: flex; gap: 1rem; margin-top: 0.4rem;">
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="radio" name="registerRole" value="member" checked onchange="app.toggleRegisterRoleFields('member')"> Member (Book Spaces)
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="radio" name="registerRole" value="admin_space" onchange="app.toggleRegisterRoleFields('admin_space')"> Space Owner / Admin
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Username / Email</label>
+            <input type="text" class="form-input" id="authUsername" placeholder="e.g. member or admin" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-input" id="authPassword" placeholder="••••••••" required>
+          </div>
+
+          <!-- Extra Fields for Member Registration -->
+          <div id="memberRegisterFields" style="display: none;">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" id="regEmail" placeholder="name@example.com">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" id="regFullName" placeholder="Your full name">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Organization / Company</label>
+              <input type="text" class="form-input" id="regInstansi" placeholder="e.g. Freelancer / Company Name">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Phone Number</label>
+              <input type="text" class="form-input" id="regTelp" placeholder="08123456789">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Address</label>
+              <input type="text" class="form-input" id="regAlamat" placeholder="City or street address">
+            </div>
+          </div>
+
+          <!-- Extra Fields for Space Owner Registration -->
+          <div id="adminRegisterFields" style="display: none;">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Coworking Space Brand Name</label>
+              <input type="text" class="form-input" id="regCoworkingName" placeholder="e.g. Smart Space Downtown">
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label class="form-label">Owner / Representative Name</label>
+              <input type="text" class="form-input" id="regOwnerName" placeholder="Owner Name">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-accent" style="width: 100%; margin-top: 1rem;" id="authSubmitBtn">Sign In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SPACE DETAIL & MULTI-STEP BOOKING CHECKOUT MODAL -->
+  <div class="modal-backdrop" id="bookingModal">
+    <div class="modal-box" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 id="bookingModalTitle">Reserve Space</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('bookingModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <div id="bookingSpacePreview" style="display: flex; gap: 1.5rem; background: var(--bg-main); padding: 1.25rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
+          <img id="bookingSpaceImg" src="" alt="Space Preview" style="width: 120px; height: 90px; object-fit: cover; border-radius: var(--radius-md);">
+          <div>
+            <span class="space-location" id="bookingSpaceLocation">Malang</span>
+            <h4 id="bookingSpaceName" style="font-size: 1.2rem;">Space Name</h4>
+            <p id="bookingSpaceCapacity" style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-users"></i> 1 Person</p>
+            <div style="font-weight: 800; color: var(--accent-wood); font-size: 1.1rem; margin-top: 0.2rem;" id="bookingSpacePrice">Rp 25.000 / hr</div>
+          </div>
+        </div>
+
+        <form id="checkoutForm" onsubmit="app.handleBookingSubmit(event)">
+          <!-- Hidden Space ID -->
+          <input type="hidden" id="checkoutSpaceId">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Date</label>
+              <input type="date" class="form-input" id="checkoutDate" onchange="app.verifySlotAvailability()" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Start Time</label>
+              <input type="time" class="form-input" id="checkoutTime" value="09:00" onchange="app.verifySlotAvailability()" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Duration (Hours)</label>
+            <select class="form-select" id="checkoutDuration" onchange="app.verifySlotAvailability()">
+              <option value="1">1 Hour</option>
+              <option value="2" selected>2 Hours</option>
+              <option value="3">3 Hours</option>
+              <option value="4">4 Hours</option>
+              <option value="8">8 Hours (Full Day)</option>
+            </select>
+          </div>
+
+          <!-- Real-time Availability Verification Status Pill -->
+          <div id="slotCheckBadge" style="padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 600; margin-bottom: 1.5rem; background: var(--accent-sage-light); color: var(--accent-sage);">
+            <i class="fa-solid fa-circle-check"></i> Schedule checked & available in database!
+          </div>
+
+          <!-- Promo Code Section -->
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem; margin-bottom: 1.25rem;">
+            <label class="form-label">Have a Promo Code?</label>
+            <div style="display: flex; gap: 0.75rem; margin-top: 0.4rem;">
+              <input type="text" class="form-input" id="checkoutPromoCode" placeholder="e.g. PROMOAGUSTUS" style="text-transform: uppercase;">
+              <button type="button" class="btn btn-secondary" onclick="app.applyPromoCode()">Apply</button>
+            </div>
+            <div id="promoFeedback" style="font-size: 0.82rem; margin-top: 0.4rem;"></div>
+          </div>
+
+          <!-- Price Calculation Summary -->
+          <div style="background: var(--bg-surface-elevated); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.4rem;">
+              <span>Subtotal (<span id="calcHours">2</span> hrs x <span id="calcRate">Rp 25.000</span>)</span>
+              <span id="calcSubtotal">Rp 50.000</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.4rem; color: var(--status-green);" id="calcDiscountRow">
+              <span>Discount</span>
+              <span id="calcDiscount">- Rp 0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; color: var(--bg-charcoal); border-top: 1px solid var(--border-subtle); padding-top: 0.6rem; margin-top: 0.4rem;">
+              <span>Total Payment</span>
+              <span id="calcTotal">Rp 50.000</span>
+            </div>
+          </div>
+
+          <!-- Payment Method Selection -->
+          <div style="margin-bottom: 1.5rem;">
+            <label class="form-label">Payment Method</label>
+            <select class="form-select" id="checkoutPaymentMethod" style="margin-top: 0.4rem;">
+              <option value="1">Bank Transfer BCA (Acc: 1234567890 a/n Smart Space)</option>
+              <option value="2">Instant QRIS Payment</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-accent btn-lg" style="width: 100%;" id="checkoutSubmitBtn"><i class="fa-solid fa-lock"></i> Confirm Reservation & Pay</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. DIGITAL E-TICKET MODAL -->
+  <div class="modal-backdrop" id="ticketModal">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3>Digital E-Ticket</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('ticketModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="ticket-card" id="printableTicket">
+          <div class="ticket-header">
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">BOOKING PASS</div>
+              <div class="ticket-code" id="ticketBookingCode">SB-2026-XXXX</div>
+            </div>
+            <div class="brand-logo" style="font-size: 1.1rem;">
+              <div class="logo-icon" style="width: 30px; height: 30px; font-size: 0.9rem;"><i class="fa-solid fa-building-columns"></i></div>
+              <div class="logo-text">Smart<span>Space</span></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 1rem;">
+            <h4 id="ticketSpaceName" style="font-size: 1.2rem; margin-bottom: 0.2rem;">Personal Desk Flexi 01</h4>
+            <p id="ticketMemberName" style="font-size: 0.9rem; color: var(--text-secondary);"><i class="fa-solid fa-user"></i> Guest Name</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.88rem; background: var(--bg-main); padding: 1rem; border-radius: var(--radius-md);">
+            <div>
+              <div style="color: var(--text-muted); font-size: 0.75rem;">DATE</div>
+              <div id="ticketDate" style="font-weight: 700;">2026-09-16</div>
+            </div>
+            <div>
+              <div style="color: var(--text-muted); font-size: 0.75rem;">SCHEDULE</div>
+              <div id="ticketTime" style="font-weight: 700;">09:00 (2 hrs)</div>
+            </div>
+            <div>
+              <div style="color: var(--text-muted); font-size: 0.75rem;">STATUS</div>
+              <div id="ticketStatus" style="font-weight: 700; color: var(--status-blue);">CONFIRMED</div>
+            </div>
+            <div>
+              <div style="color: var(--text-muted); font-size: 0.75rem;">TOTAL PAID</div>
+              <div id="ticketTotal" style="font-weight: 700; color: var(--accent-wood);">Rp 50.000</div>
+            </div>
+          </div>
+
+          <!-- Dynamic QR Code -->
+          <div class="qr-wrapper">
+            <div id="qrcodeCanvas"></div>
+            <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-top: 0.6rem;">Scan at Front Desk upon entry</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / Save PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. FRONT DESK QR SCANNER MODAL -->
+  <div class="modal-backdrop" id="scannerModal">
+    <div class="modal-box" style="max-width: 500px;">
+      <div class="modal-header">
+        <h3>Front Desk E-Ticket Scanner</h3>
+        <button class="modal-close-btn" onclick="app.closeScannerModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body text-center">
+        <div id="qr-reader" style="width: 100%; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1.5rem;"></div>
+
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.25rem;">
+          <label class="form-label" style="text-align: left; display: block; margin-bottom: 0.4rem;">Or Enter Booking Code Manually:</label>
+          <div style="display: flex; gap: 0.75rem;">
+            <input type="text" class="form-input" id="manualBookingCode" placeholder="e.g. SB-20260916-1234">
+            <button class="btn btn-accent" onclick="app.verifyManualBookingCode()">Check-In</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ADD / EDIT SPACE MODAL (ADMIN) -->
+  <div class="modal-backdrop" id="spaceFormModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="spaceFormTitle">Add New Space</h3>
+        <button class="modal-close-btn" onclick="app.closeModal('spaceFormModal')"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="spaceForm" onsubmit="app.handleSpaceFormSubmit(event)">
+          <input type="hidden" id="spaceFormId">
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Space Name</label>
+            <input type="text" class="form-input" id="spaceFormName" placeholder="e.g. Meeting Room Gamma" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Space Category</label>
+              <select class="form-select" id="spaceFormType" required>
+                <option value="desk">Personal Desk</option>
+                <option value="meeting_room">Meeting Room</option>
+                <option value="private_office">Private Office</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Capacity (Persons)</label>
+              <input type="number" class="form-input" id="spaceFormCapacity" value="1" min="1" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Hourly Rate (IDR)</label>
+              <input type="number" class="form-input" id="spaceFormRate" placeholder="25000" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">City / Location</label>
+              <input type="text" class="form-input" id="spaceFormKota" value="Malang" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Street Address</label>
+            <input type="text" class="form-input" id="spaceFormJalan" placeholder="e.g. Jl. Danau Ranau No. 12" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Description & Facilities</label>
+            <textarea class="form-input" id="spaceFormDesc" rows="3" placeholder="Describe key amenities, Wi-Fi speed, equipment..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-accent" style="width: 100%;">Save Space</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification System -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Application Logic JS -->
+  <script src="/js/app.js"></script>
+</body>
+</html>

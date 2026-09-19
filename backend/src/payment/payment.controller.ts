@@ -52,6 +52,13 @@ export class PaymentController {
     );
   }
 
+  @Get('methods')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Daftar metode pembayaran aktif untuk checkout' })
+  async listMethods() {
+    return this.paymentService.listActiveMethods();
+  }
+
   @Get('history')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Riwayat pembayaran user' })

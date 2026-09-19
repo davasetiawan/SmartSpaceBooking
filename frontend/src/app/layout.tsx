@@ -1,46 +1,53 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
-import { Navbar } from "@/components/navbar";
+import { Plus_Jakarta_Sans, Playfair_Display, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { SpaceStoreProvider } from "@/lib/SpaceStoreContext";
+import AuthGuard from "@/components/auth/AuthGuard";
 
-const jakarta = Plus_Jakarta_Sans({
+const sansFont = Plus_Jakarta_Sans({
+  variable: "--font-sans",
   subsets: ["latin"],
-  variable: "--font-jakarta",
-  display: "swap",
 });
 
-const playfair = Playfair_Display({
+const serifFont = Playfair_Display({
+  variable: "--font-serif",
   subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
 });
 
-const jetbrains = JetBrains_Mono({
+const monoFont = JetBrains_Mono({
+  variable: "--font-mono",
   subsets: ["latin"],
-  variable: "--font-jetbrains",
-  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Smart Space Booking | Coworking & Workspace Rental",
-  description:
-    "Pesan meja kerja, ruang rapat, dan kantor pribadi premium dengan mudah",
+  title: "WorkMates — Sonder-Inspired Architectural Coworking & Private Studios",
+  description: "Boutique workspaces, private studios, and meeting sanctuaries designed with architectural calm and effortless flow.",
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html
-      lang="id"
-      className={`${jakarta.variable} ${playfair.variable} ${jetbrains.variable}`}
+      lang="en"
+      className={`${sansFont.variable} ${serifFont.variable} ${monoFont.variable} h-full antialiased`}
     >
-      <body className="min-h-screen bg-[var(--color-bg-primary)] font-sans text-[var(--color-text-primary)] antialiased">
-        <Navbar />
-        {children}
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        />
+      </head>
+      <body className="min-h-full flex flex-col font-sans bg-[#fbf9f5] text-[#1b1c1a] antialiased selection:bg-[#121212] selection:text-white">
+        <SpaceStoreProvider>
+          <AuthGuard>
+            {children}
+          </AuthGuard>
+        </SpaceStoreProvider>
       </body>
     </html>
   );
 }
+

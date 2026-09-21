@@ -36,10 +36,11 @@ export class PaymentMethodController {
     return this.paymentMethod.findAll(req.user.id, aktif === 'true');
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Detail metode pembayaran milik admin' })
-  findOne(@Request() req: { user: { id: number } }, @Param('id', ParseIntPipe) id: number) {
-    return this.paymentMethod.findOne(req.user.id, id);
+  @Get('public/active')
+  @Roles('member', 'admin_space')
+  @ApiOperation({ summary: 'Daftar metode pembayaran aktif untuk checkout' })
+  findActivePublic() {
+    return this.paymentMethod.findActivePublic();
   }
 
   @Post()
@@ -64,13 +65,4 @@ export class PaymentMethodController {
     return this.paymentMethod.remove(req.user.id, id);
   }
 
-  @Get('public/active')
-  @ApiOperation({ summary: 'Daftar metode pembayaran aktif (publik untuk checkout)' })
-  async findActivePublic(@Request() req: { user: { id: number } }) {
-    const ownerId = req.user?.id;
-    if (!ownerId) {
-      return { data: [] };
-    }
-    return this.paymentMethod.findActiveForOwner(ownerId);
-  }
 }

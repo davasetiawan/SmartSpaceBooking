@@ -145,21 +145,33 @@ body {
   animation: scanline 2.5s ease-in-out infinite alternate;
 }
 
-/* Print Styles for E-Ticket */
+/* Print Styles for E-Ticket & Financial PDF Export */
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
+
 @media print {
-  body {
+  html, body {
     background: #ffffff !important;
     color: #000000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
   .no-print {
     display: none !important;
   }
   .print-ticket-only {
     box-shadow: none !important;
-    border: 1px solid #000000 !important;
-    margin: 0 !important;
+    border: 1px solid #121212 !important;
+    margin: 0 auto !important;
     max-width: 100% !important;
     width: 100% !important;
+    page-break-inside: avoid !important;
+  }
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
   }
 }
 

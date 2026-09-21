@@ -108,7 +108,7 @@ export class AuthService {
       where: {
         OR: [{ username: dto.username }, { email: dto.email }],
       },
-      include: { member: true, space_owner: true, maker: true },
+      include: { member: true, space_owner: true },
     });
 
     if (!user || !(await bcrypt.compare(dto.password, user.password))) {
@@ -121,7 +121,7 @@ export class AuthService {
   async profile(userId: number) {
     const user = await this.prisma.users.findUnique({
       where: { id: userId },
-      select: { id: true, username: true, email: true, role: true, member: true, space_owner: true, maker: true },
+      select: { id: true, username: true, email: true, role: true, member: true, space_owner: true },
     });
     return { data: user };
   }

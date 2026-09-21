@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import AdminSidebar from '@/components/layout/AdminSidebar';
+import Navbar from '@/components/layout/Navbar';
 import { useSpaceStore } from '@/lib/SpaceStoreContext';
 
 export default function AdminDashboardPage() {
@@ -15,13 +15,12 @@ export default function AdminDashboardPage() {
   const occupancyRate = Math.round((1 - (activeSpacesCount / spaces.length)) * 100);
 
   return (
-    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#fbf9f5] text-[#1b1c1a]">
-      {/* Executive Admin Sidebar */}
-      <AdminSidebar />
+    <div className="w-full min-h-screen flex flex-col bg-[#fbf9f5] text-[#1b1c1a]">
+      <Navbar />
 
       {/* Main Admin Content Canvas */}
-      <main className="flex-1 p-6 sm:p-10 lg:p-12 overflow-y-auto">
-        <div className="w-full max-w-7xl mx-auto space-y-8">
+      <main className="w-full flex-1 px-4 sm:px-8 lg:px-12 xl:px-16 py-8 overflow-y-auto">
+        <div className="w-full space-y-8">
           
           {/* Top Operational Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-[#EBE7DF]">
@@ -159,6 +158,8 @@ export default function AdminDashboardPage() {
                           booking.status === 'active'
                             ? 'bg-[#4A6B5D]/10 text-[#4A6B5D]'
                             : booking.status === 'pending'
+                            ? 'bg-[#4A6B5D]/10 text-[#4A6B5D]'
+                            : booking.status === 'unverified'
                             ? 'bg-[#C88A2B]/10 text-[#C88A2B]'
                             : 'bg-[#333333]/10 text-[#333333]'
                         }`}>

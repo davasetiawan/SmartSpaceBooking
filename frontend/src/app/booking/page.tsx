@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState, useMemo, Suspense } from 'react';
+import React, { useEffect, useState, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useSpaceStore } from '@/lib/SpaceStoreContext';
+import { checkSpaceAvailability } from '@/lib/api';
 
 const AVAILABLE_ADDONS = [
   { id: 'coffee', name: 'Barista Single Origin Pour-over (2x)', price: 65000, icon: 'coffee' },
@@ -12,6 +13,22 @@ const AVAILABLE_ADDONS = [
   { id: 'lunch', name: 'Artisan Gourmet Bento & Cold Brew', price: 125000, icon: 'restaurant' },
   { id: 'parking', name: 'Reserved Valet & EV Charging Pass', price: 50000, icon: 'local_parking' },
 ];
+
+type PaymentMethod = {
+  id: number;
+  nama: string;
+  tipe: string;
+  nomor_rekening?: string | null;
+  atas_nama?: string | null;
+  is_aktif: boolean;
+};
+
+const paymentIcon = (tipe: string) => {
+  if (tipe === 'qris') return 'qr_code_2';
+  if (tipe === 'e_wallet') return 'account_balance_wallet';
+  if (tipe === 'cash') return 'payments';
+  return 'account_balance';
+};
 
 function BookingPageContent() {
   const router = useRouter();
@@ -37,7 +54,12 @@ function BookingPageContent() {
   const [voucherError, setVoucherError] = useState('');
 
   // Payment
-  const [paymentMethod, setPaymentMethod] = useState<'qris' | 'bca_va' | 'mandiri_va' | 'card'>('qris');
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [paymentMethodId, setPaymentMethodId] = useState<number | null>(null);
+  const [paymentError, setPaymentError] = useState('');
+  const [availabilityError, setAvailabilityError] = useState('');
+  const [paymentProof, setPaymentProof] = useState<File | null>(null);
+  const selectedPaymentMethod = paymentMethods.find((method) => method.id === paymentMethodId);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Calculation
@@ -56,6 +78,25 @@ function BookingPageContent() {
   const discountAmount = appliedVoucher ? appliedVoucher.discount : 0;
   const serviceFee = 15000;
   const grandTotal = Math.max(0, subtotal - discountAmount + serviceFee);
+
+  useEffect(() => {
+    let alive = true;
+    import('@/lib/api')
+      .then(({ fetchPaymentMethods }) => fetchPaymentMethods())
+      .then((methods: PaymentMethod[]) => {
+        if (!alive) return;
+        setPaymentMethods(methods);
+        setPaymentMethodId(methods[0]?.id ?? null);
+        setPaymentError('');
+      })
+      .catch((err: any) => {
+        if (!alive) return;
+        setPaymentError(err.message || 'Gagal memuat metode pembayaran');
+      });
+    return () => {
+      alive = false;
+    };
+  }, []);
 
   const handleApplyVoucher = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,15 +126,32 @@ function BookingPageContent() {
 
   const handleConfirmBooking = async () => {
     setIsSubmitting(true);
+    setAvailabilityError('');
     const addOnNames = selectedAddons.map(id => AVAILABLE_ADDONS.find(a => a.id === id)?.name || '');
 
     try {
+      if (!paymentProof) {
+        throw new Error('Foto bukti pembayaran wajib diupload sebelum membuat reservasi');
+      }
+
+      const availability = await checkSpaceAvailability({
+        id_space: Number(selectedSpace.id),
+        tanggal: date,
+        jam_mulai: startTime,
+        durasi_jam: durationHours,
+      });
+      if (availability?.data?.available === false) {
+        throw new Error(availability.data.message || 'Space sudah dipesan pada jam tersebut');
+      }
+
       const res = await addBooking({
         spaceId: selectedSpace.id,
         date,
         jam_mulai: startTime,
         durationHours,
         kode_promo: appliedVoucher?.code,
+        payment_method_id: paymentMethodId || undefined,
+        bukti_pembayaran: paymentProof,
         guestName,
         guestEmail,
         guestPhone,
@@ -103,7 +161,9 @@ function BookingPageContent() {
       const newBookingId = res?.data?.id || res?.id || 'my';
       router.push(`/ticket/${newBookingId}`);
     } catch (err: any) {
-      alert(`Gagal membuat reservasi: ${err.message || 'Terjadi kesalahan'}`);
+      const message = err.message || 'Terjadi kesalahan';
+      setAvailabilityError(message);
+      alert(`Gagal membuat reservasi: ${message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -417,46 +477,95 @@ function BookingPageContent() {
                 <label className="text-xs font-mono uppercase tracking-wider text-[#747878] font-bold block">
                   Metode Pembayaran
                 </label>
-                
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('qris')}
-                    className={`p-3 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
-                      paymentMethod === 'qris'
-                        ? 'border-[#121212] bg-[#fbf9f5] font-bold'
-                        : 'border-[#EBE7DF] bg-white'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[#121212] text-[20px]">qr_code_2</span>
-                    <div className="flex flex-col">
-                      <span className="text-xs font-bold text-[#121212]">QRIS Instant</span>
-                      <span className="text-[10px] text-[#747878]">GoPay, OVO, Dana</span>
-                    </div>
-                  </button>
 
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('bca_va')}
-                    className={`p-3 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
-                      paymentMethod === 'bca_va'
-                        ? 'border-[#121212] bg-[#fbf9f5] font-bold'
-                        : 'border-[#EBE7DF] bg-white'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-[#121212] text-[20px]">account_balance</span>
-                    <div className="flex flex-col">
-                      <span className="text-xs font-bold text-[#121212]">BCA Virtual Acc</span>
-                      <span className="text-[10px] text-[#747878]">Auto Verified</span>
-                    </div>
-                  </button>
+                {paymentError && (
+                  <p className="text-xs text-[#9E3B3B] font-mono">{paymentError}</p>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {paymentMethods.map((method) => (
+                    <button
+                      key={method.id}
+                      type="button"
+                      onClick={() => setPaymentMethodId(method.id)}
+                      className={`p-3 rounded-xl border text-left flex items-center gap-2.5 transition-all ${
+                        paymentMethodId === method.id
+                          ? 'border-[#121212] bg-[#fbf9f5] font-bold'
+                          : 'border-[#EBE7DF] bg-white'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-[#121212] text-[20px]">{paymentIcon(method.tipe)}</span>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-xs font-bold text-[#121212] truncate">{method.nama}</span>
+                        <span className="text-[10px] text-[#747878] truncate">
+                          {method.nomor_rekening ? `${method.nomor_rekening} · ${method.atas_nama || '-'}` : method.tipe.toUpperCase()}
+                        </span>
+                      </div>
+                    </button>
+                  ))}
                 </div>
+
+                {!paymentError && paymentMethods.length === 0 && (
+                  <p className="text-xs text-[#747878] font-mono">Belum ada metode pembayaran aktif.</p>
+                )}
+
+                {selectedPaymentMethod && (
+                  <div className="p-3 rounded-xl bg-[#fbf9f5] border border-[#EBE7DF] text-[11px] font-mono text-[#5e5e5e]">
+                    Pembayaran dipilih: <span className="font-bold text-[#121212]">{selectedPaymentMethod.nama}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-[#EBE7DF]">
+                <div className="rounded-2xl border border-[#C88A2B]/30 bg-[#C88A2B]/10 p-4 space-y-2">
+                  <label className="text-xs font-mono uppercase tracking-wider text-[#121212] font-bold block">
+                    Wajib Upload Bukti Transfer <span className="text-[#9E3B3B]">*</span>
+                  </label>
+                  <p className="text-[11px] text-[#5e5e5e] leading-relaxed">
+                    Transfer sesuai total pembayaran, lalu upload screenshot/foto bukti. Reservasi tidak akan dibuat tanpa file bukti pembayaran.
+                  </p>
+                </div>
+                <label className={`block p-5 rounded-2xl border-2 border-dashed cursor-pointer transition-all ${paymentProof ? 'border-[#4A6B5D] bg-[#4A6B5D]/5' : 'border-[#C88A2B] bg-white hover:border-[#121212]'}`}>
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    required
+                    className="sr-only"
+                    onChange={(e) => setPaymentProof(e.target.files?.[0] || null)}
+                  />
+                  <div className="flex items-center gap-3">
+                    <span className={`material-symbols-outlined ${paymentProof ? 'text-[#4A6B5D]' : 'text-[#C88A2B]'}`}>{paymentProof ? 'check_circle' : 'upload_file'}</span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-mono font-bold text-[#121212] truncate">
+                        {paymentProof ? paymentProof.name : 'Klik untuk upload foto bukti transfer'}
+                      </p>
+                      <p className="text-[10px] text-[#747878] font-mono">
+                        Format JPEG, PNG, atau WEBP. Maks 2MB.
+                      </p>
+                    </div>
+                  </div>
+                </label>
+                {!paymentProof && (
+                  <p className="text-[11px] text-[#9E3B3B] font-mono">
+                    Tombol konfirmasi terkunci sampai bukti transfer diupload.
+                  </p>
+                )}
+              </div>
+
+              {availabilityError && (
+                <p className="text-xs text-[#9E3B3B] font-mono bg-[#9E3B3B]/10 border border-[#9E3B3B]/20 rounded-xl p-3">
+                  {availabilityError}
+                </p>
+              )}
+
+              <div className="text-xs font-mono text-[#C88A2B] bg-[#C88A2B]/10 border border-[#C88A2B]/20 rounded-xl p-3">
+                Reservasi masuk sebagai belum diverifikasi. Admin harus cek pembayaran manual dan menyetujui dulu sebelum pass bisa dipakai.
               </div>
 
               {/* Confirm CTA */}
               <button
                 type="button"
-                disabled={isSubmitting}
+                disabled={isSubmitting || paymentMethods.length === 0 || !paymentProof}
                 onClick={handleConfirmBooking}
                 className="w-full py-4 rounded-full bg-[#121212] text-white font-semibold text-sm hover:bg-[#4A6B5D] transition-all shadow-xl flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50"
               >

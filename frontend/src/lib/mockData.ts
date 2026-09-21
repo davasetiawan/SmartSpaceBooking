@@ -1,9 +1,9 @@
 export interface Space {
   id: string;
   name: string;
-  category: 'Focus Pod' | 'Personal Desk' | 'Executive Studio' | 'Boardroom' | 'Solarium Garden' | 'Library Lounge' | 'Amphitheater';
+  category: 'Personal Desk' | 'Private Office' | 'Meeting Room';
   location: string;
-  city: 'Jakarta' | 'Bandung' | 'Bali' | 'Surabaya';
+  city: string;
   capacity: number;
   hourlyRate: number;
   dailyRate: number;
@@ -31,12 +31,14 @@ export interface Booking {
   timeSlot: string;
   durationHours: number;
   totalAmount: number;
-  status: 'active' | 'pending' | 'finished' | 'cancelled';
+  status: 'unverified' | 'pending' | 'active' | 'finished' | 'cancelled';
   keycardPin: string;
   assignedSeat: string;
   addOns: string[];
   createdAt: string;
   qrPayload: string;
+  paymentProofUrl: string | null;
+  rejectionReason: string | null;
 }
 
 export interface Voucher {
@@ -69,7 +71,7 @@ export const INITIAL_SPACES: Space[] = [
   {
     id: 'sp-1',
     name: 'The Travertine Executive Studio',
-    category: 'Executive Studio',
+    category: 'Private Office',
     location: 'SCBD Lot 8, Jakarta',
     city: 'Jakarta',
     capacity: 4,
@@ -86,7 +88,7 @@ export const INITIAL_SPACES: Space[] = [
   {
     id: 'sp-2',
     name: 'Nordic Oak Boardroom Salon',
-    category: 'Boardroom',
+    category: 'Meeting Room',
     location: 'Dago Atas Heritage, Bandung',
     city: 'Bandung',
     capacity: 12,
@@ -103,7 +105,7 @@ export const INITIAL_SPACES: Space[] = [
   {
     id: 'sp-3',
     name: 'Solarium Greenery Glasshouse',
-    category: 'Solarium Garden',
+    category: 'Private Office',
     location: 'Batu Bolong, Canggu Bali',
     city: 'Bali',
     capacity: 6,
@@ -120,7 +122,7 @@ export const INITIAL_SPACES: Space[] = [
   {
     id: 'sp-4',
     name: 'Sunken Wabi-Sabi Rooftop Salon',
-    category: 'Solarium Garden',
+    category: 'Private Office',
     location: 'Senopati, Jakarta Selatan',
     city: 'Jakarta',
     capacity: 8,
@@ -137,7 +139,7 @@ export const INITIAL_SPACES: Space[] = [
   {
     id: 'sp-5',
     name: 'Architectural Mezzanine Library',
-    category: 'Library Lounge',
+    category: 'Meeting Room',
     location: 'Pakuwon City, Surabaya',
     city: 'Surabaya',
     capacity: 10,
@@ -154,7 +156,7 @@ export const INITIAL_SPACES: Space[] = [
   {
     id: 'sp-6',
     name: 'Acoustic Bouclé Focus Pod',
-    category: 'Focus Pod',
+    category: 'Personal Desk',
     location: 'SCBD Lot 8, Jakarta',
     city: 'Jakarta',
     capacity: 1,
@@ -188,7 +190,7 @@ export const INITIAL_SPACES: Space[] = [
   {
     id: 'sp-8',
     name: 'Oak & Travertine Amphitheater',
-    category: 'Amphitheater',
+    category: 'Meeting Room',
     location: 'Dago Heritage, Bandung',
     city: 'Bandung',
     capacity: 28,
@@ -225,7 +227,9 @@ export const INITIAL_BOOKINGS: Booking[] = [
     assignedSeat: 'STUDIO-01',
     addOns: ['Single Origin Pour-over (2x)', 'Presentation Screen Adapter'],
     createdAt: '2026-09-17 18:30 WIB',
-    qrPayload: 'WM-PASS-2026-8902-PRADNYA-STUDIO01-VERIFIED'
+    qrPayload: 'WM-PASS-2026-8902-PRADNYA-STUDIO01-VERIFIED',
+    paymentProofUrl: null,
+    rejectionReason: null
   },
   {
     id: 'bk-102',
@@ -247,7 +251,9 @@ export const INITIAL_BOOKINGS: Booking[] = [
     assignedSeat: 'BOARDROOM-A',
     addOns: ['Conference Video Kit', 'Artisan Coffee Barista Setup'],
     createdAt: '2026-09-18 08:15 WIB',
-    qrPayload: 'WM-PASS-2026-8903-DAVA-BOARDROOMA-PENDING'
+    qrPayload: 'WM-PASS-2026-8903-DAVA-BOARDROOMA-PENDING',
+    paymentProofUrl: null,
+    rejectionReason: null
   },
   {
     id: 'bk-103',
@@ -269,7 +275,9 @@ export const INITIAL_BOOKINGS: Booking[] = [
     assignedSeat: 'SOLARIUM-04',
     addOns: ['Fresh Coconut Refresher (4x)'],
     createdAt: '2026-09-14 11:00 WIB',
-    qrPayload: 'WM-PASS-2026-8840-ELENA-FINISHED'
+    qrPayload: 'WM-PASS-2026-8840-ELENA-FINISHED',
+    paymentProofUrl: null,
+    rejectionReason: null
   },
   {
     id: 'bk-104',
@@ -291,7 +299,9 @@ export const INITIAL_BOOKINGS: Booking[] = [
     assignedSeat: 'POD-B02',
     addOns: [],
     createdAt: '2026-09-11 16:20 WIB',
-    qrPayload: 'WM-PASS-2026-8812-CANCELLED'
+    qrPayload: 'WM-PASS-2026-8812-CANCELLED',
+    paymentProofUrl: null,
+    rejectionReason: null
   }
 ];
 

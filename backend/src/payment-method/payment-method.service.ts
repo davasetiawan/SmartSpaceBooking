@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePaymentMethodDto } from './dto/create-payment-method.dto';
 import { UpdatePaymentMethodDto } from './dto/update-payment-method.dto';
@@ -55,14 +55,21 @@ export class PaymentMethodService {
 
   async remove(userId: number, id: number) {
     await this.findOne(userId, id);
+    const used = await this.prisma.payment_transaction.count({ where: { id_payment_method: id } });
+    if (used) {
+      const item = await this.prisma.payment_method.update({
+        where: { id },
+        data: { is_aktif: false },
+      });
+      return { message: 'Metode pembayaran sudah dipakai transaksi, jadi dinonaktifkan', data: item };
+    }
     await this.prisma.payment_method.delete({ where: { id } });
     return { message: 'Metode pembayaran dihapus', data: null };
   }
 
-  async findActiveForOwner(userId: number) {
-    const id_owner = await this.ownerIdOf(userId);
+  async findActivePublic() {
     const items = await this.prisma.payment_method.findMany({
-      where: { id_owner, is_aktif: true },
+      where: { is_aktif: true },
       orderBy: { created_at: 'desc' },
     });
     return { data: items };

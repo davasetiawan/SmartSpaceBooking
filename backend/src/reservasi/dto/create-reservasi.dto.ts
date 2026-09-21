@@ -31,4 +31,9 @@ export class CreateReservasiDto {
   @IsOptional()
   @IsString()
   nama_diskon?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsInt()
+  payment_method_id?: number;
 }

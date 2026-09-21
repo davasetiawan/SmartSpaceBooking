@@ -160,6 +160,8 @@ export default function MemberHistoryPage() {
                           booking.status === 'active'
                             ? 'bg-[#4A6B5D]/10 text-[#4A6B5D]'
                             : booking.status === 'pending'
+                            ? 'bg-[#4A6B5D]/10 text-[#4A6B5D]'
+                            : booking.status === 'unverified'
                             ? 'bg-[#C88A2B]/10 text-[#C88A2B]'
                             : booking.status === 'finished'
                             ? 'bg-[#333333]/10 text-[#333333]'

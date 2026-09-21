@@ -18,7 +18,7 @@ export default function Navbar() {
   const { bookings, currentUser, logout } = useSpaceStore();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const activeBookingsCount = bookings.filter(b => b.status === 'active' || b.status === 'pending').length;
+  const activeBookingsCount = bookings.filter(b => b.status === 'active' || b.status === 'pending' || b.status === 'unverified').length;
 
   const isAdmin = currentUser?.role === 'admin_space' || currentUser?.role === 'maker';
   const isMember = currentUser?.role === 'member';
@@ -45,12 +45,11 @@ export default function Navbar() {
     : [
         { label: 'Eksplor Ruang', href: '/spaces' },
         { label: 'Reservasi', href: '/booking' },
-        { label: 'Portal Admin', href: '/admin', isSpecial: true },
+        
       ];
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
   };
 
   return (
@@ -58,14 +57,18 @@ export default function Navbar() {
       <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-16 h-20 flex items-center justify-between">
         {/* Brand Logo */}
         <Link href="/" className="flex items-center gap-3 group shrink-0">
-          <div className="w-11 h-11 rounded-full bg-[#121212] flex items-center justify-center text-white transition-transform duration-300 group-hover:scale-105">
-            <span className="font-serif italic font-bold text-xl">W</span>
+          <div className="w-11 h-11 rounded-full overflow-hidden border border-[#121212] bg-[#121212] shadow-sm transition-transform duration-300 group-hover:scale-105 shrink-0">
+            <img
+              src="/workmates-logo.jpg"
+              alt="WorkMates Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="flex flex-col">
-            <span className="font-serif text-2xl tracking-tight font-bold text-[#1b1c1a]">
+            <span className="font-serif text-2xl tracking-tight font-bold text-[#1b1c1a] leading-none">
               WorkMates
             </span>
-            <span className="text-xs uppercase tracking-[0.2em] text-[#747878] -mt-0.5 font-mono font-bold">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-[#747878] font-mono font-bold mt-1">
               {isAdmin ? 'Admin Portal' : 'Sonder Architecture'}
             </span>
           </div>

@@ -29,6 +29,10 @@ export class ReservasiService {
     return member;
   }
 
+  private generatePinAkses() {
+    return String(Math.floor(1000 + Math.random() * 9000));
+  }
+
   private async generateKode(tx: Prisma.TransactionClient) {
     const today = new Date().toISOString().slice(0, 10).replaceAll('-', '');
     const count = await tx.reservasi.count({
@@ -38,27 +42,32 @@ export class ReservasiService {
   }
 
   async create(userId: number, dto: CreateReservasiDto, buktiFilename?: string) {
+    if (!buktiFilename) {
+      throw new BadRequestException('Foto bukti pembayaran wajib diupload');
+    }
     const member = await this.memberOf(userId);
-    const start = this.spaces.parseTime(dto.jam_mulai);
-    const end = new Date(start.getTime() + dto.durasi_jam * 3600000);
-    if (end.getUTCDate() !== start.getUTCDate()) {
+    const { exceedsDay } = this.spaces.calculateEndTimeStr(
+      dto.jam_mulai,
+      dto.durasi_jam,
+    );
+    if (exceedsDay) {
       throw new BadRequestException('Reservation must end on the same day');
     }
-    const tanggal = new Date(dto.tanggal_reservasi);
+    const start = this.spaces.parseTime(dto.jam_mulai);
+    const end = new Date(start.getTime() + dto.durasi_jam * 3600000);
+    const tanggal = this.spaces.parseDateOnly(dto.tanggal_reservasi);
+
     const created = await this.prisma.$transaction(
       async (tx: Prisma.TransactionClient) => {
-        const conflicts = await tx.reservasi.count({
-          where: {
-            id_space: dto.id_space,
-            tanggal_reservasi: tanggal,
-            status: { in: ['belum_dikonfirm', 'disetujui', 'aktif'] },
-            AND: [
-              { jam_mulai: { lt: end } },
-              { jam_selesai: { gt: start } },
-            ],
-          },
-        });
-        if (conflicts) {
+        const conflict = await this.spaces.hasConflict(
+          dto.id_space,
+          dto.tanggal_reservasi,
+          dto.jam_mulai,
+          dto.durasi_jam,
+          undefined,
+          tx,
+        );
+        if (conflict) {
           throw new BadRequestException(
             'Maaf, space sudah terisi atau dibooking pada jam tersebut!',
           );
@@ -84,6 +93,19 @@ export class ReservasiService {
             );
           }
         }
+        if (dto.payment_method_id) {
+          const paymentMethod = await tx.payment_method.findFirst({
+            where: {
+              id: dto.payment_method_id,
+              id_owner: space.id_owner,
+              is_aktif: true,
+            },
+          });
+          if (!paymentMethod) {
+            throw new BadRequestException('Metode pembayaran tidak aktif atau tidak ditemukan');
+          }
+        }
+
         const gross = space.harga_per_jam * dto.durasi_jam;
         const cut = gross * ((promo?.persentase_diskon ?? 0) / 100);
         return tx.reservasi.create({
@@ -101,6 +123,7 @@ export class ReservasiService {
             potongan_diskon: cut,
             total_bayar: gross - cut,
             bukti_pembayaran: buktiFilename ?? null,
+            pin_akses: this.generatePinAkses(),
           },
         });
       },
@@ -171,9 +194,15 @@ export class ReservasiService {
     return {
       data: {
         ...item,
+        pin_akses: (item as any).pin_akses || '8899',
         ticket_number: `TICKET-MOKLET-${item.kode_booking.slice(5)}`,
         qr_payload: payload,
-        qr_code: await QRCode.toDataURL(payload),
+        qr_code: await QRCode.toDataURL(payload, {
+          errorCorrectionLevel: 'H',
+          margin: 4,
+          scale: 10,
+          color: { dark: '#000000', light: '#FFFFFF' },
+        }),
       },
     };
   }

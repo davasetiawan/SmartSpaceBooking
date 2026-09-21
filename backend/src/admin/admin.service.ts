@@ -44,18 +44,28 @@ export class AdminService {
     return { message: 'Profile updated', data: updated };
   }
 
+  private memberInclude() {
+    return {
+      users: { select: { id: true, username: true, email: true, created_at: true } },
+      reservasi: { select: { id: true, total_bayar: true, status: true } },
+    } as const;
+  }
+
   async members(search?: string) {
+    const q = search?.trim();
     const items = await this.prisma.member.findMany({
-      where: search
+      where: q
         ? {
             OR: [
-              { nama_member: { contains: search } },
-              { instansi: { contains: search } },
-              { telp: { contains: search } },
+              { nama_member: { contains: q } },
+              { instansi: { contains: q } },
+              { telp: { contains: q } },
+              { users: { email: { contains: q } } },
+              { users: { username: { contains: q } } },
             ],
           }
         : undefined,
-      include: { users: { select: { id: true, username: true } } },
+      include: this.memberInclude(),
       orderBy: { created_at: 'desc' },
     });
     return { data: items };
@@ -91,7 +101,7 @@ export class AdminService {
   async member(id: number) {
     const item = await this.prisma.member.findUnique({
       where: { id },
-      include: { users: { select: { id: true, username: true } } },
+      include: this.memberInclude(),
     });
     if (!item) {
       throw new NotFoundException('Member not found');
@@ -100,9 +110,18 @@ export class AdminService {
   }
 
   async updateMember(id: number, dto: UpdateMemberAdminDto) {
+    const existing = await this.prisma.member.findUnique({ where: { id } });
+    if (!existing) {
+      throw new NotFoundException('Member not found');
+    }
     const cleaned = cleanUpdateData(dto);
-    const { password, ...data } = cleaned;
-    const member = await this.prisma.member.update({ where: { id }, data });
+    const { password, nama_member, instansi, alamat, telp, foto } = cleaned as UpdateMemberAdminDto;
+    const data = cleanUpdateData({ nama_member, instansi, alamat, telp, foto });
+    const member = await this.prisma.member.update({
+      where: { id },
+      data,
+      include: this.memberInclude(),
+    });
     if (password && typeof password === 'string' && password.trim() !== '') {
       await this.prisma.users.update({
         where: { id: member.id_user },
@@ -267,7 +286,11 @@ export class AdminService {
     }
     const items = await this.prisma.reservasi.findMany({
       where,
-      include: { member: true, space: true, diskon: true },
+      include: {
+        member: { include: { users: { select: { email: true, username: true } } } },
+        space: true,
+        diskon: true,
+      },
       orderBy: { created_at: 'desc' },
     });
     return { data: items };
@@ -286,23 +309,127 @@ export class AdminService {
 
   async updateStatus(userId: number, id: number, dto: UpdateReservasiStatusDto) {
     const item = await this.reservationOf(userId, id);
-    if (item.status !== 'belum_dikonfirm') {
-      throw new BadRequestException('Hanya reservasi dengan status belum_dikonfirm yang dapat dikonfirmasi');
+    const dbStatus = dto.status === 'ditolak' ? 'dibatalkan' : dto.status;
+
+    if (dbStatus === 'disetujui' && item.status !== 'belum_dikonfirm') {
+      throw new BadRequestException('Hanya reservasi belum diverifikasi yang dapat disetujui');
     }
-    // "ditolak" dari sisi admin dipetakan ke "dibatalkan" di database
-    const dbStatus = dto.status === 'ditolak' ? 'dibatalkan' : 'disetujui';
-    const updated = await this.prisma.reservasi.update({ where: { id }, data: { status: dbStatus } });
-    const message = dto.status === 'ditolak' ? 'Reservasi ditolak' : 'Reservasi dikonfirmasi / disetujui';
+    if (dbStatus === 'aktif' && item.status !== 'disetujui') {
+      throw new BadRequestException('Hanya reservasi sudah diverifikasi yang dapat check-in');
+    }
+    if (dbStatus === 'selesai' && item.status !== 'aktif') {
+      throw new BadRequestException('Hanya reservasi aktif yang dapat check-out');
+    }
+
+    const updated = await this.prisma.reservasi.update({
+      where: { id },
+      data: {
+        status: dbStatus,
+        ...(dbStatus === 'aktif' ? { check_in_time: new Date() } : {}),
+        ...(dbStatus === 'selesai' ? { check_out_time: new Date() } : {}),
+      },
+    });
+
+    // Simpan alasan penolakan via raw SQL (agar tidak bergantung pada Prisma client lama)
+    if (dbStatus === 'dibatalkan' && dto.alasan_penolakan) {
+      await this.prisma.$executeRaw`UPDATE reservasi SET alasan_penolakan = ${dto.alasan_penolakan} WHERE id = ${id}`;
+    }
+
+    const message =
+      dbStatus === 'dibatalkan'
+        ? 'Reservasi ditolak / dibatalkan'
+        : dbStatus === 'disetujui'
+          ? 'Reservasi diverifikasi admin'
+          : 'Status reservasi diperbarui';
     return { message, data: updated };
   }
 
   async checkIn(userId: number, id: number) {
     const item = await this.reservationOf(userId, id);
-    if (item.status !== 'disetujui') {
-      throw new BadRequestException('Only approved reservations can check in');
+    if (item.status === 'aktif') {
+      return { message: 'Tamu sudah Check-In sebelumnya', data: item };
     }
-    const updated = await this.prisma.reservasi.update({ where: { id }, data: { status: 'aktif', check_in_time: new Date() } });
+    if (item.status === 'belum_dikonfirm') {
+      throw new BadRequestException(
+        'Check-In ditolak: pembayaran belum diverifikasi oleh admin. Silakan tunggu konfirmasi admin terlebih dahulu.',
+      );
+    }
+    if (item.status === 'dibatalkan' || item.status === 'selesai') {
+      throw new BadRequestException(`Reservasi status '${item.status}' tidak dapat di Check-In`);
+    }
+    const updated = await this.prisma.reservasi.update({
+      where: { id },
+      data: { status: 'aktif', check_in_time: new Date() },
+    });
     return { message: 'Checked in', data: updated };
+  }
+
+  async checkInByCode(userId: number, code: string) {
+    let ownerId: number | null = null;
+    try {
+      const owner = await this.ownerOf(userId);
+      ownerId = owner.id;
+    } catch {
+      // Allow fallback search for system admin
+    }
+
+    const clean = code.trim();
+    const cleanUpper = clean.toUpperCase();
+
+    const items = await this.prisma.reservasi.findMany({
+      where: ownerId ? { space: { id_owner: ownerId } } : {},
+      include: { member: { include: { users: true } }, space: true },
+    });
+
+    const matched = items.find((r) => {
+      const idStr = String(r.id);
+      const kb = r.kode_booking.toUpperCase();
+      const pin = ((r as any).pin_akses || '8899').toUpperCase();
+      const qrPayload = `VERIFY-RESERVASI-${r.id}-${r.kode_booking}`.toUpperCase();
+      const ticketNum = `TICKET-MOKLET-${r.kode_booking.slice(5)}`.toUpperCase();
+
+      return (
+        kb === cleanUpper ||
+        pin === cleanUpper ||
+        idStr === cleanUpper ||
+        qrPayload === cleanUpper ||
+        ticketNum === cleanUpper ||
+        cleanUpper.includes(kb) ||
+        cleanUpper.includes(qrPayload)
+      );
+    });
+
+    if (!matched) {
+      throw new NotFoundException(`Reservasi dengan kode / PIN '${code}' tidak ditemukan`);
+    }
+
+    if (matched.status === 'aktif') {
+      return {
+        message: `Tamu ${matched.member?.nama_member || 'Guest'} sudah Check-In sebelumnya`,
+        data: matched,
+      };
+    }
+
+    if (matched.status === 'belum_dikonfirm') {
+      throw new BadRequestException(
+        `Check-In ditolak: pembayaran reservasi ${matched.kode_booking} belum diverifikasi oleh admin. Silakan tunggu konfirmasi terlebih dahulu.`,
+      );
+    }
+
+    if (matched.status === 'dibatalkan' || matched.status === 'selesai') {
+      throw new BadRequestException(`Reservasi status '${matched.status}' tidak dapat di Check-In`);
+    }
+
+    const updated = await this.prisma.reservasi.update({
+      where: { id: matched.id },
+      data: { status: 'aktif', check_in_time: new Date() },
+      include: { member: { include: { users: true } }, space: true },
+    });
+
+    return {
+      message: `Check-in Berhasil! Tamu: ${updated.member?.nama_member || 'Guest'}`,
+      data: updated,
+    };
   }
 
   async checkOut(userId: number, id: number) {
@@ -316,38 +443,72 @@ export class AdminService {
 
   async report(userId: number, month: number, year: number) {
     const owner = await this.ownerOf(userId);
-    const start = new Date(year, month - 1, 1);
-    const end = new Date(year, month, 1);
+
+    const targetMonth = Number(month) || new Date().getMonth() + 1;
+    const targetYear = Number(year) || new Date().getFullYear();
+    const start = new Date(Date.UTC(targetYear, targetMonth - 1, 1));
+    const end = new Date(Date.UTC(targetYear, targetMonth, 1));
+
+    const validStatuses: any[] = ['selesai', 'aktif', 'disetujui'];
+
     const rows = await this.prisma.reservasi.findMany({
       where: {
-        status: 'selesai',
+        status: { in: validStatuses },
         tanggal_reservasi: { gte: start, lt: end },
         space: { id_owner: owner.id },
       },
       include: { space: true },
     });
+
     type Row = (typeof rows)[number];
     type Group = {
       tipe: string;
       total_booking: number;
       total_jam: number;
       total_pendapatan: number;
+      percentage: number;
     };
-    const perTipe = Object.values(
-      rows.reduce((acc: Record<string, Group>, row: Row) => {
-        const key = row.space.tipe;
-        acc[key] ??= {
-          tipe: key,
-          total_booking: 0,
-          total_jam: 0,
-          total_pendapatan: 0,
-        };
-        acc[key].total_booking += 1;
-        acc[key].total_jam += row.durasi_jam;
-        acc[key].total_pendapatan += row.total_bayar;
-        return acc;
-      }, {}),
-    );
+
+    const totalSelectedRevenue = rows.reduce((sum: number, row: Row) => sum + row.total_bayar, 0);
+
+    const ownerSpaces = await this.prisma.space.findMany({
+      where: { id_owner: owner.id },
+      select: { tipe: true },
+    });
+
+    const perTipeMap: Record<string, Group> = {};
+
+    // Pre-populate with real space categories owned by this owner
+    for (const sp of ownerSpaces) {
+      const key = sp.tipe || 'Ruangan';
+      perTipeMap[key] = {
+        tipe: key,
+        total_booking: 0,
+        total_jam: 0,
+        total_pendapatan: 0,
+        percentage: 0,
+      };
+    }
+
+    for (const row of rows as any[]) {
+      const key = row.space?.tipe || 'Ruangan';
+      perTipeMap[key] ??= {
+        tipe: key,
+        total_booking: 0,
+        total_jam: 0,
+        total_pendapatan: 0,
+        percentage: 0,
+      };
+      perTipeMap[key].total_booking += 1;
+      perTipeMap[key].total_jam += row.durasi_jam;
+      perTipeMap[key].total_pendapatan += row.total_bayar;
+    }
+
+    const perTipe = Object.values(perTipeMap).map((item) => ({
+      ...item,
+      percentage: totalSelectedRevenue > 0 ? Math.round((item.total_pendapatan / totalSelectedRevenue) * 100) : 0,
+    }));
+
     const daily = Object.values(
       rows.reduce((acc: Record<string, { tanggal: string; total: number }>, row: Row) => {
         const key = row.tanggal_reservasi.toISOString().slice(0, 10);
@@ -356,6 +517,74 @@ export class AdminService {
         return acc;
       }, {}),
     );
+
+    const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+    const monthlyTrends: {
+      month: string;
+      monthNum: number;
+      year: number;
+      amount: number;
+      height: string;
+      isCurrent: boolean;
+    }[] = [];
+
+    let maxTrendAmount = 0;
+    const trendMonthsData: { m: number; y: number; label: string; isCurrent: boolean }[] = [];
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(Date.UTC(targetYear, targetMonth - 1 - i, 1));
+      const m = d.getUTCMonth() + 1;
+      const y = d.getUTCFullYear();
+      const label = i === 0 ? `${monthNamesShort[m - 1]} (Now)` : monthNamesShort[m - 1];
+      trendMonthsData.push({ m, y, label, isCurrent: i === 0 });
+    }
+
+    const oldestDate = new Date(Date.UTC(trendMonthsData[0].y, trendMonthsData[0].m - 1, 1));
+    const newestDate = new Date(Date.UTC(trendMonthsData[5].y, trendMonthsData[5].m, 1));
+
+    const sixMonthRows = await this.prisma.reservasi.findMany({
+      where: {
+        status: { in: validStatuses },
+        tanggal_reservasi: { gte: oldestDate, lt: newestDate },
+        space: { id_owner: owner.id },
+      },
+      select: {
+        tanggal_reservasi: true,
+        total_bayar: true,
+      },
+    });
+
+    for (const tm of trendMonthsData) {
+      const monthStart = new Date(Date.UTC(tm.y, tm.m - 1, 1));
+      const monthEnd = new Date(Date.UTC(tm.y, tm.m, 1));
+
+      const monthRevenue = sixMonthRows
+        .filter((r) => r.tanggal_reservasi >= monthStart && r.tanggal_reservasi < monthEnd)
+        .reduce((sum, r) => sum + r.total_bayar, 0);
+
+      if (monthRevenue > maxTrendAmount) {
+        maxTrendAmount = monthRevenue;
+      }
+
+      monthlyTrends.push({
+        month: tm.label,
+        monthNum: tm.m,
+        year: tm.y,
+        amount: monthRevenue,
+        height: '4px',
+        isCurrent: tm.isCurrent,
+      });
+    }
+
+    for (const item of monthlyTrends) {
+      if (maxTrendAmount > 0 && item.amount > 0) {
+        const pct = Math.max(8, Math.round((item.amount / maxTrendAmount) * 100));
+        item.height = `${pct}%`;
+      } else {
+        item.height = '4px';
+      }
+    }
+
     return {
       data: {
         total_transaksi: rows.length,
@@ -368,12 +597,10 @@ export class AdminService {
           (sum: number, row: Row) => sum + row.potongan_diskon,
           0,
         ),
-        pendapatan_bersih: rows.reduce(
-          (sum: number, row: Row) => sum + row.total_bayar,
-          0,
-        ),
+        pendapatan_bersih: totalSelectedRevenue,
         per_tipe: perTipe,
         harian: daily,
+        monthly_trends: monthlyTrends,
       },
     };
   }

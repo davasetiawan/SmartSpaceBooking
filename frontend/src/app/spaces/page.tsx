@@ -1,46 +1,19 @@
 'use client';
 
-import React, { useState, useMemo, Suspense } from 'react';
+import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useSpaceStore } from '@/lib/SpaceStoreContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import { fetchCityLandmarkPhoto, cityTag, CITY_PHOTO_PLACEHOLDER } from '@/lib/cityImages';
 
 const CATEGORIES = [
   'Semua',
   'Personal Desk',
-  'Meeting Room',
   'Private Office',
-  'Executive Studio',
-];
-
-const CITY_HUBS = [
-  {
-    name: 'Jakarta',
-    tag: 'CAPITAL & FINANCIAL HUB',
-    count: '12 Sanctuaries Available',
-    img: 'https://images.unsplash.com/photo-1506158669146-619067262a00?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    name: 'Bali',
-    tag: 'CANGGU & SEMINYAK',
-    count: '8 Sanctuaries Available',
-    img: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    name: 'Bandung',
-    tag: 'DAGO & HERITAGE HILLS',
-    count: '5 Sanctuaries Available',
-    img: 'https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?auto=format&fit=crop&w=800&q=80',
-  },
-  {
-    name: 'Surabaya',
-    tag: 'WEST SURABAYA & GUBENG',
-    count: '4 Sanctuaries Available',
-    img: 'https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=800&q=80',
-  },
+  'Meeting Room',
 ];
 
 const MONTH_NAMES = [
@@ -67,7 +40,7 @@ function SpacesCatalogContent() {
   const [reservationDuration, setReservationDuration] = useState('2 Hours');
 
   // Custom Popover States
-  const [openPopover, setOpenPopover] = useState<'date' | 'time' | 'duration' | 'category' | null>(null);
+  const [openPopover, setOpenPopover] = useState<'city' | 'category' | 'date' | 'time' | 'duration' | null>(null);
   const [calendarYear, setCalendarYear] = useState(2026);
   const [calendarMonth, setCalendarMonth] = useState(8); // September (0-indexed)
 
@@ -158,21 +131,62 @@ function SpacesCatalogContent() {
     return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
   }, [reservationDate]);
 
+  const [cityPhotos, setCityPhotos] = useState<Record<string, string>>({});
+
+  const cityCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    spaces.forEach((s) => {
+      const name = s.city?.trim();
+      if (!name) return;
+      const existing = [...counts.keys()].find((k) => k.toLowerCase() === name.toLowerCase());
+      if (existing) counts.set(existing, (counts.get(existing) || 0) + 1);
+      else counts.set(name, 1);
+    });
+    return counts;
+  }, [spaces]);
+
+  useEffect(() => {
+    const names = Array.from(cityCounts.keys());
+    let cancelled = false;
+    names.forEach(async (name) => {
+      const photo = await fetchCityLandmarkPhoto(name);
+      if (!cancelled) {
+        setCityPhotos((prev) => (prev[name] === photo ? prev : { ...prev, [name]: photo }));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [cityCounts]);
+
+  const dynamicCityHubs = useMemo(() => {
+    return Array.from(cityCounts.entries()).map(([cityName, countNum]) => ({
+      name: cityName,
+      tag: cityTag(cityName),
+      count: `${countNum} Sanctuar${countNum === 1 ? 'y' : 'ies'} Available`,
+      img: cityPhotos[cityName] || CITY_PHOTO_PLACEHOLDER,
+    }));
+  }, [cityCounts, cityPhotos]);
+
+  const handleSearchSubmit = () => {
+    setOpenPopover(null);
+    const element = document.getElementById('catalog-grid');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const filteredSpaces = useMemo(() => {
     return spaces.filter((sp) => {
-      const matchCity = selectedCity === 'Semua Kota' || sp.city === selectedCity;
+      const matchCity = selectedCity === 'Semua Kota' || sp.city?.toLowerCase() === selectedCity.toLowerCase();
       let matchCat = true;
       if (selectedCategory !== 'Semua') {
-        if (selectedCategory === 'Personal Desk') matchCat = sp.category.includes('Desk') || sp.category.includes('Pod');
-        else if (selectedCategory === 'Meeting Room') matchCat = sp.category.includes('Boardroom') || sp.category.includes('Meeting');
-        else if (selectedCategory === 'Private Office') matchCat = sp.category.includes('Studio') || sp.category.includes('Executive');
-        else matchCat = sp.category === selectedCategory;
+        matchCat = sp.category === selectedCategory;
       }
-      const matchSearch =
-        sp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sp.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        sp.description.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchCity && matchCat && matchSearch;
+      const q = searchQuery.toLowerCase().trim();
+      const matchName = !q || sp.name.toLowerCase().includes(q);
+
+      return matchCity && matchCat && matchName;
     });
   }, [spaces, selectedCity, selectedCategory, searchQuery]);
 
@@ -202,274 +216,69 @@ function SpacesCatalogContent() {
           </p>
         </div>
 
-        {/* Floating Interactive Filter Bar (Restored to Sleek Original Sonder Design) */}
-        <div className="mt-12 max-w-5xl mx-auto bg-white border border-[#EBE7DF] rounded-full p-2.5 shadow-md flex flex-col md:flex-row items-center justify-between gap-2 text-left relative z-40">
+        {/* Floating Interactive Filter Bar (Focused on Nama Ruang, Kota, Kategori) */}
+        <div className="mt-12 max-w-5xl mx-auto bg-white border border-[#EBE7DF] rounded-3xl md:rounded-full p-2.5 shadow-md flex flex-col md:flex-row items-center justify-between gap-2 text-left relative z-40">
           
-          {/* Select Date Slot */}
-          <div className="relative flex-1 w-full border-b md:border-b-0 md:border-r border-[#EBE7DF] z-40">
-            <button
-              type="button"
-              onClick={() => setOpenPopover(openPopover === 'date' ? null : 'date')}
-              className={`w-full px-5 py-2.5 rounded-3xl text-left transition-all flex items-center justify-between gap-2 ${
-                openPopover === 'date' ? 'bg-[#F5F3EF] shadow-inner' : 'hover:bg-[#FBF9F5]'
-              }`}
-            >
-              <div>
-                <span className="text-[10px] font-mono font-bold uppercase text-[#747878] block tracking-wider mb-0.5">
-                  SELECT DATE
-                </span>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#121212]">
-                  <span className="material-symbols-outlined text-[16px] text-[#747878]">calendar_today</span>
-                  <span>{formattedDateLabel}</span>
+          {/* 1. Nama Ruang Slot */}
+          <div className="relative flex-[1.2] w-full border-b md:border-b-0 md:border-r border-[#EBE7DF] z-40">
+            <div className="w-full px-5 py-3 rounded-3xl text-left transition-all flex items-center justify-between gap-2 hover:bg-[#FBF9F5] focus-within:bg-[#F5F3EF]">
+              <div className="w-full">
+                <label htmlFor="space-search-input" className="text-[10px] font-mono font-bold uppercase text-[#747878] block tracking-wider mb-0.5 cursor-pointer">
+                  NAMA RUANG
+                </label>
+                <div className="flex items-center gap-2 text-xs font-bold text-[#121212]">
+                  <span className="material-symbols-outlined text-[18px] text-[#747878]">search</span>
+                  <input
+                    id="space-search-input"
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleSearchSubmit();
+                    }}
+                    placeholder="Cari nama ruang..."
+                    className="w-full bg-transparent border-none outline-none text-xs font-semibold text-[#121212] placeholder-[#888888] p-0"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="text-[#747878] hover:text-[#121212] p-0.5 flex items-center"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">close</span>
+                    </button>
+                  )}
                 </div>
               </div>
-              <span className={`material-symbols-outlined text-[18px] text-[#747878] transition-transform duration-200 ${openPopover === 'date' ? 'rotate-180 text-[#121212]' : ''}`}>
-                expand_more
-              </span>
-            </button>
-
-            {/* Custom Luxury Calendar Popover */}
-            <AnimatePresence>
-              {openPopover === 'date' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full left-0 mt-3 z-50 bg-white border border-[#EBE7DF] rounded-3xl shadow-2xl p-5 w-80 text-[#121212]"
-                >
-                  {/* Month Navigation */}
-                  <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#EBE7DF]">
-                    <span className="text-xs font-bold text-[#121212] font-mono uppercase tracking-wider">
-                      {MONTH_NAMES[calendarMonth]} {calendarYear}
-                    </span>
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={handlePrevMonth}
-                        className="w-7 h-7 rounded-full hover:bg-[#F5F3EF] flex items-center justify-center transition-colors text-[#555555]"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">chevron_left</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleNextMonth}
-                        className="w-7 h-7 rounded-full hover:bg-[#F5F3EF] flex items-center justify-center transition-colors text-[#555555]"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Quick Shortcuts */}
-                  <div className="flex items-center gap-1.5 mb-4">
-                    <button
-                      type="button"
-                      onClick={() => handleSelectPreset('today')}
-                      className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#F5F3EF] text-[#121212] hover:bg-[#121212] hover:text-white transition-all"
-                    >
-                      Hari Ini
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectPreset('tomorrow')}
-                      className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#F5F3EF] text-[#121212] hover:bg-[#121212] hover:text-white transition-all"
-                    >
-                      Besok
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectPreset('weekend')}
-                      className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#F5F3EF] text-[#121212] hover:bg-[#121212] hover:text-white transition-all"
-                    >
-                      Sabtu Ini
-                    </button>
-                  </div>
-
-                  {/* Day Headers */}
-                  <div className="grid grid-cols-7 text-center text-[10px] font-mono font-bold text-[#747878] mb-2">
-                    <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
-                  </div>
-
-                  {/* Days Grid */}
-                  <div className="grid grid-cols-7 gap-1 text-center text-xs">
-                    {calendarDaysGrid.map((dayObj, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        disabled={!dayObj.isCurrentMonth}
-                        onClick={() => {
-                          if (dayObj.dateStr) {
-                            setReservationDate(dayObj.dateStr);
-                            setOpenPopover(null);
-                          }
-                        }}
-                        className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold mx-auto transition-all ${
-                          !dayObj.isCurrentMonth
-                            ? 'text-gray-300 cursor-not-allowed'
-                            : dayObj.dateStr === reservationDate
-                            ? 'bg-[#121212] text-white font-bold shadow-sm'
-                            : 'hover:bg-[#F5F3EF] text-[#121212]'
-                        }`}
-                      >
-                        {dayObj.dayNum}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            </div>
           </div>
 
-          {/* Start Time Slot */}
+          {/* 2. Kota Slot */}
           <div className="relative flex-1 w-full border-b md:border-b-0 md:border-r border-[#EBE7DF] z-40">
             <button
               type="button"
-              onClick={() => setOpenPopover(openPopover === 'time' ? null : 'time')}
-              className={`w-full px-5 py-2.5 rounded-3xl text-left transition-all flex items-center justify-between gap-2 ${
-                openPopover === 'time' ? 'bg-[#F5F3EF] shadow-inner' : 'hover:bg-[#FBF9F5]'
+              onClick={() => setOpenPopover(openPopover === 'city' ? null : 'city')}
+              className={`w-full px-5 py-3 rounded-3xl text-left transition-all flex items-center justify-between gap-2 ${
+                openPopover === 'city' ? 'bg-[#F5F3EF] shadow-inner' : 'hover:bg-[#FBF9F5]'
               }`}
             >
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase text-[#747878] block tracking-wider mb-0.5">
-                  START TIME
+                  KOTA
                 </span>
                 <div className="flex items-center gap-1.5 text-xs font-bold text-[#121212]">
-                  <span className="material-symbols-outlined text-[16px] text-[#747878]">schedule</span>
-                  <span>{startHour}:{startMinute} {timeZone}</span>
+                  <span className="material-symbols-outlined text-[18px] text-[#747878]">location_on</span>
+                  <span className="truncate">{selectedCity === 'Semua Kota' ? 'Semua Kota' : selectedCity}</span>
                 </div>
               </div>
-              <span className={`material-symbols-outlined text-[18px] text-[#747878] transition-transform duration-200 ${openPopover === 'time' ? 'rotate-180 text-[#121212]' : ''}`}>
+              <span className={`material-symbols-outlined text-[18px] text-[#747878] transition-transform duration-200 ${openPopover === 'city' ? 'rotate-180 text-[#121212]' : ''}`}>
                 expand_more
               </span>
             </button>
 
-            {/* Custom Luxury Time Picker Popover */}
+            {/* Kota Popover */}
             <AnimatePresence>
-              {openPopover === 'time' && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full left-0 mt-3 z-50 bg-white border border-[#EBE7DF] rounded-3xl shadow-2xl p-5 w-80 text-[#121212] space-y-4"
-                >
-                  <div className="flex items-center justify-between pb-2 border-b border-[#EBE7DF]">
-                    <span className="text-xs font-bold font-mono uppercase tracking-wider text-[#121212]">
-                      PILIH WAKTU MULAI
-                    </span>
-                    <span className="text-xs font-mono font-bold text-[#121212] bg-[#F5F3EF] px-2.5 py-1 rounded-full">
-                      {startHour} : {startMinute} {timeZone}
-                    </span>
-                  </div>
-
-                  {/* Hour Selector */}
-                  <div>
-                    <span className="text-[10px] font-mono font-bold text-[#747878] block mb-1.5 uppercase tracking-wider">
-                      JAM (07:00 - 22:00)
-                    </span>
-                    <div className="grid grid-cols-4 gap-1.5 max-h-36 overflow-y-auto pr-1">
-                      {['07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22'].map((h) => (
-                        <button
-                          key={h}
-                          type="button"
-                          onClick={() => setStartHour(h)}
-                          className={`py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                            startHour === h
-                              ? 'bg-[#121212] text-white font-bold shadow-xs'
-                              : 'bg-[#F5F3EF] text-[#555555] hover:bg-[#EAE8E4] hover:text-[#121212]'
-                          }`}
-                        >
-                          {h}:00
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Minute Selector */}
-                  <div>
-                    <span className="text-[10px] font-mono font-bold text-[#747878] block mb-1.5 uppercase tracking-wider">
-                      MENIT
-                    </span>
-                    <div className="grid grid-cols-4 gap-1.5">
-                      {['00', '15', '30', '45'].map((m) => (
-                        <button
-                          key={m}
-                          type="button"
-                          onClick={() => setStartMinute(m)}
-                          className={`py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                            startMinute === m
-                              ? 'bg-[#121212] text-white font-bold shadow-xs'
-                              : 'bg-[#F5F3EF] text-[#555555] hover:bg-[#EAE8E4] hover:text-[#121212]'
-                          }`}
-                        >
-                          :{m}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Timezone Selector */}
-                  <div>
-                    <span className="text-[10px] font-mono font-bold text-[#747878] block mb-1.5 uppercase tracking-wider">
-                      ZONA WAKTU
-                    </span>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {['WIB', 'WITA', 'WIT'].map((tz) => (
-                        <button
-                          key={tz}
-                          type="button"
-                          onClick={() => setTimeZone(tz)}
-                          className={`py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                            timeZone === tz
-                              ? 'bg-[#121212] text-white font-bold shadow-xs'
-                              : 'bg-[#F5F3EF] text-[#555555] hover:bg-[#EAE8E4] hover:text-[#121212]'
-                          }`}
-                        >
-                          {tz}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setOpenPopover(null)}
-                    className="w-full py-2.5 rounded-2xl bg-[#121212] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#222222] transition-colors mt-2"
-                  >
-                    Selesai
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          {/* Duration Slot */}
-          <div className="relative flex-1 w-full border-b md:border-b-0 md:border-r border-[#EBE7DF] z-40">
-            <button
-              type="button"
-              onClick={() => setOpenPopover(openPopover === 'duration' ? null : 'duration')}
-              className={`w-full px-5 py-2.5 rounded-3xl text-left transition-all flex items-center justify-between gap-2 ${
-                openPopover === 'duration' ? 'bg-[#F5F3EF] shadow-inner' : 'hover:bg-[#FBF9F5]'
-              }`}
-            >
-              <div>
-                <span className="text-[10px] font-mono font-bold uppercase text-[#747878] block tracking-wider mb-0.5">
-                  DURATION
-                </span>
-                <div className="flex items-center gap-1.5 text-xs font-bold text-[#121212]">
-                  <span className="material-symbols-outlined text-[16px] text-[#747878]">hourglass_empty</span>
-                  <span>{reservationDuration}</span>
-                </div>
-              </div>
-              <span className={`material-symbols-outlined text-[18px] text-[#747878] transition-transform duration-200 ${openPopover === 'duration' ? 'rotate-180 text-[#121212]' : ''}`}>
-                expand_more
-              </span>
-            </button>
-
-            {/* Duration Popover */}
-            <AnimatePresence>
-              {openPopover === 'duration' && (
+              {openPopover === 'city' && (
                 <motion.div
                   initial={{ opacity: 0, y: 10, scale: 0.98 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -477,22 +286,22 @@ function SpacesCatalogContent() {
                   transition={{ duration: 0.15 }}
                   className="absolute top-full left-0 mt-3 z-50 bg-white border border-[#EBE7DF] rounded-3xl shadow-2xl p-3 w-64 text-[#121212] space-y-1"
                 >
-                  {['2 Hours', '4 Hours', '8 Hours (Full Day)'].map((dur) => (
+                  {['Semua Kota', ...Array.from(cityCounts.keys())].map((c) => (
                     <button
-                      key={dur}
+                      key={c}
                       type="button"
                       onClick={() => {
-                        setReservationDuration(dur);
+                        setSelectedCity(c);
                         setOpenPopover(null);
                       }}
                       className={`w-full px-4 py-2.5 rounded-2xl text-xs font-bold text-left transition-all flex items-center justify-between ${
-                        reservationDuration === dur
+                        selectedCity === c
                           ? 'bg-[#121212] text-white'
                           : 'hover:bg-[#F5F3EF] text-[#121212]'
                       }`}
                     >
-                      <span>{dur}</span>
-                      {reservationDuration === dur && (
+                      <span>{c}</span>
+                      {selectedCity === c && (
                         <span className="material-symbols-outlined text-[16px]">check</span>
                       )}
                     </button>
@@ -502,22 +311,22 @@ function SpacesCatalogContent() {
             </AnimatePresence>
           </div>
 
-          {/* Category Slot */}
+          {/* 3. Kategori Slot */}
           <div className="relative flex-1 w-full z-40">
             <button
               type="button"
               onClick={() => setOpenPopover(openPopover === 'category' ? null : 'category')}
-              className={`w-full px-5 py-2.5 rounded-3xl text-left transition-all flex items-center justify-between gap-2 ${
+              className={`w-full px-5 py-3 rounded-3xl text-left transition-all flex items-center justify-between gap-2 ${
                 openPopover === 'category' ? 'bg-[#F5F3EF] shadow-inner' : 'hover:bg-[#FBF9F5]'
               }`}
             >
               <div>
                 <span className="text-[10px] font-mono font-bold uppercase text-[#747878] block tracking-wider mb-0.5">
-                  CATEGORY
+                  KATEGORI
                 </span>
                 <div className="flex items-center gap-1.5 text-xs font-bold text-[#121212]">
-                  <span className="material-symbols-outlined text-[16px] text-[#747878]">category</span>
-                  <span>{selectedCategory === 'Semua' ? 'All Sanctuaries' : selectedCategory}</span>
+                  <span className="material-symbols-outlined text-[18px] text-[#747878]">category</span>
+                  <span className="truncate">{selectedCategory === 'Semua' ? 'Semua Kategori' : selectedCategory}</span>
                 </div>
               </div>
               <span className={`material-symbols-outlined text-[18px] text-[#747878] transition-transform duration-200 ${openPopover === 'category' ? 'rotate-180 text-[#121212]' : ''}`}>
@@ -536,7 +345,7 @@ function SpacesCatalogContent() {
                   className="absolute top-full left-0 mt-3 z-50 bg-white border border-[#EBE7DF] rounded-3xl shadow-2xl p-3 w-64 text-[#121212] space-y-1"
                 >
                   {[
-                    { label: 'All Sanctuaries', value: 'Semua' },
+                    { label: 'Semua Kategori', value: 'Semua' },
                     { label: 'Personal Desk', value: 'Personal Desk' },
                     { label: 'Meeting Room', value: 'Meeting Room' },
                     { label: 'Private Office', value: 'Private Office' },
@@ -573,24 +382,20 @@ function SpacesCatalogContent() {
                 setSelectedCity('Semua Kota');
                 setSelectedCategory('Semua');
                 setSearchQuery('');
-                setReservationDate('2026-09-19');
-                setStartHour('09');
-                setStartMinute('00');
-                setTimeZone('WIB');
-                setReservationDuration('2 Hours');
                 setOpenPopover(null);
               }}
               className="text-xs font-mono text-[#747878] hover:text-[#121212] px-3 py-2 transition-colors"
             >
               Reset
             </button>
-            <Link
-              href={`/booking?date=${reservationDate}&time=${startHour}:${startMinute}&tz=${timeZone}&duration=${encodeURIComponent(reservationDuration)}`}
-              className="px-6 py-3.5 rounded-full bg-[#000000] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#222222] transition-all shadow-sm flex items-center justify-center gap-2 whitespace-nowrap"
+            <button
+              type="button"
+              onClick={handleSearchSubmit}
+              className="px-6 py-3.5 rounded-full bg-[#000000] text-white text-xs font-bold uppercase tracking-wider hover:bg-[#222222] transition-all shadow-sm flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
             >
-              <span>Check Availability</span>
-              <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-            </Link>
+              <span>Cari Space</span>
+              <span className="material-symbols-outlined text-[16px]">search</span>
+            </button>
           </div>
         </div>
       </section>
@@ -626,8 +431,53 @@ function SpacesCatalogContent() {
       </section>
 
       {/* Catalog Spaces 3-Column Grid */}
-      <section className="w-full py-16 px-6 sm:px-12 lg:px-16 flex-1">
+      <section className="w-full py-16 px-6 sm:px-12 lg:px-16 flex-1 scroll-mt-24" id="catalog-grid">
         <div className="w-full">
+          {/* Active Search & Filters Indicator Bar */}
+          {(searchQuery || selectedCategory !== 'Semua' || selectedCity !== 'Semua Kota') && (
+            <div className="mb-8 p-4.5 rounded-2xl bg-white border border-[#EBE7DF] shadow-xs flex flex-wrap items-center justify-between gap-4">
+              <div className="flex flex-wrap items-center gap-2.5 text-xs font-mono">
+                <span className="font-bold text-[#121212] uppercase tracking-wider">Filter Aktif:</span>
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#121212] text-white font-bold">
+                    <span>Cari: "{searchQuery}"</span>
+                    <button type="button" onClick={() => setSearchQuery('')} className="hover:text-amber-400">
+                      <span className="material-symbols-outlined text-[14px]">close</span>
+                    </button>
+                  </span>
+                )}
+                {selectedCategory !== 'Semua' && (
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#F5F3EF] text-[#121212] font-bold border border-[#EBE7DF]">
+                    <span>Kategori: {selectedCategory}</span>
+                    <button type="button" onClick={() => setSelectedCategory('Semua')} className="hover:text-red-600">
+                      <span className="material-symbols-outlined text-[14px]">close</span>
+                    </button>
+                  </span>
+                )}
+                {selectedCity !== 'Semua Kota' && (
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#F5F3EF] text-[#121212] font-bold border border-[#EBE7DF]">
+                    <span>Kota: {selectedCity}</span>
+                    <button type="button" onClick={() => setSelectedCity('Semua Kota')} className="hover:text-red-600">
+                      <span className="material-symbols-outlined text-[14px]">close</span>
+                    </button>
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedCity('Semua Kota');
+                  setSelectedCategory('Semua');
+                  setSearchQuery('');
+                }}
+                className="text-xs font-mono font-bold text-[#747878] hover:text-[#121212] underline"
+              >
+                Reset Semua Filter
+              </button>
+            </div>
+          )}
+
           {filteredSpaces.length === 0 ? (
             <div className="w-full py-24 text-center flex flex-col items-center justify-center bg-white rounded-3xl border border-[#EBE7DF]">
               <span className="material-symbols-outlined text-7xl text-[#747878] mb-4">
@@ -735,10 +585,11 @@ function SpacesCatalogContent() {
                           </button>
                         ) : (
                           <Link
-                            href={`/booking?spaceId=${space.id}`}
-                            className="px-7 py-3.5 rounded-full bg-[#000000] text-white text-base sm:text-lg font-bold hover:bg-[#222222] transition-colors shadow-md"
+                            href={`/booking?spaceId=${space.id}&date=${reservationDate}&time=${startHour}:${startMinute}&tz=${timeZone}&duration=${encodeURIComponent(reservationDuration)}`}
+                            className="px-7 py-3.5 rounded-full bg-[#000000] text-white text-base sm:text-lg font-bold hover:bg-[#222222] transition-colors shadow-md flex items-center gap-2"
                           >
-                            Reserve Space
+                            <span>Pesan Ruang Ini</span>
+                            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                           </Link>
                         )}
                       </div>
@@ -751,7 +602,7 @@ function SpacesCatalogContent() {
         </div>
       </section>
 
-      {/* "Find your sanctuary across Indonesia's major hubs" Section */}
+      {dynamicCityHubs.length > 0 && (
       <section className="w-full py-20 px-6 sm:px-12 lg:px-16 bg-[#F5F3EF] border-t border-[#EBE7DF]">
         <div className="w-full">
           
@@ -774,9 +625,9 @@ function SpacesCatalogContent() {
             </span>
           </div>
 
-          {/* 4 City Cards Grid */}
+          {/* Dynamic City Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {CITY_HUBS.map((city) => (
+            {dynamicCityHubs.map((city) => (
               <div
                 key={city.name}
                 onClick={() => setSelectedCity(city.name)}
@@ -808,6 +659,7 @@ function SpacesCatalogContent() {
 
         </div>
       </section>
+      )}
 
       {/* Feature Value Proposition 3-Column Banner */}
       <section className="w-full py-20 px-6 sm:px-12 lg:px-16 bg-[#FBF9F5] border-t border-[#EBE7DF]">

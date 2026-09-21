@@ -1,33 +1,90 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useSpaceStore } from '@/lib/SpaceStoreContext';
 import { Space } from '@/lib/mockData';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { fetchCityLandmarkPhoto, CITY_PHOTO_PLACEHOLDER } from '@/lib/cityImages';
+
+const HERO_CAROUSEL_IMAGES = [
+  'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=85',
+  'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=1800&q=85',
+  'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&w=1800&q=85',
+  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=85',
+];
 
 export default function LandingPage() {
   const { spaces } = useSpaceStore();
 
   const filteredFeatured = spaces.slice(0, 6);
+  const [cityPhotos, setCityPhotos] = useState<Record<string, string>>({});
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % HERO_CAROUSEL_IMAGES.length);
+    }, 4500);
+    return () => clearInterval(timer);
+  }, []);
+
+  const cityCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    spaces.forEach((s) => {
+      const name = s.city?.trim();
+      if (!name) return;
+      const existing = [...counts.keys()].find((k) => k.toLowerCase() === name.toLowerCase());
+      if (existing) counts.set(existing, (counts.get(existing) || 0) + 1);
+      else counts.set(name, 1);
+    });
+    return counts;
+  }, [spaces]);
+
+  useEffect(() => {
+    let cancelled = false;
+    Array.from(cityCounts.keys()).forEach(async (name) => {
+      const photo = await fetchCityLandmarkPhoto(name);
+      if (!cancelled) {
+        setCityPhotos((prev) => (prev[name] === photo ? prev : { ...prev, [name]: photo }));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [cityCounts]);
+
+  const cityHubs = useMemo(
+    () =>
+      Array.from(cityCounts.entries()).map(([name, count]) => ({
+        name,
+        count,
+        img: cityPhotos[name] || CITY_PHOTO_PLACEHOLDER,
+      })),
+    [cityCounts, cityPhotos]
+  );
 
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#fbf9f5] text-[#1b1c1a]">
       {/* Top Navbar */}
       <Navbar />
 
-      {/* Hero Section with Full-Width Interior Photography */}
-      <section className="relative w-full min-h-[90vh] flex items-center justify-center pt-16 pb-24 px-4 sm:px-8 lg:px-16 overflow-hidden">
-        {/* Background Image with Dark Vignette Gradient */}
-        <div className="absolute inset-0 z-0">
-          <img
-            alt="WorkMates Architectural Coworking Sanctuary"
-            className="w-full h-full object-cover"
-            src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1800&q=85"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80"></div>
+      {/* Hero Section with Rotating Image Carousel & Smooth Cross-Fade Dissolve */}
+      <section className="relative w-full min-h-[90vh] flex items-center justify-center pt-16 pb-24 px-4 sm:px-8 lg:px-16 overflow-hidden bg-black">
+        {/* Animated Background Image Carousel */}
+        <div className="absolute inset-0 z-0 bg-black overflow-hidden">
+          {HERO_CAROUSEL_IMAGES.map((imgUrl, idx) => (
+            <img
+              key={imgUrl}
+              src={imgUrl}
+              alt="WorkMates Architectural Coworking Sanctuary"
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-[1800ms] ease-in-out ${
+                idx === currentHeroIndex ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-105 pointer-events-none'
+              }`}
+            />
+          ))}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 z-10 pointer-events-none"></div>
         </div>
 
         {/* Hero Content */}
@@ -67,7 +124,7 @@ export default function LandingPage() {
           </div>
 
           {/* Quick Metrics */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-8 sm:gap-12 text-white/80 text-xs font-mono">
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-8 sm:gap-12 text-white/80 text-xs font-mono">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#4A6B5D] text-[18px]">verified</span>
               <span>100% Konflik Reservasi 0</span>
@@ -128,7 +185,7 @@ export default function LandingPage() {
                   <span className="text-[#747878]">Low Latency Fiber Network</span>
                 </div>
                 <div className="p-4 rounded-2xl bg-white border border-[#EBE7DF] col-span-2 sm:col-span-1">
-                  <span className="text-2xl font-serif font-bold text-[#4A6B5D] block mb-1">4 Kota</span>
+                  <span className="text-2xl font-serif font-bold text-[#4A6B5D] block mb-1">{cityHubs.length || 0} Kota</span>
                   <span className="text-[#747878]">Jaringan Sanctuary Eksklusif</span>
                 </div>
               </div>
@@ -334,7 +391,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Network Locations Showcase */}
+      {cityHubs.length > 0 && (
       <section className="w-full py-24 px-4 sm:px-8 lg:px-16 bg-[#fbf9f5]">
         <div className="w-full max-w-7xl mx-auto">
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -342,84 +399,35 @@ export default function LandingPage() {
               Jaringan Properti
             </span>
             <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-semibold text-[#121212] mb-4">
-              4 Destinasi Sanctuary Indonesia
+              {cityHubs.length} Destinasi Sanctuary
             </h2>
             <p className="text-[#5e5e5e] text-sm sm:text-base font-light">
-              Akses tanpa batas di seluruh properti WorkMates dengan satu keanggotaan terintegrasi.
+              Kota muncul hanya jika ada space aktif di backend.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-3xl p-6 border border-[#EBE7DF] hover:shadow-lg transition-all">
+            {cityHubs.map((city) => (
+            <div key={city.name} className="bg-white rounded-3xl p-6 border border-[#EBE7DF] hover:shadow-lg transition-all">
               <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-[#efeeea]">
                 <img
-                  src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1000&q=85"
-                  alt="Jakarta SCBD"
+                  src={city.img}
+                  alt={city.name}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <span className="text-xs font-mono uppercase text-[#4A6B5D] font-bold">Flagship Hub</span>
-              <h3 className="font-serif text-xl font-semibold text-[#121212] mt-1 mb-2">Jakarta SCBD</h3>
-              <p className="text-xs text-[#747878] font-light mb-4">SCBD Lot 8 & Senopati Penthouse</p>
-              <Link href="/spaces?city=Jakarta" className="text-xs font-semibold text-[#121212] hover:text-[#4A6B5D] flex items-center gap-1 font-mono">
-                <span>Eksplor Jakarta</span>
+              <span className="text-xs font-mono uppercase text-[#4A6B5D] font-bold">{city.count} space</span>
+              <h3 className="font-serif text-xl font-semibold text-[#121212] mt-1 mb-2">{city.name}</h3>
+              <Link href={`/spaces?city=${encodeURIComponent(city.name)}`} className="text-xs font-semibold text-[#121212] hover:text-[#4A6B5D] flex items-center gap-1 font-mono">
+                <span>Eksplor {city.name}</span>
                 <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
               </Link>
             </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-[#EBE7DF] hover:shadow-lg transition-all">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-[#efeeea]">
-                <img
-                  src="https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=1000&q=85"
-                  alt="Bandung Dago"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <span className="text-xs font-mono uppercase text-[#C88A2B] font-bold">Heritage Retreat</span>
-              <h3 className="font-serif text-xl font-semibold text-[#121212] mt-1 mb-2">Bandung Dago</h3>
-              <p className="text-xs text-[#747878] font-light mb-4">Dago Atas Colonial & Garden</p>
-              <Link href="/spaces?city=Bandung" className="text-xs font-semibold text-[#121212] hover:text-[#4A6B5D] flex items-center gap-1 font-mono">
-                <span>Eksplor Bandung</span>
-                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-              </Link>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-[#EBE7DF] hover:shadow-lg transition-all">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-[#efeeea]">
-                <img
-                  src="https://images.unsplash.com/photo-1497215842964-222b430dc094?auto=format&fit=crop&w=1000&q=85"
-                  alt="Bali Canggu"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <span className="text-xs font-mono uppercase text-[#4A6B5D] font-bold">Tropical Solarium</span>
-              <h3 className="font-serif text-xl font-semibold text-[#121212] mt-1 mb-2">Bali Canggu</h3>
-              <p className="text-xs text-[#747878] font-light mb-4">Batu Bolong Bamboo Sanctuary</p>
-              <Link href="/spaces?city=Bali" className="text-xs font-semibold text-[#121212] hover:text-[#4A6B5D] flex items-center gap-1 font-mono">
-                <span>Eksplor Bali</span>
-                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-              </Link>
-            </div>
-
-            <div className="bg-white rounded-3xl p-6 border border-[#EBE7DF] hover:shadow-lg transition-all">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-4 bg-[#efeeea]">
-                <img
-                  src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1000&q=85"
-                  alt="Surabaya Pavilion"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <span className="text-xs font-mono uppercase text-[#5e5e5e] font-bold">Modern Atelier</span>
-              <h3 className="font-serif text-xl font-semibold text-[#121212] mt-1 mb-2">Surabaya Pavilion</h3>
-              <p className="text-xs text-[#747878] font-light mb-4">Pakuwon City Modern Glasshouse</p>
-              <Link href="/spaces?city=Surabaya" className="text-xs font-semibold text-[#121212] hover:text-[#4A6B5D] flex items-center gap-1 font-mono">
-                <span>Eksplor Surabaya</span>
-                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-              </Link>
-            </div>
+            ))}
           </div>
         </div>
       </section>
+      )}
 
       {/* Footer */}
       <Footer />

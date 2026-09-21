@@ -30,7 +30,7 @@ export function AuthForm() {
   const [role, setRole] = useState<"member" | "admin_space">("member");
   const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberDevice, setRememberDevice] = useState(true);
+  const [rememberDevice, setRememberDevice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // Error and Success Feedback States
@@ -102,15 +102,13 @@ export function AuthForm() {
         ? { email: identifier, password }
         : { username: identifier, password };
 
-      const res = await loginUser(payload);
+      const res = await loginUser(payload, rememberDevice);
 
       if (res.data?.access_token && res.data.user) {
-        const { access_token, user } = res.data;
+        const { user } = res.data;
         if (rememberDevice) {
-          localStorage.setItem("token", access_token);
           localStorage.setItem("user", JSON.stringify(user));
         } else {
-          sessionStorage.setItem("token", access_token);
           sessionStorage.setItem("user", JSON.stringify(user));
         }
 
@@ -140,12 +138,15 @@ export function AuthForm() {
         alamat: alamat || "Jl. Senopati No. 42, Jakarta",
         telp,
         foto: fotoFile,
-      });
+      }, rememberDevice);
 
       if (res.data?.access_token && res.data.user) {
-        const { access_token, user } = res.data;
-        localStorage.setItem("token", access_token);
-        localStorage.setItem("user", JSON.stringify(user));
+        const { user } = res.data;
+        if (rememberDevice) {
+          localStorage.setItem("user", JSON.stringify(user));
+        } else {
+          sessionStorage.setItem("user", JSON.stringify(user));
+        }
 
         setSuccessMessage(`Akun Member (${user.username}) berhasil dibuat!`);
       }
@@ -171,12 +172,15 @@ export function AuthForm() {
         nama_coworking: namaCoworking,
         nama_pemilik: namaPemilik,
         telp: adminTelp,
-      });
+      }, rememberDevice);
 
       if (res.data?.access_token && res.data.user) {
-        const { access_token, user } = res.data;
-        localStorage.setItem("token", access_token);
-        localStorage.setItem("user", JSON.stringify(user));
+        const { user } = res.data;
+        if (rememberDevice) {
+          localStorage.setItem("user", JSON.stringify(user));
+        } else {
+          sessionStorage.setItem("user", JSON.stringify(user));
+        }
 
         setSuccessMessage(`Akun Space Owner (${user.username}) berhasil terdaftar!`);
       }

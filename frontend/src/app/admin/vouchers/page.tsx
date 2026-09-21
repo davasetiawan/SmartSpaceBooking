@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import AdminSidebar from '@/components/layout/AdminSidebar';
+import Navbar from '@/components/layout/Navbar';
 import { useSpaceStore } from '@/lib/SpaceStoreContext';
 import { Voucher } from '@/lib/mockData';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -81,15 +81,15 @@ export default function AdminVouchersPage() {
   );
 
   return (
-    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#fbf9f5] text-[#1b1c1a]">
-      <AdminSidebar />
+    <div className="w-full min-h-screen flex flex-col bg-[#fbf9f5] text-[#1b1c1a]">
+      <Navbar />
 
-      <main className="flex-1 p-6 sm:p-10 lg:p-12 overflow-y-auto">
+      <main className="w-full flex-1 px-4 sm:px-8 lg:px-12 xl:px-16 py-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-7xl mx-auto space-y-8"
+          className="w-full space-y-8"
         >
           
           {/* Header */}

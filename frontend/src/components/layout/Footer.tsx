@@ -9,8 +9,8 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="lg:col-span-2 flex flex-col gap-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#ffffff] text-[#121212] flex items-center justify-center font-serif font-bold text-lg">
-                W
+              <div className="w-11 h-11 rounded-full overflow-hidden border border-white/20 bg-[#121212] shrink-0 shadow-sm">
+                <img src="/workmates-logo.jpg" alt="WorkMates Logo" className="w-full h-full object-cover" />
               </div>
               <span className="font-serif text-2xl font-semibold tracking-tight text-white">
                 WorkMates

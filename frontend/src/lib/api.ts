@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 export interface LoginPayload {
   username?: string;
@@ -45,19 +45,54 @@ export interface AuthResponse {
 // Token helper
 export function getStoredToken(): string | null {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("access_token");
+
+  // 1. Session storage (temporary session, cleared on browser close)
+  const sessionToken = sessionStorage.getItem("access_token") || sessionStorage.getItem("token");
+  if (sessionToken) return sessionToken;
+
+  // 2. Local storage (only valid if explicitly requested via "remember_me")
+  const isRemembered = localStorage.getItem("remember_me") === "true";
+  const localToken = localStorage.getItem("access_token") || localStorage.getItem("token");
+
+  if (localToken && isRemembered) {
+    return localToken;
+  }
+
+  // If local token exists without remember_me flag, purge it (legacy or un-remembered token)
+  if (localToken && !isRemembered) {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  }
+
+  return null;
 }
 
-export function setStoredToken(token: string) {
-  if (typeof window !== "undefined") {
+export function setStoredToken(token: string, remember: boolean = false) {
+  if (typeof window === "undefined") return;
+  if (remember) {
     localStorage.setItem("access_token", token);
+    localStorage.setItem("remember_me", "true");
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("token");
+  } else {
+    sessionStorage.setItem("access_token", token);
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("remember_me");
   }
 }
 
 export function removeStoredToken() {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("access_token");
-  }
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("access_token");
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  localStorage.removeItem("remember_me");
+  sessionStorage.removeItem("access_token");
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("user");
 }
 
 function getAuthHeaders(token?: string | null): HeadersInit {
@@ -70,7 +105,7 @@ function getAuthHeaders(token?: string | null): HeadersInit {
 
 // --- AUTH API ---
 
-export async function loginUser(payload: LoginPayload): Promise<AuthResponse> {
+export async function loginUser(payload: LoginPayload, remember: boolean = false): Promise<AuthResponse> {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -82,12 +117,12 @@ export async function loginUser(payload: LoginPayload): Promise<AuthResponse> {
     throw new Error(errorMsg);
   }
   if (data?.data?.access_token) {
-    setStoredToken(data.data.access_token);
+    setStoredToken(data.data.access_token, remember);
   }
   return data;
 }
 
-export async function registerMember(payload: RegisterMemberPayload): Promise<AuthResponse> {
+export async function registerMember(payload: RegisterMemberPayload, remember: boolean = false): Promise<AuthResponse> {
   const formData = new FormData();
   formData.append("username", payload.username);
   formData.append("email", payload.email);
@@ -110,12 +145,12 @@ export async function registerMember(payload: RegisterMemberPayload): Promise<Au
     throw new Error(errorMsg);
   }
   if (data?.data?.access_token) {
-    setStoredToken(data.data.access_token);
+    setStoredToken(data.data.access_token, remember);
   }
   return data;
 }
 
-export async function registerAdminSpace(payload: RegisterAdminSpacePayload): Promise<AuthResponse> {
+export async function registerAdminSpace(payload: RegisterAdminSpacePayload, remember: boolean = false): Promise<AuthResponse> {
   const response = await fetch(`${API_BASE_URL}/auth/register/admin-space`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -127,7 +162,7 @@ export async function registerAdminSpace(payload: RegisterAdminSpacePayload): Pr
     throw new Error(errorMsg);
   }
   if (data?.data?.access_token) {
-    setStoredToken(data.data.access_token);
+    setStoredToken(data.data.access_token, remember);
   }
   return data;
 }
@@ -201,6 +236,64 @@ export async function fetchActiveDiscounts(): Promise<any[]> {
   return data.data || [];
 }
 
+export interface PaymentMethodPayload {
+  nama: string;
+  tipe: string;
+  nomor_rekening?: string | null;
+  atas_nama?: string | null;
+  is_aktif?: boolean;
+}
+
+export async function fetchPaymentMethods(): Promise<any[]> {
+  const response = await fetch(`${API_BASE_URL}/payment/methods`, {
+    headers: getAuthHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Gagal memuat metode pembayaran");
+  return data.data || [];
+}
+
+export async function fetchAdminPaymentMethods(): Promise<any[]> {
+  const response = await fetch(`${API_BASE_URL}/payment-method`, {
+    headers: getAuthHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Gagal memuat metode pembayaran admin");
+  return data.data || [];
+}
+
+export async function createAdminPaymentMethod(payload: PaymentMethodPayload): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/payment-method`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Gagal menambahkan metode pembayaran");
+  return data.data || data;
+}
+
+export async function updateAdminPaymentMethod(id: number | string, payload: Partial<PaymentMethodPayload>): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/payment-method/${id}`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Gagal mengedit metode pembayaran");
+  return data.data || data;
+}
+
+export async function deleteAdminPaymentMethod(id: number | string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/payment-method/${id}`, {
+    method: "DELETE",
+    headers: getAuthHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.message || "Gagal menghapus metode pembayaran");
+  return data;
+}
+
 // --- RESERVASI MEMBER API ---
 
 export interface CreateReservasiPayload {
@@ -210,13 +303,27 @@ export interface CreateReservasiPayload {
   durasi_jam: number;
   kode_promo?: string;
   payment_method_id?: number;
+  bukti_pembayaran: File;
 }
 
 export async function createReservasi(payload: CreateReservasiPayload): Promise<any> {
-  const response = await fetch(`${API_BASE_URL}/reservasi`, {
+  const query = new URLSearchParams({
+    id_space: String(payload.id_space),
+    tanggal_reservasi: payload.tanggal_reservasi,
+    jam_mulai: payload.jam_mulai,
+    durasi_jam: String(payload.durasi_jam),
+  });
+  if (payload.kode_promo) query.append("nama_diskon", payload.kode_promo);
+  if (payload.payment_method_id) query.append("payment_method_id", String(payload.payment_method_id));
+
+  const formData = new FormData();
+  formData.append("bukti_pembayaran", payload.bukti_pembayaran);
+  const token = getStoredToken();
+
+  const response = await fetch(`${API_BASE_URL}/reservasi?${query.toString()}`, {
     method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
   });
   const data = await response.json();
   if (!response.ok) {
@@ -296,29 +403,40 @@ export async function fetchAdminMembers(search?: string): Promise<any[]> {
     headers: getAuthHeaders(),
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.message || "Gagal memuat member");
-  return data.data || [];
+  if (!response.ok) {
+    const msg = Array.isArray(data.message) ? data.message.join(", ") : data.message;
+    throw new Error(msg || "Gagal memuat member");
+  }
+  return Array.isArray(data.data) ? data.data : [];
 }
 
-export async function createAdminMember(payload: any): Promise<any> {
+function apiError(data: any, fallback: string) {
+  const msg = data?.message;
+  if (Array.isArray(msg)) return msg.join(", ");
+  return msg || fallback;
+}
+
+export async function createAdminMember(payload: FormData): Promise<any> {
+  const token = getStoredToken();
   const response = await fetch(`${API_BASE_URL}/admin/members`, {
     method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: payload,
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.message || "Gagal menambahkan member");
+  if (!response.ok) throw new Error(apiError(data, "Gagal menambahkan member"));
   return data.data || data;
 }
 
-export async function updateAdminMember(id: number | string, payload: any): Promise<any> {
+export async function updateAdminMember(id: number | string, payload: FormData): Promise<any> {
+  const token = getStoredToken();
   const response = await fetch(`${API_BASE_URL}/admin/members/${id}`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
+    method: "PATCH",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: payload,
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.message || "Gagal mengedit member");
+  if (!response.ok) throw new Error(apiError(data, "Gagal mengedit member"));
   return data.data || data;
 }
 
@@ -328,7 +446,7 @@ export async function deleteAdminMember(id: number | string): Promise<any> {
     headers: getAuthHeaders(),
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.message || "Gagal menghapus member");
+  if (!response.ok) throw new Error(apiError(data, "Gagal menghapus member"));
   return data;
 }
 
@@ -356,11 +474,17 @@ export async function createAdminSpaceItem(formData: FormData): Promise<any> {
   return data.data || data;
 }
 
-export async function updateAdminSpaceItem(id: number | string, payload: any): Promise<any> {
+export async function updateAdminSpaceItem(id: number | string, payload: FormData | any): Promise<any> {
+  const token = getStoredToken();
+  const isFormData = payload instanceof FormData;
+
   const response = await fetch(`${API_BASE_URL}/admin/spaces/${id}`, {
-    method: "PUT",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
+    method: "PATCH",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...(!isFormData ? { "Content-Type": "application/json" } : {}),
+    },
+    body: isFormData ? payload : JSON.stringify(payload),
   });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || "Gagal memperbarui space");
@@ -442,30 +566,59 @@ export async function fetchAdminReservations(params?: {
   return data.data || [];
 }
 
-export async function updateReservasiStatus(id: number | string, status: string): Promise<any> {
+export async function updateReservasiStatus(id: number | string, status: string, alasan_penolakan?: string): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/admin/reservasi/${id}/status`, {
     method: "PATCH",
     headers: getAuthHeaders(),
-    body: JSON.stringify({ status }),
+    body: JSON.stringify({ status, ...(alasan_penolakan ? { alasan_penolakan } : {}) }),
   });
-  const data = await response.json();
+  const text = await response.text();
+  let data: any;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(text || `Gagal memperbarui status reservasi (${response.status})`);
+  }
   if (!response.ok) throw new Error(data.message || "Gagal memperbarui status reservasi");
   return data;
 }
 
 export async function checkInGuest(id: number | string): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/admin/reservasi/${id}/check-in`, {
-    method: "POST",
+    method: "PATCH",
     headers: getAuthHeaders(),
   });
-  const data = await response.json();
+  const text = await response.text();
+  let data: any;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(text || `Gagal proses check-in (${response.status})`);
+  }
+  if (!response.ok) throw new Error(data.message || "Gagal proses check-in");
+  return data;
+}
+
+export async function checkInGuestByCodeApi(code: string): Promise<any> {
+  const response = await fetch(`${API_BASE_URL}/admin/reservasi/check-in-by-code`, {
+    method: "PATCH",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({ code }),
+  });
+  const text = await response.text();
+  let data: any;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(text || `Gagal proses check-in (${response.status})`);
+  }
   if (!response.ok) throw new Error(data.message || "Gagal proses check-in");
   return data;
 }
 
 export async function checkOutGuest(id: number | string): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/admin/reservasi/${id}/check-out`, {
-    method: "POST",
+    method: "PATCH",
     headers: getAuthHeaders(),
   });
   const data = await response.json();
@@ -473,13 +626,18 @@ export async function checkOutGuest(id: number | string): Promise<any> {
   return data;
 }
 
-// Admin Finance & Monthly Reports
 export async function fetchMonthlyReport(month: number, year: number): Promise<any> {
   const response = await fetch(`${API_BASE_URL}/admin/reports/monthly?month=${month}&year=${year}`, {
     headers: getAuthHeaders(),
   });
-  const data = await response.json();
+  const text = await response.text();
+  let data: any;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error(text || `Gagal memuat rekap bulanan (${response.status})`);
+  }
   if (!response.ok) throw new Error(data.message || "Gagal memuat rekap bulanan");
-  return data.data || data;
+  return data;
 }
 

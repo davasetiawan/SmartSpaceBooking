@@ -55,7 +55,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
+  const [rememberMe, setRememberMe] = useState(false);
 
   // Member Registration Fields
   const [namaMember, setNamaMember] = useState('');
@@ -95,7 +95,7 @@ export default function LoginPage() {
           username: username || email,
           email: email || username,
           password,
-        });
+        }, rememberMe);
         await refreshData();
         setSuccessMessage('Autentikasi Berhasil! Mengalihkan...');
         setTimeout(() => {
@@ -116,7 +116,7 @@ export default function LoginPage() {
             alamat: alamat || 'Jl. Utama No. 1',
             telp: telp || '08123456789',
             foto: foto || undefined,
-          });
+          }, rememberMe);
           await refreshData();
           setSuccessMessage('Pendaftaran Member Berhasil! Mengalihkan...');
           setTimeout(() => router.push('/member/bookings'), 600);
@@ -128,7 +128,7 @@ export default function LoginPage() {
             nama_coworking: namaCoworking || 'WorkMates Sanctuary',
             nama_pemilik: namaPemilik || username || 'Pemilik Space',
             telp: telp || '08123456789',
-          });
+          }, rememberMe);
           await refreshData();
           setSuccessMessage('Pendaftaran Partner Admin Berhasil! Mengalihkan...');
           setTimeout(() => router.push('/admin'), 600);

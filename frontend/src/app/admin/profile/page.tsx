@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import AdminSidebar from '@/components/layout/AdminSidebar';
+import Navbar from '@/components/layout/Navbar';
 import { useSpaceStore } from '@/lib/SpaceStoreContext';
 
 export default function AdminProfilePage() {
@@ -34,11 +34,11 @@ export default function AdminProfilePage() {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#fbf9f5] text-[#1b1c1a]">
-      <AdminSidebar />
+    <div className="w-full min-h-screen flex flex-col bg-[#fbf9f5] text-[#1b1c1a]">
+      <Navbar />
 
-      <main className="flex-1 p-6 sm:p-10 lg:p-12 overflow-y-auto">
-        <div className="w-full max-w-5xl mx-auto space-y-8">
+      <main className="w-full flex-1 px-4 sm:px-8 lg:px-12 xl:px-16 py-8 overflow-y-auto">
+        <div className="w-full space-y-8">
           
           {/* Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-[#EBE7DF]">

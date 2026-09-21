@@ -3,6 +3,7 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/admin/checkin/page": "app/admin/checkin/page.js",
   "/admin/finance/page": "app/admin/finance/page.js",
+  "/admin/member/page": "app/admin/member/page.js",
   "/admin/members/page": "app/admin/members/page.js",
   "/admin/page": "app/admin/page.js",
   "/admin/profile/page": "app/admin/profile/page.js",

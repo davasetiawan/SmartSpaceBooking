@@ -24,10 +24,29 @@ import {
   getStoredToken,
   removeStoredToken,
   checkInGuest,
+  checkInGuestByCodeApi,
   cancelReservasi,
   updateReservasiStatus,
   createReservasi
 } from './api';
+
+const BACKEND_URL = 'http://localhost:3001';
+const DEFAULT_SPACE_IMG = 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=85';
+
+/**
+ * Resolves a space photo value from the backend into a full displayable URL.
+ * Handles:
+ * - Full external URLs (Cloudinary, Unsplash, etc.): returned as-is
+ * - Local relative paths like "/uploads/1234.jpg": prefixed with BACKEND_URL
+ * - Bare filenames like "1234.jpg": prefixed with BACKEND_URL + /uploads/
+ * - null/undefined: returns default placeholder image
+ */
+function resolveSpaceImageUrl(foto?: string | null): string {
+  if (!foto) return DEFAULT_SPACE_IMG;
+  if (foto.startsWith('http://') || foto.startsWith('https://')) return foto;
+  if (foto.startsWith('/uploads/')) return `${BACKEND_URL}${foto}`;
+  return `${BACKEND_URL}/uploads/${foto}`;
+}
 
 interface UserProfile {
   id: number;
@@ -53,7 +72,7 @@ interface SpaceStoreContextType {
   logout: () => void;
   addBooking: (bookingInput: any) => Promise<any>;
   cancelBooking: (bookingId: string | number) => Promise<void>;
-  updateBookingStatus: (bookingId: string | number, status: any) => Promise<void>;
+  updateBookingStatus: (bookingId: string | number, status: any, alasanPenolakan?: string) => Promise<void>;
   addSpace: (space: Omit<Space, 'id'>) => Space;
   updateSpace: (id: string, space: Partial<Space>) => void;
   deleteSpace: (id: string) => void;
@@ -83,15 +102,15 @@ export function SpaceStoreProvider({ children }: { children: React.ReactNode }) 
         ? backendSpaces.map((s: any) => ({
             id: String(s.id),
             name: s.nama_space,
-            category: s.tipe === 'desk' ? 'Personal Desk' : s.tipe === 'meeting_room' ? 'Boardroom' : 'Executive Studio',
-            location: s.jalan || s.kota || 'SCBD Lot 8, Jakarta',
-            city: (s.kota as any) || 'Jakarta',
+            category: s.tipe === 'desk' ? 'Personal Desk' : s.tipe === 'meeting_room' ? 'Meeting Room' : 'Private Office',
+            location: s.jalan || s.kota || '',
+            city: (s.kota || '').trim(),
             capacity: s.kapasitas || 1,
             hourlyRate: s.harga_per_jam || 100000,
             dailyRate: (s.harga_per_jam || 100000) * 7,
             rating: 4.9,
             reviewsCount: 45,
-            imageUrl: s.foto ? (s.foto.startsWith('http') ? s.foto : `http://localhost:3001/uploads/spaces/${s.foto}`) : 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=85',
+            imageUrl: resolveSpaceImageUrl(s.foto),
             description: s.deskripsi || 'Fasilitas coworking modern lengkap.',
             amenities: ['Ergonomic Chair', 'High-Speed Wi-Fi', 'Coffee Access'],
             isAvailable: true,
@@ -130,20 +149,28 @@ export function SpaceStoreProvider({ children }: { children: React.ReactNode }) 
                   spaceName: r.space?.nama_space || `Space #${r.id_space}`,
                   spaceCategory: r.space?.tipe || 'Desk',
                   location: 'Coworking Location',
-                  imageUrl: r.space?.foto ? (r.space.foto.startsWith('http') ? r.space.foto : `http://localhost:3001/uploads/spaces/${r.space.foto}`) : 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=85',
+                   imageUrl: resolveSpaceImageUrl(r.space?.foto),
                   guestName: r.member?.nama_member || 'Guest',
-                  guestEmail: r.member?.users?.email || 'guest@example.com',
+                  guestEmail: r.member?.users?.email || 'Email belum tersedia',
                   guestPhone: r.member?.telp || '-',
                   date: new Date(r.tanggal_reservasi).toISOString().split('T')[0],
                   timeSlot: `${new Date(r.jam_mulai).toISOString().substr(11, 5)} - ${new Date(r.jam_selesai).toISOString().substr(11, 5)}`,
                   durationHours: r.durasi_jam,
                   totalAmount: r.total_bayar,
-                  status: r.status === 'disetujui' ? 'pending' : r.status === 'aktif' ? 'active' : r.status === 'selesai' ? 'finished' : r.status === 'dibatalkan' ? 'cancelled' : 'pending',
-                  keycardPin: '8899',
+                  status: r.status === 'belum_dikonfirm' ? 'unverified' : r.status === 'disetujui' ? 'pending' : r.status === 'aktif' ? 'active' : r.status === 'selesai' ? 'finished' : r.status === 'dibatalkan' ? 'cancelled' : 'unverified',
+                  keycardPin: r.pin_akses || '8899',
                   assignedSeat: `UNIT-${r.id_space}`,
                   addOns: [],
                   createdAt: new Date(r.created_at).toLocaleString('id-ID'),
-                  qrPayload: `VERIFY-RESERVASI-${r.id}-${r.kode_booking}`
+                  qrPayload: `VERIFY-RESERVASI-${r.id}-${r.kode_booking}`,
+                  paymentProofUrl: r.bukti_pembayaran
+                    ? (r.bukti_pembayaran.startsWith('http://') || r.bukti_pembayaran.startsWith('https://')
+                        ? r.bukti_pembayaran
+                        : r.bukti_pembayaran.startsWith('/uploads/')
+                          ? `${BACKEND_URL}${r.bukti_pembayaran}`
+                          : `${BACKEND_URL}/uploads/pembayaran/${r.bukti_pembayaran}`)
+                    : null,
+                  rejectionReason: (r as any).alasan_penolakan || null
                 }));
                 setBookings(mappedBookings);
               }
@@ -157,7 +184,7 @@ export function SpaceStoreProvider({ children }: { children: React.ReactNode }) 
                   spaceName: r.space?.nama_space || `Space #${r.id_space}`,
                   spaceCategory: r.space?.tipe || 'Desk',
                   location: 'Coworking Location',
-                  imageUrl: r.space?.foto ? (r.space.foto.startsWith('http') ? r.space.foto : `http://localhost:3001/uploads/spaces/${r.space.foto}`) : 'https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1400&q=85',
+                   imageUrl: resolveSpaceImageUrl(r.space?.foto),
                   guestName: r.member?.nama_member || profileData.member?.nama_member || 'Guest',
                   guestEmail: profileData.email,
                   guestPhone: r.member?.telp || '-',
@@ -165,12 +192,20 @@ export function SpaceStoreProvider({ children }: { children: React.ReactNode }) 
                   timeSlot: `${new Date(r.jam_mulai).toISOString().substr(11, 5)} - ${new Date(r.jam_selesai).toISOString().substr(11, 5)}`,
                   durationHours: r.durasi_jam,
                   totalAmount: r.total_bayar,
-                  status: r.status === 'disetujui' ? 'pending' : r.status === 'aktif' ? 'active' : r.status === 'selesai' ? 'finished' : r.status === 'dibatalkan' ? 'cancelled' : 'pending',
-                  keycardPin: '8899',
+                  status: r.status === 'belum_dikonfirm' ? 'unverified' : r.status === 'disetujui' ? 'pending' : r.status === 'aktif' ? 'active' : r.status === 'selesai' ? 'finished' : r.status === 'dibatalkan' ? 'cancelled' : 'unverified',
+                  keycardPin: r.pin_akses || '8899',
                   assignedSeat: `UNIT-${r.id_space}`,
                   addOns: [],
                   createdAt: new Date(r.created_at).toLocaleString('id-ID'),
-                  qrPayload: `VERIFY-RESERVASI-${r.id}-${r.kode_booking}`
+                  qrPayload: `VERIFY-RESERVASI-${r.id}-${r.kode_booking}`,
+                  paymentProofUrl: r.bukti_pembayaran
+                    ? (r.bukti_pembayaran.startsWith('http://') || r.bukti_pembayaran.startsWith('https://')
+                        ? r.bukti_pembayaran
+                        : r.bukti_pembayaran.startsWith('/uploads/')
+                          ? `${BACKEND_URL}${r.bukti_pembayaran}`
+                          : `${BACKEND_URL}/uploads/pembayaran/${r.bukti_pembayaran}`)
+                    : null,
+                  rejectionReason: (r as any).alasan_penolakan || null
                 }));
                 setBookings(mappedBookings);
               }
@@ -196,7 +231,9 @@ export function SpaceStoreProvider({ children }: { children: React.ReactNode }) 
   const logout = () => {
     removeStoredToken();
     setCurrentUser(null);
-    if (typeof window !== 'undefined') window.location.href = '/login';
+    if (typeof window !== 'undefined') {
+      window.location.href = '/';
+    }
   };
 
   const addBooking = async (input: any): Promise<any> => {
@@ -206,7 +243,9 @@ export function SpaceStoreProvider({ children }: { children: React.ReactNode }) 
         tanggal_reservasi: input.date,
         jam_mulai: input.jam_mulai || '09:00',
         durasi_jam: Number(input.durationHours || 1),
-        kode_promo: input.kode_promo
+        kode_promo: input.kode_promo,
+        payment_method_id: input.payment_method_id,
+        bukti_pembayaran: input.bukti_pembayaran
       });
       await loadBackendData();
       return res;
@@ -224,18 +263,20 @@ export function SpaceStoreProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
-  const updateBookingStatus = async (bookingId: string | number, status: any) => {
+  const updateBookingStatus = async (bookingId: string | number, status: any, alasanPenolakan?: string) => {
     try {
       let mappedStatus = status;
+      if (status === 'unverified') mappedStatus = 'belum_dikonfirm';
       if (status === 'pending') mappedStatus = 'disetujui';
       if (status === 'active') mappedStatus = 'aktif';
       if (status === 'finished') mappedStatus = 'selesai';
       if (status === 'cancelled') mappedStatus = 'dibatalkan';
 
-      await updateReservasiStatus(bookingId, mappedStatus);
+      await updateReservasiStatus(bookingId, mappedStatus, alasanPenolakan);
       await loadBackendData();
     } catch (err) {
       console.error('Update status error:', err);
+      throw err;
     }
   };
 
@@ -292,23 +333,58 @@ export function SpaceStoreProvider({ children }: { children: React.ReactNode }) 
     const found = bookings.find(b =>
       b.bookingCode.toUpperCase() === clean ||
       b.qrPayload.toUpperCase() === clean ||
-      b.id === clean
+      b.keycardPin.toUpperCase() === clean ||
+      b.id === clean ||
+      clean.includes(b.bookingCode.toUpperCase()) ||
+      clean.includes(b.qrPayload.toUpperCase())
     );
 
-    if (found) {
+    try {
+      let apiResult: any = null;
       try {
-        await checkInGuest(found.id);
-        await loadBackendData();
-        return {
-          success: true,
-          booking: { ...found, status: 'active' as const },
-          message: `Check-in Berhasil! Tamu: ${found.guestName}`
-        };
-      } catch (err: any) {
-        return { success: false, message: err.message || 'Gagal check-in' };
+        apiResult = await checkInGuestByCodeApi(code);
+      } catch (e) {
+        if (found) {
+          apiResult = await checkInGuest(found.id);
+        } else {
+          throw e;
+        }
       }
+
+      await loadBackendData();
+
+      const matchedBooking = found || (apiResult?.data ? {
+        id: String(apiResult.data.id),
+        bookingCode: apiResult.data.kode_booking,
+        guestName: apiResult.data.member?.nama_member || 'Guest',
+        spaceName: apiResult.data.space?.nama_space || 'Space',
+        assignedSeat: `UNIT-${apiResult.data.id_space}`,
+        timeSlot: `${apiResult.data.jam_mulai} - ${apiResult.data.jam_selesai}`,
+        keycardPin: apiResult.data.pin_akses || '8899',
+        status: 'active' as const,
+      } : undefined);
+
+      return {
+        success: true,
+        booking: matchedBooking,
+        message: apiResult?.message || `Check-in Berhasil! Tamu: ${matchedBooking?.guestName || 'Tamu'}`
+      };
+    } catch (err: any) {
+      if (found) {
+        try {
+          await checkInGuest(found.id);
+          await loadBackendData();
+          return {
+            success: true,
+            booking: { ...found, status: 'active' as const },
+            message: `Check-in Berhasil! Tamu: ${found.guestName}`
+          };
+        } catch (fallbackErr: any) {
+          return { success: false, message: fallbackErr.message || 'Gagal check-in' };
+        }
+      }
+      return { success: false, message: err.message || `Tiket '${code}' tidak ditemukan` };
     }
-    return { success: false, message: `Tiket ${code} tidak ditemukan` };
   };
 
   const setCurrentUserRole = (role: 'member' | 'admin') => {

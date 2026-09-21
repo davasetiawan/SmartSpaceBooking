@@ -124,6 +124,8 @@ model reservasi {
   total_bayar         Float
   status              ReservasiStatus  @default(belum_dikonfirm)
   bukti_pembayaran    String?          @db.VarChar(255)
+  pin_akses           String           @default("8899") @db.VarChar(10)
+  alasan_penolakan    String?          @db.Text
   check_in_time       DateTime?
   check_out_time      DateTime?
   created_at          DateTime         @default(now())

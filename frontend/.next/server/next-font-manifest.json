@@ -1,106 +1,111 @@
 {
   "app": {
-    "[project]/src/app/_not-found/page": [
+    "[project]/frontend/src/app/_not-found/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/checkin/page": [
+    "[project]/frontend/src/app/admin/checkin/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/finance/page": [
+    "[project]/frontend/src/app/admin/finance/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/members/page": [
+    "[project]/frontend/src/app/admin/member/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/page": [
+    "[project]/frontend/src/app/admin/members/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/profile/page": [
+    "[project]/frontend/src/app/admin/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/reservations/[id]/page": [
+    "[project]/frontend/src/app/admin/profile/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/reservations/page": [
+    "[project]/frontend/src/app/admin/reservations/[id]/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/spaces/page": [
+    "[project]/frontend/src/app/admin/reservations/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/admin/vouchers/page": [
+    "[project]/frontend/src/app/admin/spaces/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/booking/page": [
+    "[project]/frontend/src/app/admin/vouchers/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/login/page": [
+    "[project]/frontend/src/app/booking/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/member/bookings/page": [
+    "[project]/frontend/src/app/login/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/member/history/page": [
+    "[project]/frontend/src/app/member/bookings/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/member/profile/page": [
+    "[project]/frontend/src/app/member/history/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/page": [
+    "[project]/frontend/src/app/member/profile/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/profile/page": [
+    "[project]/frontend/src/app/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/register/page": [
+    "[project]/frontend/src/app/profile/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/spaces/page": [
+    "[project]/frontend/src/app/register/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/ticket/[id]/page": [
+    "[project]/frontend/src/app/spaces/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
     ],
-    "[project]/src/app/ticket/page": [
+    "[project]/frontend/src/app/ticket/[id]/page": [
+      "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
+      "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
+      "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"
+    ],
+    "[project]/frontend/src/app/ticket/page": [
       "static/media/fba5a26ea33df6a3-s.p.18rizl4rsrl42.woff2",
       "static/media/2a65768255d6b625-s.p.3u4lli0-axodc.woff2",
       "static/media/70bc3e132a0a741e-s.p.3t6q91iet4nsy.woff2"

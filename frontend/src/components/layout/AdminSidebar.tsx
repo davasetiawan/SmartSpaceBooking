@@ -9,7 +9,7 @@ export default function AdminSidebar() {
   const pathname = usePathname();
   const { bookings } = useSpaceStore();
 
-  const pendingBookingsCount = bookings.filter(b => b.status === 'pending').length;
+  const pendingBookingsCount = bookings.filter(b => b.status === 'unverified').length;
 
   const adminMenu = [
     { label: 'Executive Dashboard', href: '/admin', icon: 'dashboard' },
@@ -28,8 +28,8 @@ export default function AdminSidebar() {
         {/* Admin Header */}
         <div className="p-6 border-b border-[#EBE7DF] flex items-center justify-between">
           <Link href="/admin" className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-[#121212] flex items-center justify-center text-white">
-              <span className="font-serif italic font-bold">W</span>
+            <div className="w-10 h-10 rounded-full overflow-hidden border border-[#121212] bg-[#121212] shrink-0 shadow-sm">
+              <img src="/workmates-logo.jpg" alt="WorkMates Logo" className="w-full h-full object-cover" />
             </div>
             <div className="flex flex-col">
               <span className="font-serif font-bold text-base text-[#1b1c1a]">WorkMates</span>

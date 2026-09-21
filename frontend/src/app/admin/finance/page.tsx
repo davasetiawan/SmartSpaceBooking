@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import AdminSidebar from '@/components/layout/AdminSidebar';
+import Navbar from '@/components/layout/Navbar';
+import PaymentMethodManager from '@/components/admin/PaymentMethodManager';
 import { useSpaceStore } from '@/lib/SpaceStoreContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -33,40 +34,53 @@ export default function AdminFinancePage() {
       setExportProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => setIsExporting(false), 800);
+          setTimeout(() => {
+            setIsExporting(false);
+            window.print();
+          }, 600);
           return 100;
         }
         return prev + 25;
       });
-    }, 300);
+    }, 200);
   };
 
-  const fallbackGross = bookings.reduce((sum, b) => (b.status !== 'cancelled' ? sum + b.totalAmount : sum), 0);
-  const grossRevenue = reportData?.ringkasan?.realisasi_pendapatan_bersih || reportData?.ringkasan?.estimasi_pendapatan_kotor || fallbackGross;
+  const actualData = reportData?.data || reportData;
+
+  const grossRevenue = actualData?.pendapatan_bersih ?? 0;
+
   const totalTaxPB1 = Math.round(grossRevenue * 0.1);
   const platformFee = Math.round(grossRevenue * 0.05);
   const netOwnerPayout = grossRevenue - totalTaxPB1 - platformFee;
 
-  // Monthly revenue mock data
-  const monthlyTrends = [
-    { month: 'Apr', amount: 112000000, height: '65%' },
-    { month: 'Mei', amount: 128000000, height: '75%' },
-    { month: 'Jun', amount: 145000000, height: '85%' },
-    { month: 'Jul', amount: 139000000, height: '80%' },
-    { month: 'Agu', amount: 156000000, height: '90%' },
-    { month: 'Sep (Now)', amount: grossRevenue > 0 ? grossRevenue : 168000000, height: '98%', isCurrent: true },
-  ];
+  const categoryColors = ['bg-[#121212]', 'bg-[#4A6B5D]', 'bg-[#C88A2B]', 'bg-[#747878]', 'bg-[#3b82f6]'];
+
+  const monthlyTrends =
+    actualData?.monthly_trends && actualData.monthly_trends.length > 0
+      ? actualData.monthly_trends
+      : [
+          { month: 'Apr', amount: 0, height: '4px', isCurrent: false },
+          { month: 'Mei', amount: 0, height: '4px', isCurrent: false },
+          { month: 'Jun', amount: 0, height: '4px', isCurrent: false },
+          { month: 'Jul', amount: 0, height: '4px', isCurrent: false },
+          { month: 'Agu', amount: 0, height: '4px', isCurrent: false },
+          { month: 'Sep (Now)', amount: 0, height: '4px', isCurrent: true },
+        ];
+
+  const perTipeData = actualData?.per_tipe || [];
 
   return (
-    <div className="w-full min-h-screen flex flex-col lg:flex-row bg-[#fbf9f5] text-[#1b1c1a]">
-      <AdminSidebar />
+    <div className="w-full min-h-screen flex flex-col bg-[#fbf9f5] text-[#1b1c1a]">
+      <div className="no-print">
+        <Navbar />
+      </div>
 
-      <main className="flex-1 p-6 sm:p-10 lg:p-12 overflow-y-auto">
+      <main className="w-full flex-1 px-4 sm:px-8 lg:px-12 xl:px-16 py-8 overflow-y-auto">
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
-          className="w-full max-w-7xl mx-auto space-y-8"
+          className="w-full space-y-8"
         >
           
           {/* Header */}
@@ -83,7 +97,7 @@ export default function AdminFinancePage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 no-print">
               <select
                 value={selectedMonth}
                 onChange={(e) => setSelectedMonth(e.target.value)}
@@ -92,6 +106,9 @@ export default function AdminFinancePage() {
                 <option value="2026-09">September 2026</option>
                 <option value="2026-08">Agustus 2026</option>
                 <option value="2026-07">Juli 2026</option>
+                <option value="2026-06">Juni 2026</option>
+                <option value="2026-05">Mei 2026</option>
+                <option value="2026-04">April 2026</option>
               </select>
 
               <button
@@ -157,6 +174,10 @@ export default function AdminFinancePage() {
             </div>
           </div>
 
+          <div className="no-print">
+            <PaymentMethodManager />
+          </div>
+
           {/* Revenue Chart Visualization & Category Breakdown */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
@@ -169,15 +190,15 @@ export default function AdminFinancePage() {
                     Tren Pendapatan 6 Bulan Terakhir
                   </h3>
                 </div>
-                <span className="text-xs font-mono text-[#747878]">Dalam Juta Rupiah</span>
+                <span className="text-xs font-mono text-[#747878]">Dalam Rupiah</span>
               </div>
 
               {/* Visual Bars */}
               <div className="h-64 flex items-end justify-between gap-4 pt-8 px-4 font-mono text-xs">
-                {monthlyTrends.map((t, idx) => (
+                {monthlyTrends.map((t: any, idx: number) => (
                   <div key={idx} className="flex-1 flex flex-col items-center gap-2 h-full justify-end group">
                     <span className="text-[10px] text-[#747878] opacity-0 group-hover:opacity-100 transition-opacity">
-                      {Math.round(t.amount / 1000000)}jt
+                      {t.amount > 0 ? (t.amount >= 1000000 ? `${(t.amount / 1000000).toFixed(1)}jt` : `Rp ${t.amount.toLocaleString('id-ID')}`) : '0'}
                     </span>
                     <div
                       style={{ height: t.height }}
@@ -207,45 +228,28 @@ export default function AdminFinancePage() {
               </div>
 
               <div className="space-y-4 font-mono text-xs">
-                <div className="space-y-1.5">
-                  <div className="flex justify-between">
-                    <span className="font-bold text-[#121212]">Executive Studios (42%)</span>
-                    <span>Rp {Math.round(grossRevenue * 0.42).toLocaleString('id-ID')}</span>
+                {perTipeData && perTipeData.length > 0 ? (
+                  perTipeData.map((item: any, idx: number) => (
+                    <div key={idx} className="space-y-1.5">
+                      <div className="flex justify-between">
+                        <span className="font-bold text-[#121212] capitalize">
+                          {item.tipe} ({item.percentage}%)
+                        </span>
+                        <span>Rp {Number(item.total_pendapatan).toLocaleString('id-ID')}</span>
+                      </div>
+                      <div className="w-full h-2 bg-[#efeeea] rounded-full overflow-hidden">
+                        <div
+                          className={`h-full ${categoryColors[idx % categoryColors.length]}`}
+                          style={{ width: `${item.percentage}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-6 text-xs text-[#747878]">
+                    Belum ada data transaksi kategori pada bulan ini.
                   </div>
-                  <div className="w-full h-2 bg-[#efeeea] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#121212] w-[42%]"></div>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between">
-                    <span className="font-bold text-[#121212]">Boardroom Salons (28%)</span>
-                    <span>Rp {Math.round(grossRevenue * 0.28).toLocaleString('id-ID')}</span>
-                  </div>
-                  <div className="w-full h-2 bg-[#efeeea] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#4A6B5D] w-[28%]"></div>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between">
-                    <span className="font-bold text-[#121212]">Solarium Greenhouses (18%)</span>
-                    <span>Rp {Math.round(grossRevenue * 0.18).toLocaleString('id-ID')}</span>
-                  </div>
-                  <div className="w-full h-2 bg-[#efeeea] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#C88A2B] w-[18%]"></div>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <div className="flex justify-between">
-                    <span className="font-bold text-[#121212]">Focus Pods &amp; Desks (12%)</span>
-                    <span>Rp {Math.round(grossRevenue * 0.12).toLocaleString('id-ID')}</span>
-                  </div>
-                  <div className="w-full h-2 bg-[#efeeea] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#747878] w-[12%]"></div>
-                  </div>
-                </div>
+                )}
               </div>
             </div>
 

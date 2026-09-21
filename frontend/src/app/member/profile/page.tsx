@@ -80,7 +80,7 @@ export default function MemberProfilePage() {
     }
   };
 
-  const activePassCount = bookings.filter(b => b.status === 'active' || b.status === 'pending').length;
+  const activePassCount = bookings.filter(b => b.status === 'active' || b.status === 'pending' || b.status === 'unverified').length;
 
   return (
     <div className="w-full min-h-screen flex flex-col bg-[#FBF9F5] text-[#121212]">

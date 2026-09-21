@@ -10,10 +10,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MemberBookingsPage() {
   const { bookings, cancelBooking } = useSpaceStore();
-  const [filterTab, setFilterTab] = useState<'all' | 'active' | 'pending' | 'finished' | 'cancelled'>('all');
+  const [filterTab, setFilterTab] = useState<'all' | Booking['status']>('all');
   const [cancellingBookingId, setCancellingBookingId] = useState<string | null>(null);
 
   const activeCount = bookings.filter(b => b.status === 'active').length;
+  const unverifiedCount = bookings.filter(b => b.status === 'unverified').length;
   const pendingCount = bookings.filter(b => b.status === 'pending').length;
   const finishedCount = bookings.filter(b => b.status === 'finished').length;
   const cancelledCount = bookings.filter(b => b.status === 'cancelled').length;
@@ -25,6 +26,13 @@ export default function MemberBookingsPage() {
 
   const getStatusBadge = (status: Booking['status']) => {
     switch (status) {
+      case 'unverified':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C88A2B]/10 text-[#C88A2B] text-xs font-mono font-bold uppercase">
+            <span className="w-2 h-2 rounded-full bg-[#C88A2B]"></span>
+            <span>Belum Diverifikasi Admin</span>
+          </span>
+        );
       case 'active':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#4A6B5D]/10 text-[#4A6B5D] text-xs font-mono font-bold uppercase">
@@ -34,9 +42,9 @@ export default function MemberBookingsPage() {
         );
       case 'pending':
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#C88A2B]/10 text-[#C88A2B] text-xs font-mono font-bold uppercase">
-            <span className="w-2 h-2 rounded-full bg-[#C88A2B]"></span>
-            <span>Menunggu Konfirmasi</span>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#4A6B5D]/10 text-[#4A6B5D] text-xs font-mono font-bold uppercase">
+            <span className="w-2 h-2 rounded-full bg-[#4A6B5D]"></span>
+            <span>Terverifikasi Admin</span>
           </span>
         );
       case 'finished':
@@ -100,7 +108,7 @@ export default function MemberBookingsPage() {
                 <span className="text-[#EBE7DF]">•</span>
                 <span className="flex items-center gap-1.5 text-[#C88A2B] font-semibold">
                   <span className="w-2 h-2 rounded-full bg-[#C88A2B]"></span>
-                  <span>{pendingCount} Menunggu</span>
+                  <span>{unverifiedCount} Belum Verifikasi</span>
                 </span>
                 <span className="text-[#EBE7DF]">•</span>
                 <span className="text-[#747878]">
@@ -140,6 +148,20 @@ export default function MemberBookingsPage() {
               </button>
 
               <button
+                onClick={() => setFilterTab('unverified')}
+                className={`pb-3 transition-all flex items-center gap-1.5 relative ${
+                  filterTab === 'unverified'
+                    ? 'text-[#121212] font-bold border-b-2 border-[#121212]'
+                    : 'text-[#747878] hover:text-[#121212]'
+                }`}
+              >
+                <span>Belum Verifikasi</span>
+                <span className="px-2 py-0.5 rounded-full bg-[#C88A2B]/15 text-[#C88A2B] text-[10px] font-mono font-bold">
+                  {unverifiedCount}
+                </span>
+              </button>
+
+              <button
                 onClick={() => setFilterTab('pending')}
                 className={`pb-3 transition-all flex items-center gap-1.5 relative ${
                   filterTab === 'pending'
@@ -147,8 +169,8 @@ export default function MemberBookingsPage() {
                     : 'text-[#747878] hover:text-[#121212]'
                 }`}
               >
-                <span>Menunggu Konfirmasi</span>
-                <span className="px-2 py-0.5 rounded-full bg-[#C88A2B]/15 text-[#C88A2B] text-[10px] font-mono font-bold">
+                <span>Terverifikasi</span>
+                <span className="px-2 py-0.5 rounded-full bg-[#4A6B5D]/15 text-[#4A6B5D] text-[10px] font-mono font-bold">
                   {pendingCount}
                 </span>
               </button>
@@ -264,6 +286,17 @@ export default function MemberBookingsPage() {
                             <span className="font-bold text-[#4A6B5D]">{booking.assignedSeat} (PIN: {booking.keycardPin})</span>
                           </div>
                         </div>
+
+                        {/* Rejection reason banner — shown to member when booking is rejected by admin */}
+                        {booking.status === 'cancelled' && booking.rejectionReason && (
+                          <div className="mt-3 flex items-start gap-2.5 p-3.5 rounded-2xl bg-[#9E3B3B]/6 border border-[#9E3B3B]/20">
+                            <span className="material-symbols-outlined text-[#9E3B3B] text-[18px] mt-0.5 shrink-0">info</span>
+                            <div>
+                              <p className="text-[10px] font-mono font-bold text-[#9E3B3B] uppercase tracking-wider mb-0.5">Alasan Penolakan dari Admin</p>
+                              <p className="text-xs font-mono text-[#5e5e5e] leading-relaxed">{booking.rejectionReason}</p>
+                            </div>
+                          </div>
+                        )}
                       </div>
 
                       {/* Pricing & CTAs */}
@@ -287,7 +320,7 @@ export default function MemberBookingsPage() {
                             <span>Buka Digital Pass</span>
                           </Link>
 
-                          {booking.status === 'active' || booking.status === 'pending' ? (
+                          {booking.status === 'active' || booking.status === 'pending' || booking.status === 'unverified' ? (
                             <button
                               type="button"
                               onClick={() => setCancellingBookingId(booking.id)}

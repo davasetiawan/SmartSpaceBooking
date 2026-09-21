@@ -60,6 +60,7 @@ export class ReservasiController {
   @ApiQuery({ name: 'jam_mulai', required: true, type: String, example: '09:00' })
   @ApiQuery({ name: 'durasi_jam', required: true, type: Number, example: 2 })
   @ApiQuery({ name: 'nama_diskon', required: false, type: String, example: 'WELCOME10' })
+  @ApiQuery({ name: 'payment_method_id', required: false, type: Number, example: 1 })
   @ApiBody({
     schema: {
       type: 'object',
@@ -67,7 +68,7 @@ export class ReservasiController {
         bukti_pembayaran: {
           type: 'string',
           format: 'binary',
-          description: 'Foto bukti pembayaran (JPEG/PNG/WEBP, max 2MB) — opsional',
+          description: 'Foto bukti pembayaran (JPEG/PNG/WEBP, max 2MB) — wajib',
         },
       },
     },
@@ -75,7 +76,7 @@ export class ReservasiController {
   @ApiOperation({
     summary: 'Buat Pemesanan Space Baru (+ Upload Bukti Pembayaran via Parameter)',
     description:
-      'Member membuat booking. Parameter dikirim lewat URL Query Parameters (id_space, tanggal_reservasi, jam_mulai, durasi_jam, nama_diskon opsional) & upload bukti_pembayaran via file input (opsional). Wajib JWT member.',
+      'Member membuat booking. Parameter dikirim lewat URL Query Parameters (id_space, tanggal_reservasi, jam_mulai, durasi_jam, nama_diskon opsional) & wajib upload bukti_pembayaran via file input. Wajib JWT member.',
   })
   @UseInterceptors(
     FileInterceptor('bukti_pembayaran', {
@@ -91,6 +92,7 @@ export class ReservasiController {
     @Query('jam_mulai') jam_mulai_q?: string,
     @Query('durasi_jam') durasi_jam_q?: string,
     @Query('nama_diskon') nama_diskon_q?: string,
+    @Query('payment_method_id') payment_method_id_q?: string,
     @Body() body?: Record<string, any>,
     @UploadedFile() file?: Express.Multer.File,
   ) {
@@ -99,11 +101,16 @@ export class ReservasiController {
     const jam_mulai = jam_mulai_q || body?.jam_mulai;
     const durasi_jam = durasi_jam_q || body?.durasi_jam;
     const nama_diskon = nama_diskon_q || body?.nama_diskon;
+    const payment_method_id = payment_method_id_q || body?.payment_method_id;
 
     if (!id_space || !tanggal_reservasi || !jam_mulai || !durasi_jam) {
       throw new BadRequestException(
         'id_space, tanggal_reservasi, jam_mulai, dan durasi_jam wajib diisi',
       );
+    }
+
+    if (!file) {
+      throw new BadRequestException('Foto bukti pembayaran wajib diupload');
     }
 
     const dto: CreateReservasiDto = {
@@ -112,6 +119,7 @@ export class ReservasiController {
       jam_mulai: String(jam_mulai),
       durasi_jam: Number(durasi_jam),
       nama_diskon: nama_diskon ? String(nama_diskon) : undefined,
+      payment_method_id: payment_method_id ? Number(payment_method_id) : undefined,
     };
 
     return this.reservasi.create(req.user.id, dto, file?.filename);

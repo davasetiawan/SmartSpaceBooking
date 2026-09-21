@@ -1,12 +1,21 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsIn } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsIn, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class UpdateReservasiStatusDto {
   @ApiProperty({
-    enum: ['disetujui', 'ditolak'],
-    description: 'Konfirmasi reservasi: "disetujui" untuk menerima, "ditolak" untuk menolak pembayaran/reservasi',
+    enum: ['disetujui', 'ditolak', 'aktif', 'selesai', 'dibatalkan'],
+    description: 'Update status manual reservasi oleh admin',
     example: 'disetujui',
   })
-  @IsIn(['disetujui', 'ditolak'])
-  status: 'disetujui' | 'ditolak';
+  @IsIn(['disetujui', 'ditolak', 'aktif', 'selesai', 'dibatalkan'])
+  status: 'disetujui' | 'ditolak' | 'aktif' | 'selesai' | 'dibatalkan';
+
+  @ApiPropertyOptional({
+    description: 'Alasan penolakan reservasi (wajib diisi jika status = ditolak)',
+    example: 'Bukti pembayaran tidak jelas / tidak valid',
+  })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  alasan_penolakan?: string;
 }

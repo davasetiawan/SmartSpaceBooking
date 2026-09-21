@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -7,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Put,
   Query,
   Request,
   UploadedFile,
@@ -107,6 +109,7 @@ export class AdminController {
   }
 
   @Patch('members/:id')
+  @Put('members/:id')
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Update Data Member / Pelanggan (Termasuk Foto) - Partial' })
   @ApiBody({
@@ -310,11 +313,28 @@ export class AdminController {
     return this.admin.reservations(req.user.id, query);
   }
 
+  @Patch('reservasi/check-in-by-code')
+  @ApiOperation({
+    summary: 'Check-In Pelanggan via Kode Pass / PIN / QR Payload',
+    description: 'Check-In pelanggan menggunakan Kode Booking, PIN Akses, atau Scan QR.',
+  })
+  checkInByCode(
+    @Request() req: { user: { id: number } },
+    @Body('code') bodyCode?: string,
+    @Query('code') queryCode?: string,
+  ) {
+    const inputCode = bodyCode || queryCode;
+    if (!inputCode) {
+      throw new BadRequestException('Kode pass / PIN wajib diisi');
+    }
+    return this.admin.checkInByCode(req.user.id, inputCode);
+  }
+
   @Patch('reservasi/:id/status')
   @ApiOperation({
-    summary: 'Konfirmasi Reservasi (disetujui / ditolak)',
+    summary: 'Update status reservasi manual',
     description:
-      'Admin mengkonfirmasi reservasi member. Pilih "disetujui" untuk menerima atau "ditolak" untuk menolak reservasi. Hanya bisa dilakukan saat status masih belum_dikonfirm.',
+      'Admin memverifikasi atau mengubah status reservasi manual. Booking baru tetap belum_dikonfirm sampai admin memilih disetujui.',
   })
   updateStatus(
     @Request() req: { user: { id: number } },

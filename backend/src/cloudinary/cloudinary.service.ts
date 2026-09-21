@@ -6,15 +6,15 @@ import * as path from 'path';
 
 @Injectable()
 export class CloudinaryService {
-  async uploadImage(file: Express.Multer.File): Promise<any> {
-    if (!file) return { secure_url: '', public_id: '' };
+  async uploadImage(file: Express.Multer.File, folder: string = 'general'): Promise<any> {
+    if (!file) return { secure_url: '', public_id: '', format: 'jpg' };
 
     // 1. Try Cloudinary if environment variable is configured
     if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY) {
       try {
         const cloudResult = await new Promise((resolve, reject) => {
           const upload = v2.uploader.upload_stream(
-            { folder: 'smart-space' },
+            { folder: `smart-space/${folder}` },
             (error, result) => {
               if (error) return reject(error);
               resolve(result);
@@ -28,8 +28,8 @@ export class CloudinaryService {
       }
     }
 
-    // 2. Fallback to local file storage in ./uploads directory
-    const uploadsDir = path.join(process.cwd(), 'uploads');
+    // 2. Fallback to local file storage in ./uploads/{folder} directory
+    const uploadsDir = path.join(process.cwd(), 'uploads', folder);
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
     }
@@ -41,8 +41,9 @@ export class CloudinaryService {
     fs.writeFileSync(filepath, file.buffer);
 
     return {
-      secure_url: `/uploads/${filename}`,
-      public_id: filename,
+      secure_url: `/uploads/${folder}/${filename}`,
+      public_id: `${folder}/${filename.replace(ext, '')}`,
+      format: ext.replace('.', ''),
     };
   }
 }

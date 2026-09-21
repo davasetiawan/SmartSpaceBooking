@@ -8,11 +8,11 @@ import { DiskonModule } from './diskon/diskon.module';
 import { ReservasiModule } from './reservasi/reservasi.module';
 import { AdminModule } from './admin/admin.module';
 import { PaymentMethodModule } from './payment-method/payment-method.module';
-
+import { UploadModule } from './upload/upload.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), CloudinaryModule, PrismaModule, AuthModule, SpacesModule, DiskonModule, ReservasiModule, AdminModule, PaymentMethodModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), CloudinaryModule, PrismaModule, AuthModule, SpacesModule, DiskonModule, ReservasiModule, AdminModule, PaymentMethodModule, UploadModule],
   controllers: [AppController],
 })
 export class AppModule {}

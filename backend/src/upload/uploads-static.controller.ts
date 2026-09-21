@@ -1,5 +1,6 @@
 import { Controller, Get, Param, StreamableFile, NotFoundException, Res } from '@nestjs/common';
 import type { Response } from 'express';
+import { ApiExcludeController } from '@nestjs/swagger';
 import { createReadStream, existsSync, statSync } from 'fs';
 import { join, extname } from 'path';
 
@@ -11,6 +12,7 @@ const MIME_TYPES: Record<string, string> = {
   '.svg': 'image/svg+xml',
 };
 
+@ApiExcludeController()
 @Controller('uploads')
 export class UploadsStaticController {
   @Get(':filename')
